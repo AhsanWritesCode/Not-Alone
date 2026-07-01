@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefly Perfectly Human</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F3EE;
+    --ink: #1C1A17;
+    --ink-soft: #4A4740;
+    --ink-muted: #8A877F;
+    --warm-border: #E0D9CF;
+    --accent: #7C5C3E;
+    --accent-light: #F0E8DE;
+    --bone: #D4C9B8;
+    --correct: #4F6E47;
+    --correct-light: #E7EFE2;
+    --miss: #A8654A;
+    --miss-light: #F3E5DD;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .skull-bar {
+    width: 100%;
+    background: var(--ink);
+    color: var(--cream);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 24px 60px;
+  }
+
+  .skull-icon {
+    text-align: center;
+    padding: 36px 0 20px;
+    font-size: 52px;
+    line-height: 1;
+    filter: grayscale(1);
+    opacity: 0.85;
+  }
+
+  .project-title {
+    text-align: center;
+    font-family: 'Lora', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .project-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .progress-track {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .pip {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--bone);
+    background: transparent;
+  }
+  .pip.done { background: var(--accent); border-color: var(--accent); }
+  .pip.current { border-color: var(--ink); background: var(--ink); transform: scale(1.25); }
+
+  .perspective-card {
+    background: white;
+    border: 1px solid var(--warm-border);
+    border-radius: 16px;
+    padding: 28px 24px 24px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .perspective-text {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .guess-section {
+    background: white;
+    border: 1px solid var(--warm-border);
+    border-radius: 16px;
+    padding: 26px 24px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .guess-prompt {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .guess-hint {
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .guess-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .guess-btn {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--cream);
+    border: 1px solid var(--warm-border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.18s, background 0.18s, transform 0.1s;
+  }
+  .guess-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .guess-btn:active { transform: scale(0.99); }
+  .guess-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .guess-btn .gb-emoji { font-size: 20px; filter: grayscale(0.3); }
+
+  .recorded {
+    display: none;
+    text-align: center;
+    padding: 8px 0 2px;
+    animation: fadeUp 0.45s ease both;
+  }
+  .recorded .rec-mark { font-size: 28px; margin-bottom: 10px; }
+  .recorded p {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+  .recorded .rec-sub {
+    font-style: normal;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 300;
+  }
+
+  /* ---------- Letter / password clue ---------- */
+  .letter-section {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 26px 24px;
+    margin-bottom: 24px;
+    text-align: center;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .letter-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .letter-big {
+    font-family: 'Lora', serif;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .letter-pos {
+    font-size: 12px;
+    color: var(--bone);
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+  .letter-instruction {
+    font-size: 13px;
+    color: var(--bone);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .letter-instruction strong { color: var(--cream); font-weight: 500; }
+
+  .scavenger-section {
+    background: var(--accent-light);
+    border: 1px solid var(--warm-border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .scavenger-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .scavenger-line {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .scavenger-line:last-child { margin-bottom: 0; }
+  .scavenger-line strong { color: var(--accent); font-weight: 500; }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 32px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .footer-note a { color: var(--accent); text-decoration: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="skull-bar">University of Calgary</div>
+
+<div class="container" id="app"><!-- rendered by script --></div>
+
+<script>
+
+
+const TOTAL_SKULLS = 9;
+const FINAL_LOCATION = "the Nickle Galleries, Nicholls Family Art Museum";
+
+const VOICE = {
+  c: { label: "A child",   emoji: "🧒", note: "under 12" },
+  s: { label: "A student", emoji: "🎓", note: "teens–20s" },
+  e: { label: "An elder",  emoji: "🌳", note: "60+" }
+};
+
+const SKULLS = {
+  1: {
+    letter: "M",
+    quote: "Cyber bullying is a big problem in my school at the moment. […] There's been a boy who's just had it all thrown at him. And he just is alone all the time […] And you feel so bad for him. But then a lot of people would feel embarrassed to play, like you know, do stuff with him because he's the one getting bullied. So, then everybody will start making fun of you for playing with the one who they don't like. You kind of don't know what to do. It's like being bad and good at the same time. It's really confusing.",
+    answer: "c", who: "Age 10–12", role: "primary school student",
+    location: "the Kinesiology tree"
+  },
+  2: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  3: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  4: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  5: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  6: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  7: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  8: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  },
+  9: {
+    letter: "", quote: "", answer: "", who: "", role: "", location: ""
+  }
+};
+
+/* ---------- helpers ---------- */
+function getParams() { return new URLSearchParams(window.location.search); }
+const app = document.getElementById("app");
+
+function progressPips(currentNum) {
+  let html = '<div class="progress-track" aria-label="Skulls in the hunt">';
+  for (let i = 1; i <= TOTAL_SKULLS; i++) {
+    let cls = "pip";
+    if (i === currentNum) cls += " current";
+    else if (i < currentNum) cls += " done";
+    html += `<span class="${cls}"></span>`;
+  }
+  html += "</div>";
+  return html;
+}
+
+function renderSkull(num) {
+  const data = SKULLS[num];
+  const nextNum = num < TOTAL_SKULLS ? num + 1 : null;
+  const nextLocation = nextNum ? SKULLS[nextNum].location : FINAL_LOCATION;
+
+  app.innerHTML = `
+    <div class="skull-icon">💀</div>
+    <h1 class="project-title">You've found skull ${num} of 10.</h1>
+    <p class="project-subtitle">Someone left a reflection on living and dying inside this skull. Take a guess at who they were, then collect your letter.</p>
+
+    ${progressPips(num)}
+
+    <div class="perspective-card">
+      <div class="card-eyebrow">A voice left behind</div>
+      <p class="perspective-text">&ldquo;${data.quote}&rdquo;</p>
+    </div>
+
+    <div class="guess-section">
+      <h2 class="guess-prompt">Who do you think said this?</h2>
+      <p class="guess-hint">Your answer is sealed until everyone gathers at the end.</p>
+      <div class="guess-options" id="guess-options">
+        ${Object.entries(VOICE).map(([key, v]) => `
+          <button class="guess-btn" data-key="${key}">
+            <span class="gb-emoji">${v.emoji}</span>
+            <span>${v.label} <span style="color:var(--ink-muted);font-weight:300;">· ${v.note}</span></span>
+          </button>`).join("")}
+      </div>
+      <div class="recorded" id="recorded">
+        <div class="rec-mark">🕯️</div>
+        <p id="recorded-text">Your guess is sealed.</p>
+        <p class="rec-sub">The true answer will be revealed when everyone gathers at the end.</p>
+      </div>
+    </div>
+
+    <div class="letter-section">
+      <div class="letter-label">Your letter</div>
+      <div class="letter-big">${data.letter}</div>
+      <div class="letter-pos">Letter ${num} of ${TOTAL_SKULLS}</div>
+      <p class="letter-instruction"><strong>Write this down.</strong> Collect all ${TOTAL_SKULLS} letters — one from each skull — then bring them to <strong>${FINAL_LOCATION}</strong>.</p>
+    </div>
+
+    <div class="scavenger-section">
+      <div class="scavenger-label">The Hunt Continues</div>
+      ${nextNum
+        ? `<p class="scavenger-line">The <strong>next skull</strong> is at <strong>${nextLocation}</strong>.</p>`
+        : `<p class="scavenger-line">That was the last skull. Bring your full password to <strong>${FINAL_LOCATION}</strong>.</p>`}
+      <p class="scavenger-line">Skull one began at <strong>the Kinesiology tree</strong>.</p>
+    </div>
+
+    <p class="footer-note">
+      A research project by Ahsan Tariq &amp; Dr. Helen Ai He<br>
+      C3 Lab, University of Calgary &nbsp;·&nbsp; <a href="#">Learn more</a>
+    </p>
+  `;
+
+  document.querySelectorAll(".guess-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.key;
+      const opts = document.getElementById("guess-options");
+      const rec = document.getElementById("recorded");
+      const recText = document.getElementById("recorded-text");
+      if (opts) opts.style.display = "none";
+      if (recText) recText.textContent = `You sealed your guess: ${VOICE[key].label.toLowerCase()}.`;
+      if (rec) rec.style.display = "block";
+    });
+  });
+}
+
+/* ---------- router ---------- */
+function route() {
+  const skull = getParams().get("skull");
+  if (skull && SKULLS[parseInt(skull, 10)]) {
+    renderSkull(parseInt(skull, 10));
+  } else {
+    renderSkull(1);
+  }
+}
+route();
+</script>
+</body>
+</html>
