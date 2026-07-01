@@ -397,32 +397,30 @@ function renderSkull(num) {
     <p class="footer-note">
       A research project by Ahsan Tariq &amp; Dr. Helen Ai He<br>
       C3 Lab, University of Calgary &nbsp;·&nbsp; <a href="#">Learn more</a>
-    </p>
-  `;
-
-  document.querySelectorAll(".guess-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const key = btn.dataset.key;
-      const opts = document.getElementById("guess-options");
-      const rec = document.getElementById("recorded");
-      const recText = document.getElementById("recorded-text");
-      if (opts) opts.style.display = "none";
-      if (recText) recText.textContent = `You sealed your guess: ${VOICE[key].label.toLowerCase()}.`;
-      if (rec) rec.style.display = "block";
-    });
-  });
-}
-
-/* ---------- router ---------- */
-function route() {
-  const skull = getParams().get("skull");
-  if (skull && SKULLS[parseInt(skull, 10)]) {
-    renderSkull(parseInt(skull, 10));
-  } else {
-    renderSkull(1);
+    </p>`;
   }
-}
-route();
+
+  // Hook up guess button behavior after rendering
+  function bindGuessButtons() {
+    document.querySelectorAll(".guess-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.key;
+        const opts = document.getElementById("guess-options");
+        const rec = document.getElementById("recorded");
+        const recText = document.getElementById("recorded-text");
+        if (opts) opts.style.display = "none";
+        if (recText) recText.textContent = `You sealed your guess: ${VOICE[key].label.toLowerCase()}.`;
+        if (rec) rec.style.display = "block";
+      });
+    });
+  }
+
+  // Minimal initialization: read ?skull= from URL or default to 1
+  const params = getParams();
+  const skullNum = parseInt(params.get('skull')) || 1;
+  renderSkull(skullNum);
+  bindGuessButtons();
+
 </script>
 </body>
 </html>
