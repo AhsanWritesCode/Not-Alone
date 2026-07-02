@@ -116,6 +116,33 @@
   .reread { align-self: center; margin-top: 26px; background: none; border: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9587; cursor: pointer; padding: 8px; }
 
   .footer { text-align: center; font-size: 11px; color: #A8A398; font-weight: 300; padding: 16px 0 26px; }
+  .footer .learn-more { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; display: inline-block; margin-top: 8px; }
+
+  /* ---------- about overlay ---------- */
+  .about-overlay {
+    position: fixed; inset: 0; z-index: 80;
+    background: rgba(28, 26, 23, 0.55); backdrop-filter: blur(3px);
+    display: flex; justify-content: center; align-items: flex-start;
+    overflow-y: auto; padding: 40px 20px; animation: fade 0.3s ease both;
+  }
+  .about-card {
+    position: relative; width: 100%; max-width: 560px;
+    background: #FBF6EE; border-radius: 20px;
+    box-shadow: 0 40px 90px -30px rgba(28, 26, 23, 0.7);
+    padding: 52px 42px 46px; animation: rise 0.4s ease both;
+  }
+  .about-close {
+    position: absolute; top: 18px; right: 18px; width: 34px; height: 34px;
+    border-radius: 50%; border: 1px solid rgba(33, 30, 26, 0.15);
+    background: #F3EBDB; color: #6E6A61; font-size: 18px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .about-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .about-title { font-family: 'Newsreader', serif; font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 28px; }
+  .about-body { display: flex; flex-direction: column; gap: 20px; }
+  .about-body p { font-family: 'Newsreader', serif; font-weight: 300; font-size: 18px; line-height: 1.72; color: #2B2823; text-wrap: pretty; }
+  .about-rule { height: 1px; background: rgba(33, 30, 26, 0.12); margin: 32px 0 20px; }
+  .about-credit { font-size: 12.5px; color: #8A8578; font-weight: 300; line-height: 1.6; }
 
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -137,6 +164,7 @@ const VOICE = {
   e: { label: "An elder",  mark: "iii", note: "60+"       }
 };
 
+// Only revealed mementos carry a letter/quote. Fill the rest in as you build the hunt.
 const MEMENTOS = {
   1: {
     letter: "M",
@@ -258,12 +286,42 @@ function render() {
   }
 
   app.innerHTML = rail + act +
-    `<div class="footer">Ahsan Tariq &amp; Dr. Helen Ai He · C3 Lab, University of Calgary</div>`;
+    `<div class="footer">Ahsan Tariq &amp; Dr. Helen Ai He · C3 Lab, University of Calgary<br>
+      <a class="learn-more" onclick="openAbout()">Learn more about this project</a></div>`;
 }
 
 /* ============================================================
    INTERACTIONS
    ============================================================ */
+// the "about" essay, shown in an overlay from the footer link
+const ABOUT = [
+  "When I was 17, I was at one of the lowest points of my life. I had always been good at school, and I wasn't anymore. I only ever had one or two friends, and at that time I had none. The dynamics within my family had never been healthy, but then they felt unbearable. I almost quit. And then I got help. From people who were trying their best, every day, like I was. People who undoubtedly had their own problems, but chose to focus on mine for hours at a time. And I got better than I was, thanks to them. There are still difficult days, but I'm better than I was.",
+  "This project is, in a way, a result of that period of my life. Everyone has struggles. Often, we feel alone in them. We feel like there's something wrong with us specifically; that everyone else has it figured out. This project is meant to show that that's not the case. It's meant to show that we're not alone in our experience of them. The struggles you have might be similar to the struggles of a 65 year old, or to the struggles of a 12 year old.",
+  "Through reflection on perspectives from across the human lifespan on aspects of the lived human experience, this project seeks to foster common humanity. Common humanity is the recognition that all people fail, make mistakes, and feel inadequate in some way and frames suffering in light of the shared human experience."
+];
+
+function openAbout() {
+  const paras = ABOUT.map(p => `<p>${p}</p>`).join("");
+  const overlay = document.createElement("div");
+  overlay.className = "about-overlay";
+  overlay.innerHTML = `
+    <div class="about-card">
+      <button class="about-close" aria-label="Close" onclick="closeAbout()">&times;</button>
+      <div class="about-eyebrow">A note from the creator</div>
+      <h2 class="about-title">Why this project exists</h2>
+      <div class="about-body">${paras}</div>
+      <div class="about-rule"></div>
+      <p class="about-credit">Ahsan Tariq &amp; Dr. Helen Ai He · C3 Lab, University of Calgary</p>
+    </div>`;
+  // click the dark backdrop (but not the card) to close
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeAbout(); });
+  document.body.appendChild(overlay);
+}
+function closeAbout() {
+  const o = document.querySelector(".about-overlay");
+  if (o) o.remove();
+}
+
 // move between acts (re-reading clears the guess)
 function goStep(s) { step = s; if (s === "read") guess = null; render(); }
 
