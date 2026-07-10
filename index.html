@@ -1,448 +1,469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NSERC USRA Project</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</helmet>
 
-<style>
+<div style="min-height:100vh; display:flex; flex-direction:column; align-items:center;">
+  <div style="width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; padding:0 26px;">
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
-
-  :root {
-    --paper:  #F3EBDB;
-    --ink:    #211E1A;
-    --accent: #A2472F;
-  }
-
-  body {
-    background: radial-gradient(135% 95% at 50% -8%, #FBF6EE 0%, #F3EBDB 55%, #EBE0CD 100%);
-    background-attachment: fixed;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* single centered column */
-  .col {
-    width: 100%; max-width: 480px; min-height: 100vh;
-    display: flex; flex-direction: column; padding: 0 26px;
-  }
-
-  /* ---------- animations ---------- */
-  @keyframes rise  { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fade  { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes drop  { 0% { opacity: 0; transform: translateY(-16px) scale(1.5); } 60% { transform: translateY(2px) scale(1.05); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-  @keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
-
-  /* ---------- persistent password rail ---------- */
-  .rail { padding: 26px 0 22px; animation: fade 0.7s ease both; }
-  .rail .meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .rail .meta span { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; }
-  .rail .meta .study { color: #8A8578; }
-  .rail .meta .count { color: var(--accent); }
-  .rail .slots { display: flex; gap: 6px; justify-content: space-between; }
-  .slot {
-    flex: 1; aspect-ratio: 1; max-width: 38px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 16px;
-    background: rgba(33, 30, 26, 0.03); border: 1px solid rgba(33, 30, 26, 0.12); color: transparent;
-    transition: all 0.3s;
-  }
-  .slot.current { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); animation: pulse 2s ease-in-out infinite; }
-  .slot.filled  { background: var(--accent); border-color: var(--accent); color: #F5EEE1; animation: drop 0.6s both; }
-
-  /* every act fills the space between rail and footer, vertically centered */
-  .act { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-  /* ---------- act: intro ---------- */
-  .intro { padding: 8px 0 30px; animation: rise 0.7s ease both; }
-  .intro .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-  .intro h2 { font-family: 'Newsreader', serif; font-weight: 400; font-size: 29px; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 24px; }
-  .intro .body { display: flex; flex-direction: column; gap: 18px; margin-bottom: 30px; }
-  .intro .body p { font-family: 'Newsreader', serif; font-weight: 300; font-size: 17px; line-height: 1.68; color: #2B2823; text-wrap: pretty; }
-  .ethics-note { border-left: 2px solid rgba(33, 30, 26, 0.16); padding-left: 16px; margin-bottom: 26px; }
-  .ethics-note p { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #8A8578; font-weight: 400; line-height: 1.7; }
-  .survey-prompt { background: #FBF2EA; border: 1px solid rgba(162, 71, 47, 0.22); border-radius: 16px; padding: 22px 22px 24px; margin-bottom: 28px; }
-  .survey-prompt p { font-size: 13.5px; color: #8A5F47; font-weight: 400; line-height: 1.6; margin-bottom: 16px; }
-  .survey-btn { width: 100%; padding: 14px; background: #fff; border: 1px solid var(--accent); color: var(--accent); border-radius: 100px; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 13.5px; cursor: pointer; transition: background 0.15s; }
-  .survey-btn:hover { background: #FBF2EA; }
-  .begin-btn { width: 100%; padding: 17px; background: var(--ink); color: #F7EFE4; border: none; border-radius: 100px; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s; }
-  .begin-btn:hover { background: #332F28; }
-
-  /* ---------- act: read ---------- */
-  .read { padding: 20px 0 30px; animation: rise 0.7s ease both; }
-  .read .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; }
-  .read .quotewrap { position: relative; }
-  .read .qmark { position: absolute; top: -30px; left: -6px; font-family: 'Newsreader', serif; font-size: 82px; line-height: 1; color: rgba(162, 71, 47, 0.16); }
-  .read .quote { position: relative; font-family: 'Newsreader', serif; font-weight: 300; font-style: italic; font-size: 23px; line-height: 1.62; color: #2B2823; letter-spacing: -0.005em; text-wrap: pretty; }
-
-  .cta-wrap { padding-bottom: 34px; animation: fade 1s 0.3s ease both; }
-  .cta {
-    width: 100%; padding: 17px; background: var(--accent); color: #F7EFE4; border: none; border-radius: 100px;
-    font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 15px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.12s, background 0.2s;
-  }
-  .cta:hover  { background: #8E3C27; }
-  .cta:active { transform: scale(0.98); }
-  .cta .arrow { font-family: 'Newsreader', serif; font-size: 18px; }
-  .cta-note { text-align: center; font-size: 12px; color: #9A9587; margin-top: 14px; font-weight: 300; }
-
-  /* ---------- act: guess ---------- */
-  .guess { padding: 20px 0 34px; animation: rise 0.55s ease both; }
-  .guess h2 { font-family: 'Newsreader', serif; font-weight: 400; font-size: 30px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 30px; }
-  .options { display: flex; flex-direction: column; gap: 12px; }
-  .option {
-    width: 100%; padding: 20px 22px; background: #FCFAF4; border: 1px solid rgba(33, 30, 26, 0.12); border-radius: 16px;
-    cursor: pointer; text-align: left; display: flex; align-items: center; gap: 16px;
-    transition: border-color 0.18s, background 0.18s, transform 0.1s;
-  }
-  .option:hover  { border-color: var(--accent); background: #FBF2EA; }
-  .option:active { transform: scale(0.99); }
-  .option .mark  { font-family: 'Newsreader', serif; font-style: italic; font-size: 22px; color: var(--accent); min-width: 26px; }
-  .option .label { flex: 1; font-weight: 500; font-size: 17px; }
-  .option .note  { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A8A499; }
-
-  /* ---------- act: reveal ---------- */
-  .reveal { padding: 14px 0 34px; animation: fade 0.6s ease both; }
-  .badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; background: #EFEADF; border: 1px solid rgba(33, 30, 26, 0.1); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E6A61; }
-  .badge .dot { width: 5px; height: 5px; border-radius: 50%; background: #5F7A4F; }
-  .reveal .saw { font-family: 'Newsreader', serif; font-style: italic; font-size: 19px; color: #2B2823; margin-top: 18px; }
-  .reveal .letter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
-  .reveal .letter-big { display: flex; align-items: center; justify-content: center; height: 96px; font-family: 'Newsreader', serif; font-weight: 400; font-size: 104px; line-height: 1; color: var(--ink); animation: drop 0.7s 0.15s both; }
-  .reveal .letter-note { font-size: 13px; color: #8A8578; font-weight: 300; margin-top: 22px; line-height: 1.6; }
-  /* "next stop" signpost — the destination is the hero, so long names read as intentional */
-  .next { background: #FBF2EA; border: 1px solid rgba(162, 71, 47, 0.22); border-radius: 18px; padding: 22px 24px 24px; }
-  .next .head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px dashed rgba(162, 71, 47, 0.32); margin-bottom: 18px; }
-  .next .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-  .next .step { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #BE9077; }
-  .next .kicker { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #BE9077; margin-bottom: 10px; }
-  .next .place { display: flex; align-items: baseline; gap: 12px; }
-  .next .place .arrow { font-family: 'Newsreader', serif; font-size: 26px; line-height: 1; color: var(--accent); }
-  .next .place .name { font-family: 'Newsreader', serif; font-style: italic; font-size: 28px; line-height: 1.18; color: #2B2823; text-wrap: balance; }
-  .reread { align-self: center; margin-top: 26px; background: none; border: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9587; cursor: pointer; padding: 8px; }
-  .final-survey { background: #FBF2EA; border: 1px solid rgba(162, 71, 47, 0.22); border-radius: 16px; padding: 22px; margin-top: 20px; }
-  .final-survey p { font-size: 13.5px; color: #8A5F47; font-weight: 400; line-height: 1.6; margin-bottom: 16px; }
-
-  .footer { text-align: center; font-size: 11px; color: #A8A398; font-weight: 300; padding: 16px 0 26px; }
-
-  /* ---------- about overlay ---------- */
-  .about-overlay {
-    position: fixed; inset: 0; z-index: 80;
-    background: rgba(28, 26, 23, 0.55); backdrop-filter: blur(3px);
-    display: flex; justify-content: center; align-items: flex-start;
-    overflow-y: auto; padding: 40px 20px; animation: fade 0.3s ease both;
-  }
-  .about-card {
-    position: relative; width: 100%; max-width: 560px;
-    background: #FBF6EE; border-radius: 20px;
-    box-shadow: 0 40px 90px -30px rgba(28, 26, 23, 0.7);
-    padding: 52px 42px 46px; animation: rise 0.4s ease both;
-  }
-  .about-close {
-    position: absolute; top: 18px; right: 18px; width: 34px; height: 34px;
-    border-radius: 50%; border: 1px solid rgba(33, 30, 26, 0.15);
-    background: #F3EBDB; color: #6E6A61; font-size: 18px; line-height: 1;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-  }
-  .about-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
-  .about-title { font-family: 'Newsreader', serif; font-weight: 400; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 28px; }
-  .about-body { display: flex; flex-direction: column; gap: 20px; }
-  .about-body p { font-family: 'Newsreader', serif; font-weight: 300; font-size: 18px; line-height: 1.72; color: #2B2823; text-wrap: pretty; }
-  .about-rule { height: 1px; background: rgba(33, 30, 26, 0.12); margin: 32px 0 20px; }
-  .about-credit { font-size: 12.5px; color: #8A8578; font-weight: 300; line-height: 1.6; }
-
-  /* ---------- survey overlay ---------- */
-  .survey-intro { font-family: 'Newsreader', serif; font-weight: 300; font-style: italic; font-size: 18px; line-height: 1.6; color: #2B2823; margin-bottom: 10px; }
-  .survey-note { font-size: 12.5px; color: #5F7A4F; font-weight: 500; margin-bottom: 10px; }
-  .survey-questions { display: flex; flex-direction: column; gap: 28px; margin: 26px 0 8px; }
-  .survey-q p { font-size: 14.5px; color: #211E1A; line-height: 1.5; margin-bottom: 14px; }
-  .survey-endpoints { display: flex; justify-content: space-between; padding: 0 1px; margin-bottom: 6px; }
-  .survey-endpoints span { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: #8A5F47; max-width: 70px; line-height: 1.35; }
-  .survey-endpoints span:last-child { text-align: right; }
-  .survey-scale { position: relative; display: flex; justify-content: space-between; align-items: center; }
-  .survey-scale .line { position: absolute; left: 17px; right: 17px; top: 50%; height: 1px; background: rgba(33, 30, 26, 0.18); z-index: 0; }
-  .survey-opt { position: relative; z-index: 1; width: 34px; height: 34px; border-radius: 50%; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 13px; cursor: pointer; border: 1px solid rgba(33, 30, 26, 0.22); transition: all 0.15s; display: flex; align-items: center; justify-content: center; background: #FCFAF4; color: #211E1A; }
-  .survey-opt.selected { background: var(--accent); color: #F7EFE4; border-color: var(--accent); }
-  .survey-submit { width: 100%; margin-top: 18px; padding: 15px; background: var(--ink); color: #F7EFE4; border: none; border-radius: 100px; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14.5px; cursor: pointer; }
-  .survey-optional { text-align: center; font-size: 11.5px; color: #9A9587; font-weight: 300; margin-top: 12px; }
-
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-</style>
-</head>
-
-<body>
-<div class="col" id="app"><!-- rendered by JS --></div>
-
-<script>
-/* ============================================================
-   DATA
-   ============================================================ */
-const TOTAL = 9;
-const FINAL = "the Nickle Galleries, Nicholls Family Art Museum";
-
-const VOICE = {
-  c: { label: "A child",   mark: "i",   note: "under 12"  },
-  s: { label: "A student", mark: "ii",  note: "teens–20s" },
-  e: { label: "An elder",  mark: "iii", note: "60+"       }
-};
-
-// Only revealed mementos carry a letter/quote. Fill the rest in as you build the hunt.
-const MEMENTOS = {
-  1: {
-    letter: "M",
-    quote: "Cyber bullying is a big problem in my school at the moment. There's been a boy who's just had it all thrown at him. And he just is alone all the time. And you feel so bad for him — but a lot of people would feel embarrassed to do stuff with him, because he's the one getting bullied. It's like being bad and good at the same time. It's really confusing.",
-    location: "the Kinesiology tree"
-  },
-  2: { letter: "", quote: "", location: "the UCalgary bookstore" },
-  3: { letter: "", quote: "", location: "" },
-  4: { letter: "", quote: "", location: "" },
-  5: { letter: "", quote: "", location: "" },
-  6: { letter: "", quote: "", location: "" },
-  7: { letter: "", quote: "", location: "" },
-  8: { letter: "", quote: "", location: "" },
-  9: { letter: "", quote: "", location: "" }
-};
-
-/* ============================================================
-   STATE
-   ============================================================ */
-const params = new URLSearchParams(location.search);
-let num = parseInt(params.get("num"), 10);
-if (!num || num < 1 || num > TOTAL) num = 1;
-
-let step  = "read";   // 'intro' | 'read' | 'guess' | 'reveal'
-let guess = null;     // 'c' | 's' | 'e'
-if (!params.get("num") || num === 1) step = "intro"; // greet folks arriving fresh at station 1
-
-const data     = MEMENTOS[num];
-const nextNum  = num < TOTAL ? num + 1 : null;
-const nextLoc  = nextNum ? (MEMENTOS[nextNum].location || "the next stop") : FINAL;
-const ordinals = ["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth"];
-const pad = n => String(n).padStart(2, "0");
-
-const app = document.getElementById("app");
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-function render() {
-  const revealed = step === "reveal";
-
-  // password rail — one slot per memento; the current one fills on reveal
-  const slots = Array.from({ length: TOTAL }, (_, i) => {
-    const n = i + 1;
-    if (n === num && revealed) return `<div class="slot filled">${data.letter}</div>`;
-    if (n === num)             return `<div class="slot current">·</div>`;
-    return `<div class="slot">·</div>`;
-  }).join("");
-
-  const rail = `
-    <div class="rail">
-      <div class="meta">
-        <span class="study">NSERC USRA Research Project</span>
-        <span class="count">Memento ${pad(num)} / ${pad(TOTAL)}</span>
+    <!-- persistent header: study label, progress, and the puzzle board -->
+    <div style="padding:26px 0 16px; animation:fade .7s ease both;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#8A8578;">Not Alone</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F;">{{ progressLabel }}</span>
       </div>
-      <div class="slots">${slots}</div>
-    </div>`;
-
-  let act = "";
-
-  if (step === "intro") {
-    const paras = ABOUT.map(p => `<p>${p}</p>`).join("");
-    act = `
-      <div class="intro">
-        <div class="eyebrow">Before you begin</div>
-        <h2>Why this project exists</h2>
-        <div class="body">${paras}</div>
-        <div class="ethics-note">
-          <p>This is a pilot study for a research project on common humanity funded by NSERC. The broader project is under review by the Research Ethics Board. Because this is a pilot, survey results won't be reported on. They'll be used only to inform the design of the final study.</p>
+      <div style="position:relative; width:100%; aspect-ratio:547 / 365; border-radius:14px; overflow:hidden; border:1px solid rgba(33,30,26,.14); box-shadow:0 18px 40px -24px rgba(33,30,26,.55); background:#E7DCC9;">
+        <div style="{{ gridStyle }}">
+          <sc-for list="{{ tiles }}" as="tile" hint-placeholder-count="3">
+            <div style="position:relative; overflow:hidden;">
+              <div style="{{ tile.photoStyle }}"></div>
+              <div style="{{ tile.frostStyle }}"></div>
+            </div>
+          </sc-for>
         </div>
-
-        <div class="survey-prompt">
-          <p>If you'd like to support the research, consider filling out this survey before you continue.</p>
-          <button class="survey-btn" onclick="openSurvey('pre')">${surveyPre.submitted ? "Answered — thank you ✓" : "Answer a few questions (2 min)"}</button>
-        </div>
-        <button class="begin-btn" onclick="goStep('read')">Begin the hunt <span class="arrow">&rarr;</span></button>
-      </div>`;
-  }
-
-  if (step === "read") {
-    act = `
-      <div class="act read">
-        <div class="eyebrow">Someone left this here</div>
-        <div class="quotewrap">
-          <span class="qmark">&ldquo;</span>
-          <p class="quote">${data.quote}</p>
-        </div>
+        <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; pointer-events:none; border-radius:14px; box-shadow:inset 0 0 0 2px rgba(162,71,47,.5);"></div>
+        </sc-if>
       </div>
-      <div class="cta-wrap">
-        <button class="cta" onclick="goStep('guess')">Consider who said this <span class="arrow">&rarr;</span></button>
-        <p class="cta-note">Take your time.</p>
-      </div>`;
-  }
+      <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:14px; color:#8A8578; margin-top:12px;">{{ boardCaption }}</p>
+    </div>
 
-  if (step === "guess") {
-    const options = Object.entries(VOICE).map(([key, v]) => `
-      <button class="option" onclick="choose('${key}')">
-        <span class="mark">${v.mark}</span>
-        <span class="label">${v.label}</span>
-        <span class="note">${v.note}</span>
-      </button>`).join("");
-    act = `
-      <div class="act guess">
-        <h2>Who do you think<br>said this?</h2>
-        <div class="options">${options}</div>
-      </div>`;
-  }
+    <!-- act region -->
+    <div style="flex:1; display:flex; flex-direction:column;">
 
-  if (step === "reveal") {
-    const cap    = s => s.charAt(0).toUpperCase() + s.slice(1);
-    const label  = nextNum ? "The hunt continues" : "The final gathering";
-    const step2  = nextNum ? "Next Location" : "Final Location";
-    const kicker = nextNum ? "Make your way to" : "Bring your full password to";
-    const place  = cap(nextNum ? nextLoc : FINAL);
-    act = `
-      <div class="act reveal">
-        <div style="text-align:center;">
-          <div class="badge"><span class="dot"></span> Guess sealed</div>
-          <p class="saw">You saw ${VOICE[guess].label.toLowerCase()} in these words.</p>
-        </div>
-        <div style="text-align:center; margin:36px 0;">
-          <div class="letter-label">Your ${ordinals[num - 1]} letter</div>
-          <div class="letter-big">${data.letter}</div>
-          <p class="letter-note">Write it down, you'll need the password at the end.</p>
-        </div>
-        <div class="next">
-          <div class="head">
-            <span class="label">${label}</span>
-            <span class="step">${step2}</span>
+      <!-- INTRO -->
+      <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:14px;">Before you begin</div>
+          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:24px;">Why this project exists</h2>
+          <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:30px;">
+            <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="3">
+              <p style="font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
+            </sc-for>
           </div>
-          <div class="kicker">${kicker}</div>
-          <div class="place">
-            <span class="arrow">&rarr;</span>
-            <span class="name">${place}</span>
+          <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for a research project on common humanity funded by NSERC. The broader project is under review by the Research Ethics Board. Because this is a pilot, survey results won't be reported on. They'll be used only to inform the design of the final study.</p>
+          </div>
+          <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px 22px 24px; margin-bottom:28px;">
+            <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">If you'd like to support the research, consider filling out this survey before you continue.</p>
+            <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">{{ preButtonLabel }}</button>
+          </div>
+          <button style="width:100%; padding:17px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .2s;" style-hover="background:#332F28;" onClick="{{ beginHunt }}">Begin the hunt <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
+        </div>
+      </sc-if>
+
+      <!-- READ -->
+      <sc-if value="{{ isRead }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; padding:20px 0 30px; animation:rise .7s ease both;">
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:22px;">Someone left this here</div>
+            <div style="position:relative;">
+              <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
+              <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
+            </div>
+            <div style="padding-top:24px; animation:fade 1s .3s ease both;">
+              <!-- GUESS STEP temporarily removed (2026-07 feedback). To restore it, delete the "Uncover your piece" button just below and un-comment this original button, which routed to the "who said this?" screen:
+              <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
+              -->
+              <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ revealPiece }}">Uncover your piece <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
+              <p style="text-align:center; font-size:12px; color:#9A9587; margin-top:14px; font-weight:300;">Take your time.</p>
+            </div>
           </div>
         </div>
-        ${nextNum ? "" : `
-        <div class="final-survey">
-          <p>This was the last memento. If you're willing, help us once more by answering the same questions again.</p>
-          <button class="survey-btn" onclick="openSurvey('post')">${surveyPost.submitted ? "Answered again — thank you ✓" : "Answer the same questions again"}</button>
-        </div>`}
-        <button class="reread" onclick="goStep('read')">Re-read the quote</button>
-      </div>`;
+      </sc-if>
+
+      <!-- GUESS STEP temporarily removed (2026-07 feedback).
+           Un-comment this whole block to bring back the "who said this?" screen; also swap the
+           read-step button back (see note in the READ section) and re-enable the code marked
+           GUESS in the script below.
+      <sc-if value="{{ isGuess }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:20px 0 34px; animation:rise .55s ease both;">
+          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:30px; line-height:1.2; letter-spacing:-.01em; margin-bottom:30px;">Who do you think<br>said this?</h2>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <sc-for list="{{ voiceList }}" as="v" hint-placeholder-count="3">
+              <button style="width:100%; padding:20px 22px; background:#FCFAF4; border:1px solid rgba(33,30,26,.12); border-radius:16px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:16px; transition:border-color .18s, background .18s, transform .1s;" style-hover="border-color:#A2472F; background:#FBF2EA;" style-active="transform:scale(0.99);" onClick="{{ v.onSelect }}">
+                <span style="font-family:'Newsreader',serif; font-style:italic; font-size:22px; color:#A2472F; min-width:26px;">{{ v.mark }}</span>
+                <span style="flex:1; font-weight:500; font-size:17px;">{{ v.label }}</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#A8A499;">{{ v.note }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      -->
+
+      <!-- REVEAL -->
+      <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1; display:flex; flex-direction:column; padding:14px 0 34px; animation:fade .6s ease both;">
+          <!-- GUESS RECAP temporarily removed with the guess step (2026-07 feedback). Un-comment to restore.
+          <div style="text-align:center;">
+            <div style="display:inline-flex; align-items:center; gap:8px; padding:7px 16px; background:#EFEADF; border:1px solid rgba(33,30,26,.1); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#6E6A61;">
+              <span style="width:5px; height:5px; border-radius:50%; background:#5F7A4F; flex-shrink:0;"></span> <span style="white-space:nowrap;">Guess sealed</span>
+            </div>
+            <p style="font-family:'Newsreader',serif; font-style:italic; font-size:19px; color:#2B2823; margin-top:18px;">You saw {{ guessVoiceLower }} in these words.</p>
+          </div>
+          -->
+
+          <div style="text-align:center; margin:34px 0;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:16px;">{{ pieceOrdinal }}</div>
+            <div style="display:flex; align-items:center; justify-content:center; height:88px; font-family:'Newsreader',serif; font-weight:400; font-size:72px; line-height:1; color:#211E1A; animation:drop .7s .15s both;">{{ revealCount }}</div>
+            <p style="font-size:13px; color:#8A8578; font-weight:300; margin-top:18px; line-height:1.6;">pieces of the picture uncovered — look up, a new one just cleared.</p>
+          </div>
+
+          <sc-if value="{{ notFinal }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:22px 24px 24px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px dashed rgba(162,71,47,.32); margin-bottom:18px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F;">The hunt continues</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#BE9077;">{{ remainingLabel }}</span>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#BE9077; margin-bottom:10px;">The next object can be found at</div>
+              <div style="display:flex; align-items:baseline; gap:12px;">
+                <span style="font-family:'Newsreader',serif; font-size:26px; line-height:1; color:#A2472F;">&rarr;</span>
+                <span style="font-family:'Newsreader',serif; font-style:italic; font-size:28px; line-height:1.18; color:#2B2823; text-wrap:balance;">{{ nextLoc }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px;">
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">The final gathering</div>
+              <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">The picture is whole. You've stood in this room before — make your way to the place in the photo. That's where we gather.</p>
+            </div>
+            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
+              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">This was the last piece. If you're willing, help us once more by answering the same questions again.</p>
+              <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#F6EADF;" onClick="{{ openPost }}">{{ postButtonLabel }}</button>
+            </div>
+          </sc-if>
+
+          <button style="align-self:center; margin-top:26px; background:none; border:none; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#9A9587; cursor:pointer; padding:8px;" onClick="{{ reread }}">Re-read the quote</button>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="text-align:center; font-size:11px; color:#A8A398; font-weight:300; padding:16px 0 26px;">Ahsan Tariq &amp; Dr. Helen Ai He · C3 Lab, University of Calgary</div>
+  </div>
+</div>
+
+<!-- SURVEY OVERLAY -->
+<sc-if value="{{ isSurveyOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed; inset:0; z-index:80; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSurvey }}">
+    <div style="position:relative; width:100%; max-width:560px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
+      <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSurvey }}">&times;</button>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:14px;">{{ surveyTitle }}</div>
+      <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:18px; line-height:1.6; color:#2B2823; margin-bottom:10px;">{{ surveyIntro }}</p>
+      <sc-if value="{{ surveyNote }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:10px;">Recorded — thank you. You can still adjust your answers below.</p>
+      </sc-if>
+      <div style="display:flex; flex-direction:column; gap:28px; margin:26px 0 8px;">
+        <sc-for list="{{ surveyQuestions }}" as="q" hint-placeholder-count="4">
+          <div>
+            <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:14px;">{{ q.text }}</p>
+            <div style="display:flex; justify-content:space-between; padding:0 1px; margin-bottom:6px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35;">{{ likertLow }}</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:right;">{{ likertHigh }}</span>
+            </div>
+            <div style="position:relative; display:flex; justify-content:space-between; align-items:center;">
+              <div style="position:absolute; left:17px; right:17px; top:50%; height:1px; background:rgba(33,30,26,.18); z-index:0;"></div>
+              <sc-for list="{{ q.opts }}" as="opt" hint-placeholder-count="5">
+                <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.value }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">Submit answers</button>
+      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">Entirely optional — you can close this anytime.</p>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 480, &quot;height&quot;: 900 },
+  &quot;pieces&quot;: { &quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 3, &quot;min&quot;: 2, &quot;max&quot;: 9, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Hunt&quot;, &quot;label&quot;: &quot;Stops / puzzle pieces&quot; },
+  &quot;frostBlur&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 14, &quot;min&quot;: 0, &quot;max&quot;: 30, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Reveal&quot;, &quot;label&quot;: &quot;How hidden covered pieces are&quot; }
+}">
+class Component extends DCLogic {
+  get TOTAL() { return this.props.pieces ?? 3; }
+  get FROST() { return this.props.frostBlur ?? 14; }
+
+  IMG = "campus.png";
+  STORAGE_KEY = "nsura_puzzle_v1";
+
+  VOICE = {
+    c: { label: "A child",   mark: "i",   note: "under 12"  },
+    s: { label: "A student", mark: "ii",  note: "teens\u201320s" },
+    e: { label: "An elder",  mark: "iii", note: "60+"       }
+  };
+
+  // Only stop 1 carries real content. Fill quote + location for the rest as you build the hunt.
+  MEMENTOS = {
+    1: {
+      quote: "Cyber bullying is a big problem in my school at the moment. There's been a boy who's just had it all thrown at him. And he just is alone all the time. And you feel so bad for him \u2014 but a lot of people would feel embarrassed to do stuff with him, because he's the one getting bullied. It's like being bad and good at the same time. It's really confusing.",
+      location: "the Kinesiology tree"
+    },
+    2: {
+      quote: "I have been a good mother, a faithful wife and I've kept my family together. To me, that is more important than any career a person can have, and more important than the amount of money a person has. You can't buy that as you know.",
+      location: "the briefcase"
+    },
+    3: {
+      quote: "So, for me it's been, I spend so much time trying to re-connect and actually not feeling any more connected. And people think that kind of social media will suffice of bringing someone out of loneliness. Kind of messaging every month saying, 'are you OK?' is very different to picking up the phone and having a 10-minute conversation about how life has been. But I think people now think that a quick message suffices for contact … I think you can lie a lot on social media. I think you can hide a lot on social media and people don't want to hear it via message",
+      location: "the third stop"
+    }
+  };
+
+  ABOUT = [
+    "When I was 17, I was at one of the lowest points of my life. I had always been good at school, and I wasn't anymore. I only ever had one or two friends, and at that time I had none. The dynamics within my family had never been healthy, but then they felt unbearable. I almost quit. And then I got help. From people who were trying their best, every day, like I was. People who undoubtedly had their own problems, but chose to focus on mine for hours at a time. And I got better than I was, thanks to them. There are still difficult days, but I'm better than I was.",
+    "This project is, in a way, a result of that period of my life. Everyone has struggles. Often, we feel alone in them. We feel like there's something wrong with us specifically; that everyone else has it figured out. This project is meant to show that that's not the case. It's meant to show that we're not alone in our experience of them. The struggles you have might be similar to the struggles of a 65 year old, or to the struggles of a 12 year old.",
+    "Through reflection on perspectives from across the human lifespan on aspects of the lived human experience, this project seeks to foster common humanity. Common humanity is the recognition that all people fail, make mistakes, and feel inadequate in some way and frames suffering in light of the shared human experience."
+  ];
+
+  LIKERT = ["Almost never", "Almost always"];
+  QUESTIONS = [
+    "When things are going badly for me, I see the difficulties as part of life that everyone goes through.",
+    "When I'm down, I remind myself that there are lots of other people in the world feeling like I am.",
+    "When I feel inadequate in some way, I try to remind myself that feelings of inadequacy are shared by most people.",
+    "I try to see my failings as part of the human condition.",
+    "When I think about my inadequacies, it tends to make me feel more separate and cut off from the rest of the world.",
+    "When I'm feeling down, I tend to feel like most other people are probably happier than I am.",
+    "When I'm really struggling, I tend to feel like other people must be having an easier time of it.",
+    "When I fail at something that's important to me, I tend to feel alone in my failure."
+  ];
+
+  constructor(props) {
+    super(props);
+    const store = this.loadStore();
+    const num = this.readNum();
+    const collected = store.collected || {};
+    const begun = Object.keys(collected).some(k => collected[k]);
+    this.state = {
+      step: begun ? "read" : "intro",
+      guess: null,
+      num: num,
+      collected: collected,
+      surveyOpen: null,
+      pre:  store.pre  || { answers: {}, submitted: false },
+      post: store.post || { answers: {}, submitted: false }
+    };
   }
 
-  app.innerHTML = rail + act +
-    `<div class="footer">Ahsan Tariq &amp; Dr. Helen Ai He · C3 Lab, University of Calgary</div>`;
-}
-
-/* ============================================================
-   INTERACTIONS
-   ============================================================ */
-// the "about" essay, shown on the intro screen
-const ABOUT = [
-  "When I was 17, I was at one of the lowest points of my life. I had always been good at school, and I wasn't anymore. I only ever had one or two friends, and at that time I had none. The dynamics within my family had never been healthy, but then they felt unbearable. I almost quit. And then I got help. From people who were trying their best, every day, like I was. People who undoubtedly had their own problems, but chose to focus on mine for hours at a time. And I got better than I was, thanks to them. There are still difficult days, but I'm better than I was.",
-  "This project is, in a way, a result of that period of my life. Everyone has struggles. Often, we feel alone in them. We feel like there's something wrong with us specifically; that everyone else has it figured out. This project is meant to show that that's not the case. It's meant to show that we're not alone in our experience of them. The struggles you have might be similar to the struggles of a 65 year old, or to the struggles of a 12 year old.",
-  "Through reflection on perspectives from across the human lifespan on aspects of the lived human experience, this project seeks to foster common humanity. Common humanity is the recognition that all people fail, make mistakes, and feel inadequate in some way and frames suffering in light of the shared human experience."
-];
-
-/* ============================================================
-   SURVEY  (Kristin Neff's common-humanity scale items)
-   Same 8 statements asked twice: once before the hunt, once
-   after, so answers can be compared.
-   ============================================================ */
-const LIKERT = ["Almost never", "Almost always"];
-const QUESTIONS = [
-  "When things are going badly for me, I see the difficulties as part of life that everyone goes through.",
-  "When I'm down, I remind myself that there are lots of other people in the world feeling like I am.",
-  "When I feel inadequate in some way, I try to remind myself that feelings of inadequacy are shared by most people.",
-  "I try to see my failings as part of the human condition.",
-  "When I think about my inadequacies, it tends to make me feel more separate and cut off from the rest of the world.",
-  "When I'm feeling down, I tend to feel like most other people are probably happier than I am.",
-  "When I'm really struggling, I tend to feel like other people must be having an easier time of it.",
-  "When I fail at something that's important to me, I tend to feel alone in my failure."
-];
-
-const surveyPre  = { answers: {}, submitted: false };
-const surveyPost = { answers: {}, submitted: false };
-
-function openSurvey(context) {
-  renderSurveyOverlay(context);
-}
-
-function renderSurveyOverlay(context) {
-  const store = context === "post" ? surveyPost : surveyPre;
-  const title = context === "post" ? "One last time" : "Before you begin";
-  const intro = context === "post"
-    ? "The hunt is done — if you're willing, answer the same questions once more. Comparing your before-and-after is the whole point."
-    : "A few quick statements about how you tend to relate to yourself. There's no right answer, and it takes about two minutes.";
-
-  const questionsHtml = QUESTIONS.map((text, qIdx) => {
-    const numbers = [1, 2, 3, 4, 5].map(value => {
-      const selected = store.answers[qIdx] === value;
-      return `<button class="survey-opt${selected ? " selected" : ""}" onclick="setAnswer('${context}', ${qIdx}, ${value})">${value}</button>`;
-    }).join("");
-    return `<div class="survey-q">
-      <p>${text}</p>
-      <div class="survey-endpoints"><span>${LIKERT[0]}</span><span>${LIKERT[1]}</span></div>
-      <div class="survey-scale"><div class="line"></div>${numbers}</div>
-    </div>`;
-  }).join("");
-
-  let overlay = document.querySelector(".survey-overlay");
-  if (!overlay) {
-    overlay = document.createElement("div");
-    overlay.className = "about-overlay survey-overlay";
-    overlay.addEventListener("click", e => { if (e.target === overlay) closeSurvey(); });
-    document.body.appendChild(overlay);
+  loadStore() {
+    try { return JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
   }
-  overlay.innerHTML = `
-    <div class="about-card">
-      <button class="about-close" aria-label="Close" onclick="closeSurvey()">&times;</button>
-      <div class="about-eyebrow">${title}</div>
-      <p class="survey-intro">${intro}</p>
-      ${store.submitted ? `<p class="survey-note">Recorded — thank you. You can still adjust your answers below.</p>` : ""}
-      <div class="survey-questions">${questionsHtml}</div>
-      <button class="survey-submit" onclick="submitSurvey('${context}')">Submit answers</button>
-      <p class="survey-optional">Entirely optional — you can close this anytime.</p>
-    </div>`;
+  saveStore(patch) {
+    const next = Object.assign({}, this.loadStore(), patch);
+    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(next)); } catch (e) {}
+    return next;
+  }
+  readNum() {
+    let n = parseInt(new URLSearchParams(location.search).get("num"), 10);
+    if (!n || n < 1 || n > this.TOTAL) n = 1;
+    return n;
+  }
+
+  gridDims() {
+    const n = this.TOTAL;
+    const map = { 2: [2, 1], 3: [3, 1], 4: [2, 2], 6: [3, 2], 8: [4, 2], 9: [3, 3] };
+    if (map[n]) return { cols: map[n][0], rows: map[n][1] };
+    const cols = Math.ceil(Math.sqrt(n));
+    return { cols: cols, rows: Math.ceil(n / cols) };
+  }
+  gridStyle() {
+    const d = this.gridDims();
+    return { display: "grid", gridTemplateColumns: "repeat(" + d.cols + ", 1fr)", gridTemplateRows: "repeat(" + d.rows + ", 1fr)", width: "100%", height: "100%" };
+  }
+  frostStyle(collected) {
+    return {
+      position: "absolute", inset: 0,
+      background: "rgba(245,238,227,0.62)",
+      backdropFilter: collected ? "blur(0px)" : "blur(" + this.FROST + "px) saturate(0.8)",
+      WebkitBackdropFilter: collected ? "blur(0px)" : "blur(" + this.FROST + "px) saturate(0.8)",
+      boxShadow: collected ? "none" : "inset 0 0 0 1px rgba(33,30,26,0.10), inset 0 0 34px rgba(255,255,255,0.28)",
+      opacity: collected ? 0 : 1,
+      transform: collected ? "translateY(-10px) scale(1.08)" : "none",
+      pointerEvents: "none",
+      transition: "opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1), backdrop-filter 1s ease, -webkit-backdrop-filter 1s ease"
+    };
+  }
+  buildTiles() {
+    const d = this.gridDims();
+    const tiles = [];
+    for (let i = 0; i < this.TOTAL; i++) {
+      const c = i % d.cols;
+      const r = Math.floor(i / d.cols);
+      const px = d.cols > 1 ? (c / (d.cols - 1)) * 100 : 0;
+      const py = d.rows > 1 ? (r / (d.rows - 1)) * 100 : 0;
+      tiles.push({
+        photoStyle: {
+          position: "absolute", inset: 0,
+          backgroundImage: "url('" + this.IMG + "')",
+          backgroundSize: (d.cols * 100) + "% " + (d.rows * 100) + "%",
+          backgroundPosition: px + "% " + py + "%",
+          backgroundRepeat: "no-repeat"
+        },
+        frostStyle: this.frostStyle(!!this.state.collected[i + 1])
+      });
+    }
+    return tiles;
+  }
+  surveyOptStyle(selected) {
+    return {
+      position: "relative", zIndex: 1, width: "34px", height: "34px", borderRadius: "50%",
+      fontFamily: "'JetBrains Mono', monospace", fontWeight: 500, fontSize: "13px", cursor: "pointer",
+      border: selected ? "1px solid #A2472F" : "1px solid rgba(33,30,26,0.22)",
+      background: selected ? "#A2472F" : "#FCFAF4",
+      color: selected ? "#F7EFE4" : "#211E1A",
+      display: "flex", alignItems: "center", justifyContent: "center", transition: "all .15s"
+    };
+  }
+
+  // ---- interactions ----
+  goStep(s) { this.setState({ step: s, guess: s === "read" ? null : this.state.guess }); }
+
+  // Uncover this stop's piece straight from the read step (guess step temporarily removed, 2026-07 feedback).
+  revealPiece() {
+    const collected = Object.assign({}, this.state.collected, { [this.state.num]: true });
+    this.saveStore({ collected: collected });
+    this.setState({ step: "reveal", collected: collected });
+  }
+
+  /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable to restore the "who said this?" screen.
+  choose(key) {
+    const collected = Object.assign({}, this.state.collected, { [this.state.num]: true });
+    this.saveStore({ collected: collected });
+    this.setState({ guess: key, step: "reveal", collected: collected });
+  }
+  */
+  openSurvey(ctx) { this.setState({ surveyOpen: ctx }); }
+  closeSurvey() { this.setState({ surveyOpen: null }); }
+  setAnswer(ctx, qIdx, value) {
+    const key = ctx === "post" ? "post" : "pre";
+    const cur = this.state[key];
+    const next = Object.assign({}, cur, { answers: Object.assign({}, cur.answers, { [qIdx]: value }) });
+    this.saveStore({ [key]: next });
+    this.setState({ [key]: next });
+  }
+  submitSurvey(ctx) {
+    const key = ctx === "post" ? "post" : "pre";
+    const next = Object.assign({}, this.state[key], { submitted: true });
+    this.saveStore({ [key]: next });
+    this.setState({ [key]: next, surveyOpen: null });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const total = this.TOTAL;
+    const num = s.num;
+    const data = this.MEMENTOS[num] || { quote: "", location: "" };
+    const pad = n => String(n).padStart(2, "0");
+    const ordinals = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
+    const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
+    const isFinal = collectedCount >= total;
+
+    // next un-collected stop, searching forward from the current one
+    let nextNum = null;
+    for (let i = 1; i <= total; i++) {
+      const n = ((num - 1 + i) % total) + 1;
+      if (!s.collected[n]) { nextNum = n; break; }
+    }
+    const nm = nextNum ? this.MEMENTOS[nextNum] : null;
+    const nextRaw = (nm && nm.location) ? nm.location : "another stop on campus";
+    const nextLoc = nextRaw.charAt(0).toUpperCase() + nextRaw.slice(1);
+
+    /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable together with the guess UI.
+    const voiceList = Object.keys(this.VOICE).map(k => {
+      const v = this.VOICE[k];
+      return { key: k, label: v.label, mark: v.mark, note: v.note, onSelect: () => this.choose(k) };
+    });
+    */
+
+    let boardCaption;
+    if (s.step === "intro") boardCaption = "Reveal the image to meet like-minded peers";
+    else if (isFinal) boardCaption = "You've been standing in this place. Recognize it?";
+    else if (collectedCount === 0) boardCaption = "A place on campus, waiting to be seen.";
+    else boardCaption = "The picture is coming together.";
+
+    const remaining = total - collectedCount;
+
+    // survey
+    const ctx = s.surveyOpen || "pre";
+    const sv = ctx === "post" ? s.post : s.pre;
+    const surveyQuestions = this.QUESTIONS.map((text, qIdx) => ({
+      text: text,
+      opts: [1, 2, 3, 4, 5].map(value => ({
+        value: value,
+        style: this.surveyOptStyle(sv.answers[qIdx] === value),
+        onSelect: () => this.setAnswer(ctx, qIdx, value)
+      }))
+    }));
+
+    return {
+      // board
+      tiles: this.buildTiles(),
+      gridStyle: this.gridStyle(),
+      progressLabel: pad(collectedCount) + " / " + pad(total) + " uncovered",
+      boardCaption: boardCaption,
+      isFinal: isFinal,
+      notFinal: !isFinal,
+
+      // step flags
+      isIntro: s.step === "intro",
+      isRead: s.step === "read",
+      isGuess: s.step === "guess",
+      isReveal: s.step === "reveal",
+
+      // intro
+      aboutParas: this.ABOUT,
+      preButtonLabel: s.pre.submitted ? "Answered \u2014 thank you \u2713" : "Answer a few questions (2 min)",
+      openPre: () => this.openSurvey("pre"),
+      beginHunt: () => this.goStep("read"),
+
+      // read
+      quote: data.quote,
+      revealPiece: () => this.revealPiece(),
+      // goGuess: () => this.goStep("guess"),                // GUESS STEP temporarily removed (2026-07)
+
+      // guess — temporarily removed (2026-07 feedback)
+      // voiceList: voiceList,
+
+      // reveal
+      // guessVoiceLower: s.guess ? this.VOICE[s.guess].label.toLowerCase() : "",  // GUESS STEP removed
+      pieceOrdinal: "Your " + (ordinals[num - 1] || (num + "th")) + " piece",
+      revealCount: pad(collectedCount) + " / " + pad(total),
+      remainingLabel: remaining === 1 ? "1 piece still hidden" : remaining + " pieces still hidden",
+      nextLoc: nextLoc,
+      postButtonLabel: s.post.submitted ? "Answered again \u2014 thank you \u2713" : "Answer the same questions again",
+      openPost: () => this.openSurvey("post"),
+      reread: () => this.goStep("read"),
+
+      // survey overlay
+      isSurveyOpen: s.surveyOpen !== null,
+      surveyTitle: ctx === "post" ? "One last time" : "Before you begin",
+      surveyIntro: ctx === "post"
+        ? "The hunt is done \u2014 if you're willing, answer the same questions once more. Comparing your before-and-after is the whole point."
+        : "A few quick statements about how you tend to relate to yourself. There's no right answer, and it takes about two minutes.",
+      surveyNote: sv.submitted,
+      surveyQuestions: surveyQuestions,
+      likertLow: this.LIKERT[0],
+      likertHigh: this.LIKERT[1],
+      submitSurvey: () => this.submitSurvey(ctx),
+      closeSurvey: () => this.closeSurvey(),
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
+    };
+  }
 }
-
-function setAnswer(context, qIdx, value) {
-  const store = context === "post" ? surveyPost : surveyPre;
-  store.answers[qIdx] = value;
-  renderSurveyOverlay(context);
-}
-
-function submitSurvey(context) {
-  const store = context === "post" ? surveyPost : surveyPre;
-  store.submitted = true;
-  closeSurvey();
-  render(); // refresh the button label behind the overlay
-}
-
-function closeSurvey() {
-  const o = document.querySelector(".survey-overlay");
-  if (o) o.remove();
-}
-
-// move between acts (re-reading clears the guess)
-function goStep(s) { step = s; if (s === "read") guess = null; render(); }
-
-// pick a voice → seal it and advance to the reveal
-function choose(key) { guess = key; step = "reveal"; render(); }
-
-/* ---------- boot ---------- */
-render();
 </script>
 </body>
 </html>
