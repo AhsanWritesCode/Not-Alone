@@ -160,9 +160,9 @@
             </div>
             <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
               <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">One more thing</div>
-              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience? Totally optional.</p>
+              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience?</p>
               <sc-if value="{{ feedbackSubmitted }}" hint-placeholder-val="{{ false }}">
-                <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Recorded — thank you. You can still edit and send again below.</p>
+                <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
               </sc-if>
               <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
               <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
