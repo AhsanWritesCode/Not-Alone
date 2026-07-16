@@ -19,11 +19,10 @@
 
     <!-- persistent header: study label, progress, and the puzzle board -->
     <div style="padding:26px 0 16px; animation:fade .7s ease both;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#8A8578;">Not Alone</span>
+      <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:14px;">
         <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F;">{{ progressLabel }}</span>
       </div>
-      <div style="position:relative; width:100%; aspect-ratio:547 / 365; border-radius:14px; overflow:hidden; border:1px solid rgba(33,30,26,.14); box-shadow:0 18px 40px -24px rgba(33,30,26,.55); background:#E7DCC9;">
+      <div style="position:relative; width:100%; aspect-ratio:1140 / 543; border-radius:14px; overflow:hidden; border:1px solid rgba(33,30,26,.14); box-shadow:0 18px 40px -24px rgba(33,30,26,.55); background:#E7DCC9;">
         <div style="{{ boardImageStyle }}"></div>
         <div style="{{ gridStyle }}">
           <sc-for list="{{ tiles }}" as="tile" hint-placeholder-count="5">
@@ -48,23 +47,22 @@
       <!-- INTRO -->
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
-          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:14px;">Before you begin</div>
-          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:24px;">Why this project exists</h2>
+          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:24px;">Not Alone</h2>
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">
             <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
               <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
             </sc-for>
           </div>
           <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for a research project on common humanity funded by NSERC. The broader project is under review by the Research Ethics Board. Because this is a pilot, survey results won't be reported on. They'll be used only to inform the design of the final study.</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these objects to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be recorded, collected, or reported on.</p>
           </div>
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px 22px 24px; margin-bottom:28px;">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
               <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6;">Thank you for supporting our work.</p>
             </sc-if>
             <sc-if value="{{ !preSubmitted }}" hint-placeholder-val="{{ true }}">
-              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">If you'd like to support the research, consider filling out this survey before you continue.</p>
-              <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">Answer a few questions (2 min)</button>
+              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">Before you begin....</p>
+              <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
             </sc-if>
           </div>
           <button style="width:100%; padding:17px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .2s;" style-hover="background:#332F28;" onClick="{{ beginHunt }}">Begin the scavenger hunt <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
@@ -75,7 +73,7 @@
       <sc-if value="{{ isRead }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; display:flex; flex-direction:column; padding:20px 0 30px; animation:rise .7s ease both;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:22px;">Someone left this here</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:22px;">{{ theme }}</div>
             <div style="position:relative;">
               <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
               <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
@@ -85,7 +83,6 @@
               <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
               -->
               <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ revealPiece }}">Uncover your piece <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
-              <p style="text-align:center; font-size:12px; color:#9A9587; margin-top:14px; font-weight:300;">Take your time.</p>
             </div>
           </div>
         </div>
@@ -160,7 +157,7 @@
           <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
             <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px;">
               <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">The final gathering</div>
-              <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">Make your way to TFDL at 3 PM</p>
+              <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">Location and Time TBD</p>
             </div>
             <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
               <sc-if value="{{ postSubmitted }}" hint-placeholder-val="{{ false }}">
@@ -179,6 +176,7 @@
               </sc-if>
               <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
               <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
+              <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
             </div>
           </sc-if>
 
@@ -195,16 +193,21 @@
 <!-- SURVEY OVERLAY -->
 <sc-if value="{{ isSurveyOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed; inset:0; z-index:80; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSurvey }}">
-    <div style="position:relative; width:100%; max-width:560px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
+    <div style="position:relative; width:100%; max-width:780px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSurvey }}">&times;</button>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:14px;">{{ surveyTitle }}</div>
-      <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:18px; line-height:1.6; color:#2B2823; margin-bottom:10px;">{{ surveyIntro }}</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">{{ surveyTitle }}</div>
+      <p style="font-size:12px; color:#8A8578; font-weight:400; margin-bottom:4px;">{{ surveySubtitle }}</p>
+      <p style="font-size:11px; color:#A8A398; font-weight:300; font-style:italic; margin-bottom:14px;">{{ surveyCitation }}</p>
+      <sc-if value="{{ surveyIntro }}" hint-placeholder-val="{{ false }}">
+        <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:18px; line-height:1.6; color:#2B2823; margin-bottom:10px;">{{ surveyIntro }}</p>
+      </sc-if>
       <div style="display:flex; flex-direction:column; gap:28px; margin:26px 0 8px;">
         <sc-for list="{{ surveyQuestions }}" as="q" hint-placeholder-count="4">
           <div>
             <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:14px;">{{ q.text }}</p>
             <div style="display:flex; justify-content:space-between; padding:0 1px; margin-bottom:6px;">
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35;">{{ likertLow }}</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:center;">{{ likertMid }}</span>
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:right;">{{ likertHigh }}</span>
             </div>
             <div style="position:relative; display:flex; justify-content:space-between; align-items:center;">
@@ -216,8 +219,8 @@
           </div>
         </sc-for>
       </div>
-      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">Submit answers</button>
-      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">Entirely optional — you can close this anytime.</p>
+      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">Submit</button>
+      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
     </div>
   </div>
 </sc-if>
@@ -231,7 +234,7 @@ class Component extends DCLogic {
   get TOTAL() { return this.props.pieces ?? 3; }
   get FROST() { return this.props.frostBlur ?? 14; }
 
-  IMG = "campus.png";
+  IMG = "ICT_011A6246_FE.jpg";
   STORAGE_KEY = "nsura_puzzle_v1";
   FOOTSTEP_COUNT = 7;
   FOOTSTEP_STAGGER = 0.26;
@@ -256,40 +259,45 @@ class Component extends DCLogic {
   // Only stop 1 carries real content. Fill quote + location for the rest as you build the hunt.
   MEMENTOS = {
     1: {
+      theme: "On love and loss",
       quote: "When I think of death, fear is closely linked to the idea of not seeing the one who is my source of love. Very often, I look at M. and I tell him: I'm afraid of never seeing you again.",
       location: "table 1"
     },
     2: {
+      theme: "On having someone to talk to",
       quote: "I think it's quite important, just because without, even if it's just someone to vent to or someone to talk to, it's important that if you're alone or you don't have someone just to speak your mind to, or speak your worries to, then you can kind of not only just get lonely but just feel like you don't really have anyone in the real world who can understand that. And often just someone to talk to is more important than anything else, even it doesn't really matter how close you are.",
       location: "table 2"
     },
     3: {
+      theme: "On exam season",
       quote: "I think the start is GCSEs. They are, no matter whether you're in a year group of 200 or 5,000 that is a very competitive time, which leads to a lot of kind of isolation in the sense that everyone is competing to get the best grades.",
       location: "table 3"
     },
     4: {
+      theme: "On family expectations",
       quote: "I can't stand the evening and night shifts and the job's social status is not high. My parents want me to work in a pharmaceutical company. Moreover, I would feel upset if I gave up the nursing specialty, because I have spent four years studying this subject.",
       location: "table 4"
     },
     5: {
+      theme: "On living meaningfully",
       quote: "I felt death closer to me. Before now, I saw it as something far away, now I feel that sooner or later death will come, and it is right that I live life in the best way, without superficiality, because everything is meaningful.",
       location: "table 5"
     }
   };
 
   ABOUT = [
-    "Across these tables there are objects. Each holds words from someone who has been where you are. A twelve-year-old. A sixty-five-year-old. People you'll never meet, describing something you might recognize.",
+    "Across these tables, there are objects. Each holds words from someone who has been where you are. A 12-year-old. An 18-year-old. A 65-year-old. A 97-year-old. People you'll never meet, describing something you might recognize.",
     "I created these objects and placed them here because when I was seventeen, I thought I was the only one struggling.",
     "I had always been good at school, and I wasn't anymore. I only ever had one or two friends at a time, and then I had none. The dynamics within my family had never been healthy, but then they felt unbearable. I almost quit.",
-    "And then I got help. From people trying their best, every day, like I was. People who undoubtedly had their own problems but chose to focus on mine for hours at a time. I got better than I was. There are still difficult days, but I'm better than I was.",
+    "And then I got help. From people trying their best, every day, like I was. People who undoubtedly had their own problems but chose to focus on mine for hours at a time. I got better. There are still difficult days, but I've learned how to push through them.",
     "What took years to understand was that the thing making it unbearable wasn't the struggle itself. It was the feeling that I was uniquely broken. That everyone else had it figured out.",
     "They didn't. They don't.",
-    "Psychologists call this recognition common humanity: the understanding that all people fail, make mistakes, and feel inadequate, and that suffering makes more sense in light of what we share than what isolates us. This project is an attempt to put that recognition somewhere you can find it.",
+    "Dr. Kristin Neff calls this recognition common humanity: the understanding that all people fail, make mistakes, and feel inadequate, and that suffering connects us more than it isolates us. This project is one small attempt to make that recognition tangible.",
     "You are not alone. Scan the objects and find the proof.",
     "— Ahsan, fourth-year Computer Science, University of Calgary"
   ];
 
-  LIKERT = ["Almost never", "Almost always"];
+  LIKERT = ["Almost never", "Sometimes", "Almost always"];
   QUESTIONS = [
     "When things are going badly for me, I see the difficulties as part of life that everyone goes through.",
     "When I'm down, I remind myself that there are lots of other people in the world feeling like I am.",
@@ -545,7 +553,7 @@ class Component extends DCLogic {
     const s = this.state;
     const total = this.TOTAL;
     const num = s.num;
-    const data = this.MEMENTOS[num] || { quote: "", location: "" };
+    const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "" };
     const pad = n => String(n).padStart(2, "0");
     const ordinals = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
@@ -618,6 +626,7 @@ class Component extends DCLogic {
       beginHunt: () => this.goStep("read"),
 
       // read
+      theme: data.theme,
       quote: data.quote,
       revealPiece: () => this.revealPiece(),
       // goGuess: () => this.goStep("guess"),                // GUESS STEP temporarily removed (2026-07)
@@ -646,13 +655,16 @@ class Component extends DCLogic {
 
       // survey overlay
       isSurveyOpen: s.surveyOpen !== null,
-      surveyTitle: ctx === "post" ? "One last time" : "Before you begin",
+      surveyTitle: ctx === "post" ? "One last time" : "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
+      surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
+      surveyCitation: "Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
       surveyIntro: ctx === "post"
         ? "The hunt is done \u2014 if you're willing, answer the same questions once more. Comparing your before-and-after is the whole point."
-        : "A few quick statements about how you tend to relate to yourself. There's no right answer, and it takes about two minutes.",
+        : "",
       surveyQuestions: surveyQuestions,
       likertLow: this.LIKERT[0],
-      likertHigh: this.LIKERT[1],
+      likertMid: this.LIKERT[1],
+      likertHigh: this.LIKERT[2],
       submitSurvey: () => this.submitSurvey(ctx),
       closeSurvey: () => this.closeSurvey(),
       stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
