@@ -56,12 +56,12 @@
           <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
             <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these objects to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be recorded, collected, or reported on.</p>
           </div>
-          <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px 22px 24px; margin-bottom:28px;">
+          <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
-              <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6;">Thank you for supporting our work.</p>
+              <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6; text-align:center;">Thank you for supporting our work.</p>
             </sc-if>
             <sc-if value="{{ !preSubmitted }}" hint-placeholder-val="{{ true }}">
-              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">Before you begin....</p>
+              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; text-align:center; margin-top:0; margin-bottom:18px;">Before you begin....</p>
               <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
             </sc-if>
           </div>
