@@ -207,7 +207,6 @@
             <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:14px;">{{ q.text }}</p>
             <div style="display:flex; justify-content:space-between; padding:0 1px; margin-bottom:6px;">
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35;">{{ likertLow }}</span>
-              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:center;">{{ likertMid }}</span>
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:right;">{{ likertHigh }}</span>
             </div>
             <div style="position:relative; display:flex; justify-content:space-between; align-items:center;">
@@ -297,7 +296,7 @@ class Component extends DCLogic {
     "— Ahsan, fourth-year Computer Science, University of Calgary"
   ];
 
-  LIKERT = ["Almost never", "Sometimes", "Almost always"];
+  LIKERT = ["Almost never", "Almost always"];
   QUESTIONS = [
     "When things are going badly for me, I see the difficulties as part of life that everyone goes through.",
     "When I'm down, I remind myself that there are lots of other people in the world feeling like I am.",
@@ -663,8 +662,7 @@ class Component extends DCLogic {
         : "",
       surveyQuestions: surveyQuestions,
       likertLow: this.LIKERT[0],
-      likertMid: this.LIKERT[1],
-      likertHigh: this.LIKERT[2],
+      likertHigh: this.LIKERT[1],
       submitSurvey: () => this.submitSurvey(ctx),
       closeSurvey: () => this.closeSurvey(),
       stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); }
