@@ -17,66 +17,32 @@
 <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center;">
   <div style="width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; padding:0 26px;">
 
-    <!-- centers the map + active step together as one block when the step's content is short
-         (e.g. the sparse post-reveal screen); has no visible effect on steps whose own content
-         already fills the available height (intro, read), since those still use flex:1 below. -->
-    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-
-    <!-- persistent header: campus map (Marauder's-Map-style wayfinding). Hidden on the read step,
-         where the map moves below the quote instead (see READ block) — blurred, with the reveal
-         button overlaid on it, so revealing the piece visually "clears" the map on the next screen. -->
-    <sc-if value="{{ !isRead }}" hint-placeholder-val="{{ true }}">
-      <div style="padding:26px 0 16px; animation:fade .7s ease both;">
-        <sc-if value="{{ showRevealAnnounce }}" hint-placeholder-val="{{ false }}">
-          <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:21px; color:#2B2823; margin:0 0 14px; animation:drop .7s .15s both;">The next location has been revealed</p>
-        </sc-if>
-        <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
-          <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
-            <defs>
-              <filter id="mapGrain" x="-20%" y="-20%" width="140%" height="140%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="noise"></feTurbulence>
-                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"></feColorMatrix>
-              </filter>
-              <filter id="mapGlow" x="-100%" y="-100%" width="300%" height="300%">
-                <feGaussianBlur stdDeviation="4"></feGaussianBlur>
-              </filter>
-            </defs>
-            <rect x="0" y="0" width="400" height="265" filter="url(#mapGrain)"></rect>
-            <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
-              <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
-            </sc-for>
-            <sc-if value="{{ mapShowPath }}" hint-placeholder-val="{{ false }}">
-              <sc-for list="{{ mapFootsteps }}" as="fp" hint-placeholder-count="5">
-                <path d="{{ fp.d }}" fill="#8A3A26" style="{{ fp.style }}"></path>
-              </sc-for>
-            </sc-if>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
-            </sc-for>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
-            </sc-for>
-            <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-            </sc-if>
-            <sc-if value="{{ mapShowStar }}" hint-placeholder-val="{{ false }}">
-              <path d="{{ starD }}" fill="#A2472F"></path>
-            </sc-if>
-          </svg>
-          <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
-          <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-            <span style="{{ b.qMarkStyle }}">?</span>
-            <span style="{{ b.labelStyle }}">{{ b.label }}</span>
+    <!-- persistent header: study label, progress, and the puzzle board -->
+    <div style="padding:26px 0 16px; animation:fade .7s ease both;">
+      <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:14px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F;">{{ progressLabel }}</span>
+      </div>
+      <div style="position:relative; width:100%; aspect-ratio:1140 / 543; border-radius:14px; overflow:hidden; border:1px solid rgba(33,30,26,.14); box-shadow:0 18px 40px -24px rgba(33,30,26,.55); background:#E7DCC9;">
+        <div style="{{ boardImageStyle }}"></div>
+        <div style="{{ gridStyle }}">
+          <sc-for list="{{ tiles }}" as="tile" hint-placeholder-count="5">
+            <div style="position:relative; overflow:hidden; margin:-1px;">
+              <div style="{{ tile.revealStyle }}">
+                <div style="{{ tile.blurStyle }}"></div>
+                <div style="{{ tile.tintStyle }}"></div>
+              </div>
+            </div>
           </sc-for>
         </div>
-        <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:14px; color:#8A8578; margin-top:12px;">{{ mapCaption }}</p>
+        <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; pointer-events:none; border-radius:14px; box-shadow:inset 0 0 0 2px rgba(162,71,47,.5);"></div>
+        </sc-if>
       </div>
-    </sc-if>
+      <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:14px; color:#8A8578; margin-top:12px;">{{ boardCaption }}</p>
+    </div>
 
     <!-- act region -->
-    <div style="{{ actRegionStyle }}">
+    <div style="flex:1; display:flex; flex-direction:column;">
 
       <!-- INTRO -->
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
@@ -88,7 +54,7 @@
             </sc-for>
           </div>
           <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these objects to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these objects to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be recorded, collected, or reported on.</p>
           </div>
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
@@ -99,6 +65,7 @@
               <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
             </sc-if>
           </div>
+          <button style="width:100%; padding:17px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .2s;" style-hover="background:#332F28;" onClick="{{ beginHunt }}">Begin the scavenger hunt <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
         </div>
       </sc-if>
 
@@ -111,46 +78,11 @@
               <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
               <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
             </div>
-            <!-- GUESS STEP temporarily removed (2026-07 feedback). To restore it, delete the map/reveal-button block below and un-comment this original button, which routed to the "who said this?" screen:
-            <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
-            -->
-
-            <!-- map, same look as the intro/reveal header, moved below the quote -->
-            <div style="margin-top:28px; animation:fade 1s .3s ease both;">
-              <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
-                <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
-                  <defs>
-                    <filter id="mapGrainRead" x="-20%" y="-20%" width="140%" height="140%">
-                      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="noise"></feTurbulence>
-                      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"></feColorMatrix>
-                    </filter>
-                    <filter id="mapGlowRead" x="-100%" y="-100%" width="300%" height="300%">
-                      <feGaussianBlur stdDeviation="4"></feGaussianBlur>
-                    </filter>
-                  </defs>
-                  <rect x="0" y="0" width="400" height="265" filter="url(#mapGrainRead)"></rect>
-                  <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
-                    <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
-                  </sc-for>
-                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
-                  </sc-for>
-                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
-                  </sc-for>
-                  <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-                  </sc-if>
-                </svg>
-                <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
-                <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                  <span style="{{ b.qMarkStyle }}">?</span>
-                  <span style="{{ b.labelStyle }}">{{ b.label }}</span>
-                </sc-for>
-              </div>
-              <button style="width:100%; margin-top:22px; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; transition:background .2s;" style-hover="background:#8E3C27;" onClick="{{ revealPiece }}">Reveal next object's location</button>
+            <div style="padding-top:24px; animation:fade 1s .3s ease both;">
+              <!-- GUESS STEP temporarily removed (2026-07 feedback). To restore it, delete the "Uncover your piece" button just below and un-comment this original button, which routed to the "who said this?" screen:
+              <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
+              -->
+              <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ revealPiece }}">Uncover your piece <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
             </div>
           </div>
         </div>
@@ -178,7 +110,7 @@
 
       <!-- REVEAL -->
       <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex; flex-direction:column; padding:14px 0 34px; animation:fade .6s ease both;">
+        <div style="flex:1; display:flex; flex-direction:column; padding:14px 0 34px; animation:fade .6s ease both;">
           <!-- GUESS RECAP temporarily removed with the guess step (2026-07 feedback). Un-comment to restore.
           <div style="text-align:center;">
             <div style="display:inline-flex; align-items:center; gap:8px; padding:7px 16px; background:#EFEADF; border:1px solid rgba(33,30,26,.1); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#6E6A61;">
@@ -187,6 +119,40 @@
             <p style="font-family:'Newsreader',serif; font-style:italic; font-size:19px; color:#2B2823; margin-top:18px;">You saw {{ guessVoiceLower }} in these words.</p>
           </div>
           -->
+
+          <div style="text-align:center; margin:34px 0;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:16px;">{{ pieceOrdinal }}</div>
+            <div style="display:flex; align-items:center; justify-content:center; height:88px; font-family:'Newsreader',serif; font-weight:400; font-size:72px; line-height:1; color:#211E1A; animation:drop .7s .15s both;">{{ revealCount }}</div>
+            <p style="font-size:13px; color:#8A8578; font-weight:300; margin-top:18px; line-height:1.6;">pieces of the picture uncovered</p>
+          </div>
+
+          <sc-if value="{{ notFinal }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:16px 24px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F;">The hunt continues</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#BE9077;">{{ remainingLabel }}</span>
+              </div>
+            </div>
+            <div style="padding:36px 2px 6px;">
+              <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#BE9077; margin-bottom:26px;">The next object can be found at</div>
+              <div style="display:flex; align-items:center;">
+                <span style="font-family:'Newsreader',serif; font-style:italic; font-size:16px; color:#2B2823; white-space:nowrap; flex-shrink:0; padding-right:14px;">{{ currentLoc }}</span>
+                <div style="flex:1; position:relative; height:34px; min-width:70px;">
+                  <div style="position:absolute; left:6%; right:6%; top:50%; border-top:1px dashed rgba(162,71,47,.28);"></div>
+                  <sc-for list="{{ footprints }}" as="fp" hint-placeholder-count="7">
+                    <span style="{{ fp.wrapStyle }}">
+                      <span style="{{ fp.style }}">
+                        <svg viewBox="0 0 24 40" width="14" height="23" fill="#8A3A26" style="display:block; opacity:.82;">
+                          <path d="M12,2 C17,2 20,9 19,16 C18.5,20 18,23 17.5,26 C17,31 17,34 15,37 C13.5,39 10.5,39 9,37 C7,34 7,31 6.5,26 C6,23 5.5,20 5,16 C4,9 7,2 12,2 Z"></path>
+                        </svg>
+                      </span>
+                    </span>
+                  </sc-for>
+                </div>
+                <span style="font-family:'Newsreader',serif; font-style:italic; font-size:16px; color:#2B2823; white-space:nowrap; flex-shrink:0; padding-left:14px; text-align:right; text-wrap:balance;">{{ nextLoc }}</span>
+              </div>
+            </div>
+          </sc-if>
 
           <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
             <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px;">
@@ -214,11 +180,10 @@
             </div>
           </sc-if>
 
-          <button style="align-self:center; margin-top:30px; padding:12px 28px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ reread }}">Re-read the quote</button>
+          <button style="align-self:center; margin-top:26px; background:none; border:none; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#9A9587; cursor:pointer; padding:8px;" onClick="{{ reread }}">Re-read the quote</button>
         </div>
       </sc-if>
 
-    </div>
     </div>
 
     <div style="text-align:center; font-size:11px; color:#A8A398; font-weight:300; padding:16px 0 26px;">Ahsan Tariq · C3 Lab, University of Calgary</div>
@@ -253,7 +218,7 @@
           </div>
         </sc-for>
       </div>
-      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
+      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">Submit</button>
       <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
     </div>
   </div>
@@ -261,12 +226,16 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 480, &quot;height&quot;: 900 },
-  &quot;pieces&quot;: { &quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 5, &quot;min&quot;: 2, &quot;max&quot;: 9, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Hunt&quot;, &quot;label&quot;: &quot;Stops / puzzle pieces&quot; }
+  &quot;pieces&quot;: { &quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 5, &quot;min&quot;: 2, &quot;max&quot;: 9, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Hunt&quot;, &quot;label&quot;: &quot;Stops / puzzle pieces&quot; },
+  &quot;frostBlur&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 14, &quot;min&quot;: 0, &quot;max&quot;: 30, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Reveal&quot;, &quot;label&quot;: &quot;How hidden covered pieces are&quot; }
 }">
 class Component extends DCLogic {
   get TOTAL() { return this.props.pieces ?? 3; }
+  get FROST() { return this.props.frostBlur ?? 14; }
 
+  IMG = "ICT_011A6246_FE.jpg";
   STORAGE_KEY = "nsura_puzzle_v1";
+  FOOTSTEP_COUNT = 7;
   FOOTSTEP_STAGGER = 0.26;
   FOOTSTEP_DURATION = 0.9;
 
@@ -280,60 +249,40 @@ class Component extends DCLogic {
     "entry.1295897154", "entry.1777768531", "entry.1258253229", "entry.1224835382"
   ];
 
-  QR_SCAN_FORM_ID = "1FAIpQLSf8vPsvvW_kbVh8Ss9ZOLg9wur7J2P41svgQ3aqxnL7bLxqKg";
-  QR_SCAN_OBJECT_ENTRY = "entry.607181530";
-  QR_SCAN_DEVICE_ENTRY = "entry.1721026013";
-
   VOICE = {
     c: { label: "A child",   mark: "i",   note: "under 12"  },
     s: { label: "A student", mark: "ii",  note: "teens\u201320s" },
     e: { label: "An elder",  mark: "iii", note: "60+"       }
   };
 
+  // Only stop 1 carries real content. Fill quote + location for the rest as you build the hunt.
   MEMENTOS = {
     1: {
       theme: "On love and loss",
       quote: "When I think of death, fear is closely linked to the idea of not seeing the one who is my source of love. Very often, I look at M. and I tell him: I'm afraid of never seeing you again.",
-      location: "MacEwan Student Centre"
+      location: "table 1"
     },
     2: {
       theme: "On having someone to talk to",
       quote: "I think it's quite important, just because without, even if it's just someone to vent to or someone to talk to, it's important that if you're alone or you don't have someone just to speak your mind to, or speak your worries to, then you can kind of not only just get lonely but just feel like you don't really have anyone in the real world who can understand that. And often just someone to talk to is more important than anything else, even it doesn't really matter how close you are.",
-      location: "Taylor Family Digital Library"
+      location: "table 2"
     },
     3: {
       theme: "On exam season",
       quote: "I think the start is GCSEs. They are, no matter whether you're in a year group of 200 or 5,000 that is a very competitive time, which leads to a lot of kind of isolation in the sense that everyone is competing to get the best grades.",
-      location: "Social Sciences"
+      location: "table 3"
     },
     4: {
       theme: "On family expectations",
       quote: "I can't stand the evening and night shifts and the job's social status is not high. My parents want me to work in a pharmaceutical company. Moreover, I would feel upset if I gave up the nursing specialty, because I have spent four years studying this subject.",
-      location: "Science Theatres"
+      location: "table 4"
     },
     5: {
       theme: "On living meaningfully",
       quote: "I felt death closer to me. Before now, I saw it as something far away, now I feel that sooner or later death will come, and it is right that I live life in the best way, without superficiality, because everything is meaningful.",
-      location: "ICT"
+      location: "table 5"
     }
   };
-
-  // Campus map data: simplified, stylized positions (not to scale) following the real
-  // relative layout of these buildings, used to draw the wayfinding map + footstep paths.
-  ROUTE = ["MSC", "TFDL", "SS", "ST", "ICT"];
-  BUILDINGS = {
-    MSC:  { label: "MacEwan Student Centre",     cx: 96,  cy: 171, hh: 14 },
-    TFDL: { label: "Taylor Family Digital Library", cx: 176, cy: 195, hh: 13 },
-    SS:   { label: "Social Sciences",            cx: 300, cy: 145, hh: 13 },
-    ST:   { label: "Science Theatres",           cx: 300, cy: 50,  hh: 12 },
-    ICT:  { label: "ICT",                        cx: 161, cy: 51,  hh: 12 }
-  };
-  LEGS = [
-    { p0: [96, 171],  p1: [140, 225], p2: [176, 195] },
-    { p0: [176, 195], p1: [250, 225], p2: [300, 145] },
-    { p0: [300, 145], p1: [325, 97],  p2: [300, 50]  },
-    { p0: [300, 50],  p1: [245, 10],  p2: [161, 51]  }
-  ];
 
   ABOUT = [
     "Across these tables, there are objects. Each holds words from someone who has been where you are. A 12-year-old. An 18-year-old. A 65-year-old. A 97-year-old. People you'll never meet, describing something you might recognize.",
@@ -373,38 +322,57 @@ class Component extends DCLogic {
       surveyOpen: null,
       pre:  store.pre  || { answers: {}, submitted: false },
       post: store.post || { answers: {}, submitted: false },
-      feedback: store.feedback || { text: "", submitted: false }
+      feedback: store.feedback || { text: "", submitted: false },
+      blurredImg: null
     };
   }
 
   componentDidMount() {
-    const rawNum = parseInt(new URLSearchParams(location.search).get("num"), 10);
-    if (rawNum >= 1 && rawNum <= this.TOTAL) this.logQrScan(rawNum);
+    this.prepareBlurredImage();
   }
 
-  getOrCreateDeviceId() {
-    const store = this.loadStore();
-    if (store.deviceId) return store.deviceId;
-    const id = crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2));
-    this.saveStore({ deviceId: id });
-    return id;
-  }
-
-  logQrScan(num) {
-    const store = this.loadStore();
-    const scannedNums = store.scannedNums || {};
-    if (scannedNums[num]) return;
-    this.saveStore({ scannedNums: Object.assign({}, scannedNums, { [num]: true }) });
-
-    const body = new URLSearchParams();
-    body.set(this.QR_SCAN_OBJECT_ENTRY, String(num));
-    body.set(this.QR_SCAN_DEVICE_ENTRY, this.getOrCreateDeviceId());
-    fetch("https://docs.google.com/forms/d/e/" + this.QR_SCAN_FORM_ID + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
+  // Pre-bakes a softened copy of the board photo onto an offscreen canvas so each
+  // puzzle tile can slice a plain (non-live-filtered) image. Slicing a live
+  // backdrop-filter/CSS-filter blur per tile leaves a visible seam at tile
+  // boundaries (the blur can't sample past its own element's edge). Using
+  // canvas's own `ctx.filter = 'blur()'` avoids that but has its own seam bug
+  // (Chromium processes canvas blur in internal tiles, visible as a seam on
+  // larger canvases). Downscaling instead sidesteps both: drawImage at a tiny
+  // resolution is a basic, seam-free operation, and the browser's normal
+  // upscaling smoothing produces the soft look when it's stretched back up.
+  prepareBlurredImage() {
+    const img = new Image();
+    img.onload = () => {
+      // Progressive halving gives much smoother results than one drastic
+      // downscale (each step's bilinear resample has a gentle ratio to work
+      // with), while still only ever using plain drawImage — no filter, no
+      // seam risk — down to a soft target size, then back up part-way so the
+      // final slice isn't so tiny it looks blocky.
+      let cw = img.naturalWidth, ch = img.naturalHeight;
+      let src = img;
+      const minDim = Math.min(cw, ch);
+      const steps = Math.max(1, Math.round(Math.log2(minDim / 12)));
+      for (let i = 0; i < steps; i++) {
+        const nw = Math.max(1, Math.round(cw / 2));
+        const nh = Math.max(1, Math.round(ch / 2));
+        const step = document.createElement("canvas");
+        step.width = nw;
+        step.height = nh;
+        step.getContext("2d").drawImage(src, 0, 0, nw, nh);
+        src = step;
+        cw = nw; ch = nh;
+      }
+      const targetW = 130;
+      const targetH = Math.max(1, Math.round(img.naturalHeight * (targetW / img.naturalWidth)));
+      const out = document.createElement("canvas");
+      out.width = targetW;
+      out.height = targetH;
+      out.getContext("2d").drawImage(src, 0, 0, targetW, targetH);
+      try {
+        this.setState({ blurredImg: out.toDataURL() });
+      } catch (e) {}
+    };
+    img.src = this.IMG;
   }
 
   loadStore() {
@@ -422,74 +390,85 @@ class Component extends DCLogic {
     return n;
   }
 
-  // ---- campus map geometry ----
-  // Buildings render as plain rects/circles (bare numeric SVG attributes + a style
-  // object) and footsteps as a rotated paw shape baked directly into its own "d"
-  // string per point — both confirmed to render correctly. A CSS transform on an
-  // SVG <g> (an earlier attempt at positioning the footsteps) did not position
-  // correctly in this templating engine, so everything here sticks to primitives
-  // known to work: baked "d" strings and bare numeric x/y/cx/cy attributes.
-  quadPoint(leg, t) {
-    const mt = 1 - t;
+  gridDims() {
+    const n = this.TOTAL;
+    const map = { 2: [2, 1], 3: [3, 1], 4: [2, 2], 5: [5, 1], 6: [3, 2], 8: [4, 2], 9: [3, 3] };
+    if (map[n]) return { cols: map[n][0], rows: map[n][1] };
+    const cols = Math.ceil(Math.sqrt(n));
+    return { cols: cols, rows: Math.ceil(n / cols) };
+  }
+  gridStyle() {
+    const d = this.gridDims();
     return {
-      x: mt * mt * leg.p0[0] + 2 * mt * t * leg.p1[0] + t * t * leg.p2[0],
-      y: mt * mt * leg.p0[1] + 2 * mt * t * leg.p1[1] + t * t * leg.p2[1]
+      display: "grid",
+      gridTemplateColumns: "repeat(" + d.cols + ", 1fr)",
+      gridTemplateRows: "repeat(" + d.rows + ", 1fr)",
+      width: "calc(100% + 2px)", height: "calc(100% + 2px)",
+      margin: "-1px"
     };
   }
-  quadAngleDeg(leg, t) {
-    const mt = 1 - t;
-    const dx = 2 * mt * (leg.p1[0] - leg.p0[0]) + 2 * t * (leg.p2[0] - leg.p1[0]);
-    const dy = 2 * mt * (leg.p1[1] - leg.p0[1]) + 2 * t * (leg.p2[1] - leg.p1[1]);
-    return Math.atan2(dy, dx) * (180 / Math.PI);
+  revealStyle(collected) {
+    return {
+      position: "absolute", inset: 0,
+      opacity: collected ? 0 : 1,
+      transform: collected ? "translateY(-10px) scale(1.08)" : "none",
+      pointerEvents: "none",
+      transition: "opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1)"
+    };
   }
-  legPathD(leg) {
-    return "M" + leg.p0[0] + "," + leg.p0[1] + " Q" + leg.p1[0] + "," + leg.p1[1] + " " + leg.p2[0] + "," + leg.p2[1];
+  tileBlurStyle(px, py, d) {
+    return {
+      position: "absolute", inset: 0,
+      backgroundImage: "url('" + (this.state.blurredImg || this.IMG) + "')",
+      backgroundSize: (d.cols * 100) + "% " + (d.rows * 100) + "%",
+      backgroundPosition: px + "% " + py + "%",
+      backgroundRepeat: "no-repeat"
+    };
   }
-  starPath(cx, cy) {
-    const oy = cy - 18;
-    const pts = [
-      [0, -8], [2.2, -2.6], [8, -2.4], [3.4, 1.4], [5, 7.4],
-      [0, 4], [-5, 7.4], [-3.4, 1.4], [-8, -2.4], [-2.2, -2.6]
-    ];
-    return "M" + pts.map(p => (cx + p[0]) + "," + (oy + p[1])).join(" L") + " Z";
+  tintStyle() {
+    return {
+      position: "absolute", inset: 0,
+      background: "rgba(245,238,227,0.62)",
+      boxShadow: "inset 0 0 0 1px rgba(33,30,26,0.10), inset 0 0 34px rgba(255,255,255,0.28)"
+    };
   }
-  // Small footprint/paw outline, drawn pointing "up" (toe at [0,-6]) in its own
-  // local space. Rotated to face the direction of travel and baked into absolute
-  // map coordinates below, rather than positioned via a CSS transform.
-  footPrintPoints() {
-    return [[0, -6], [2.6, -4.2], [3.2, -0.5], [2.2, 3.5], [0, 5.5], [-2.2, 3.5], [-3.2, -0.5], [-2.6, -4.2]];
+  buildTiles() {
+    const d = this.gridDims();
+    const tiles = [];
+    for (let i = 0; i < this.TOTAL; i++) {
+      const c = i % d.cols;
+      const r = Math.floor(i / d.cols);
+      const px = d.cols > 1 ? (c / (d.cols - 1)) * 100 : 0;
+      const py = d.rows > 1 ? (r / (d.rows - 1)) * 100 : 0;
+      tiles.push({
+        revealStyle: this.revealStyle(!!this.state.collected[i + 1]),
+        blurStyle: this.tileBlurStyle(px, py, d),
+        tintStyle: this.tintStyle()
+      });
+    }
+    return tiles;
   }
-  buildLegFootsteps(leg) {
-    const count = 5;
+  buildFootprints() {
+    const n = this.FOOTSTEP_COUNT;
     const stagger = this.FOOTSTEP_STAGGER;
     const duration = this.FOOTSTEP_DURATION;
-    const localPts = this.footPrintPoints();
     const steps = [];
-    for (let i = 1; i <= count; i++) {
-      const t = i / (count + 1);
-      const pt = this.quadPoint(leg, t);
-      const angleDeg = this.quadAngleDeg(leg, t);
+    for (let i = 0; i < n; i++) {
       const isLeftFoot = i % 2 === 0;
-      const zig = isLeftFoot ? 1 : -1;
-      // offset perpendicular to the direction of travel, alternating sides for a walking gait
-      const perpRad = (angleDeg + 90) * Math.PI / 180;
-      const ox = pt.x + Math.cos(perpRad) * zig * 2.2;
-      const oy = pt.y + Math.sin(perpRad) * zig * 2.2;
-      // rotate the local "pointing up" shape to face the direction of travel
-      const rot = (angleDeg + 90) * Math.PI / 180;
-      const cos = Math.cos(rot), sin = Math.sin(rot);
-      const d = localPts.map((p, idx) => {
-        const rx = p[0] * cos - p[1] * sin;
-        const ry = p[0] * sin + p[1] * cos;
-        return (idx === 0 ? "M" : "L") + (ox + rx).toFixed(2) + "," + (oy + ry).toFixed(2);
-      }).join(" ") + " Z";
+      const zig = isLeftFoot ? -1 : 1;
+      const inset = 14;
+      const leftPct = n > 1 ? inset + (i / (n - 1)) * (100 - inset * 2) : 50;
       steps.push({
-        d: d,
+        wrapStyle: {
+          position: "absolute",
+          left: leftPct + "%",
+          top: "50%",
+          transform: "translate(-50%, calc(-50% + " + (zig * 9) + "px)) rotate(" + (-90 + zig * 8) + "deg) scaleX(" + (isLeftFoot ? 1 : -1) + ") scaleY(-1)"
+        },
         style: {
+          display: "inline-block",
           opacity: 0,
-          transformBox: "fill-box",
-          transformOrigin: "center",
-          animation: "stepFade " + duration + "s ease-out " + ((i - 1) * stagger).toFixed(2) + "s 1 forwards"
+          animation: "stepFade " + duration + "s ease-out " + (i * stagger).toFixed(2) + "s 1 forwards"
         }
       });
     }
@@ -548,12 +527,7 @@ class Component extends DCLogic {
     }).catch(() => {});
     const next = Object.assign({}, cur, { submitted: true });
     this.saveStore({ [key]: next });
-    this.setState({
-      [key]: next,
-      surveyOpen: null,
-      step: key === "pre" ? "read" : this.state.step,
-      guess: key === "pre" ? null : this.state.guess
-    });
+    this.setState({ [key]: next, surveyOpen: null });
   }
   setFeedbackText(value) {
     this.setState({ feedback: Object.assign({}, this.state.feedback, { text: value }) });
@@ -579,6 +553,8 @@ class Component extends DCLogic {
     const total = this.TOTAL;
     const num = s.num;
     const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "" };
+    const pad = n => String(n).padStart(2, "0");
+    const ordinals = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
     const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
     const isFinal = collectedCount >= total;
 
@@ -601,79 +577,13 @@ class Component extends DCLogic {
     });
     */
 
-    // campus map: buildings, "you are here" marker, and (on the reveal step, in order)
-    // the animated path + footsteps to the next stop. Legs are only defined for the
-    // intended forward order (stop N -> stop N+1) — an out-of-order scan just skips
-    // drawing a path rather than guessing one.
-    const currentBid = this.ROUTE[num - 1] || this.ROUTE[0];
-    const legIndex = num - 1;
-    const activeLeg = (s.step === "reveal" && !isFinal && nextNum === num + 1 && legIndex >= 0 && legIndex < this.LEGS.length)
-      ? this.LEGS[legIndex] : null;
-    const nextBid = activeLeg ? this.ROUTE[num] : null;
-    const mapBuildings = this.ROUTE.map((bid, idx) => {
-      const b = this.BUILDINGS[bid];
-      const filled = !!s.collected[idx + 1];
-      const labelVisible = filled || bid === currentBid || bid === nextBid;
-      return {
-        cx: b.cx,
-        cy: b.cy,
-        r: filled ? 7 : 5.5,
-        dotStyle: {
-          fill: filled ? "#A2472F" : "#FBF2EA",
-          stroke: "#A2472F",
-          strokeOpacity: filled ? 0 : 0.5,
-          strokeWidth: 1.4,
-          transition: "fill .6s ease, r .6s ease, stroke-opacity .6s ease"
-        },
-        glowStyle: {
-          opacity: filled ? 0.3 : 0,
-          transition: "opacity .8s ease"
-        },
-        qMarkStyle: {
-          position: "absolute",
-          left: (b.cx / 400 * 100) + "%",
-          top: (b.cy / 265 * 100) + "%",
-          transform: "translate(-50%, -50%)",
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: "8px",
-          fontWeight: 600,
-          color: "#A2472F",
-          opacity: filled ? 0 : 0.7,
-          pointerEvents: "none",
-          transition: "opacity .6s ease"
-        },
-        labelStyle: Object.assign({
-          position: "absolute",
-          width: "78px",
-          fontFamily: "'Newsreader', serif",
-          fontStyle: "italic",
-          fontWeight: 500,
-          fontSize: "12.5px",
-          lineHeight: "1.2",
-          color: "#6E4A34",
-          opacity: labelVisible ? 1 : 0,
-          pointerEvents: "none",
-          transition: "opacity .6s ease"
-        }, ({
-          left:  { left: ((b.cx - 28) / 400 * 100) + "%", top: (b.cy / 265 * 100) + "%", transform: "translate(-100%, -50%)", textAlign: "right" },
-          right: { left: ((b.cx + 28) / 400 * 100) + "%", top: (b.cy / 265 * 100) + "%", transform: "translate(0, -50%)", textAlign: "left" },
-          below: { left: (b.cx / 400 * 100) + "%", top: ((b.cy + b.hh + 13) / 265 * 100) + "%", transform: "translate(-50%, 0)", textAlign: "center", width: "92px" }
-        })[{ MSC: "left", TFDL: "below", SS: "right", ST: "right", ICT: "left" }[bid] || "below"]),
-        label: b.label
-      };
-    });
-    // the active leg is represented by footsteps only, not the faint always-on road line
-    const mapRoads = this.LEGS
-      .filter((leg, i) => !(activeLeg && i === legIndex))
-      .map(leg => this.legPathD(leg));
-    const currentB = this.BUILDINGS[currentBid];
-    const ictB = this.BUILDINGS.ICT;
+    let boardCaption;
+    if (s.step === "intro") boardCaption = "Reveal the image to discuss the experience with like-minded peers";
+    else if (isFinal) boardCaption = "Congratulations! The final meeting spot has been revealed.";
+    else if (collectedCount === 0) boardCaption = "A place on campus, waiting to be seen.";
+    else boardCaption = "The picture is coming together.";
 
-    let mapCaption;
-    if (s.step === "intro") mapCaption = "Your route across campus begins at MacEwan Student Centre.";
-    else if (isFinal) mapCaption = "The map is complete. Meet us at ICT.";
-    else if (s.step === "read") mapCaption = "";
-    else mapCaption = "The next object can be found at " + nextLoc + ".";
+    const remaining = total - collectedCount;
 
     // survey
     const ctx = s.surveyOpen || "pre";
@@ -688,24 +598,19 @@ class Component extends DCLogic {
     }));
 
     return {
-      // campus map
-      mapBuildings: mapBuildings,
-      mapRoads: mapRoads,
-      mapCaption: mapCaption,
-      mapShowCurrent: true,
-      currentCx: currentB.cx,
-      currentCy: currentB.cy,
-      mapShowStar: isFinal,
-      starD: this.starPath(ictB.cx, ictB.cy),
-      mapShowPath: !!activeLeg,
-      mapFootsteps: activeLeg ? this.buildLegFootsteps(activeLeg) : [],
-      isFinal: isFinal,
-      showRevealAnnounce: s.step === "reveal" && !isFinal,
-      actRegionStyle: {
-        display: "flex",
-        flexDirection: "column",
-        flex: (s.step === "read" || (s.step === "reveal" && !isFinal)) ? "0 1 auto" : "1"
+      // board
+      boardImageStyle: {
+        position: "absolute", inset: "-1px",
+        backgroundImage: "url('" + this.IMG + "')",
+        backgroundSize: "cover",
+        backgroundPosition: "center"
       },
+      tiles: this.buildTiles(),
+      gridStyle: this.gridStyle(),
+      progressLabel: pad(collectedCount) + " / " + pad(total) + " uncovered",
+      boardCaption: boardCaption,
+      isFinal: isFinal,
+      notFinal: !isFinal,
 
       // step flags
       isIntro: s.step === "intro",
@@ -717,6 +622,7 @@ class Component extends DCLogic {
       aboutParas: this.ABOUT,
       preSubmitted: s.pre.submitted,
       openPre: () => this.openSurvey("pre"),
+      beginHunt: () => this.goStep("read"),
 
       // read
       theme: data.theme,
@@ -729,6 +635,12 @@ class Component extends DCLogic {
 
       // reveal
       // guessVoiceLower: s.guess ? this.VOICE[s.guess].label.toLowerCase() : "",  // GUESS STEP removed
+      pieceOrdinal: "Your " + (ordinals[num - 1] || (num + "th")) + " piece",
+      revealCount: pad(collectedCount) + " / " + pad(total),
+      remainingLabel: remaining === 1 ? "1 piece still hidden" : remaining + " pieces still hidden",
+      nextLoc: nextLoc,
+      currentLoc: currentLoc,
+      footprints: this.buildFootprints(),
       postSubmitted: s.post.submitted,
       openPost: () => this.openSurvey("post"),
       reread: () => this.goStep("read"),
@@ -746,7 +658,6 @@ class Component extends DCLogic {
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
       surveyCitation: "Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
       surveyIntro: "",
-      surveyButtonLabel: ctx === "pre" ? "Begin the scavenger hunt" : "Submit",
       surveyQuestions: surveyQuestions,
       likertLow: this.LIKERT[0],
       likertHigh: this.LIKERT[1],
