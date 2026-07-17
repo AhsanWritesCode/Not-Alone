@@ -613,7 +613,12 @@ class Component extends DCLogic {
     const mapBuildings = this.ROUTE.map((bid, idx) => {
       const b = this.BUILDINGS[bid];
       const filled = !!s.collected[idx + 1];
-      const labelVisible = filled || bid === currentBid || bid === nextBid;
+      // A stop's name is "known" for good once its predecessor in the route has been
+      // collected, regardless of which stop's page is currently loaded — otherwise an
+      // earlier reveal (e.g. Science Theatres -> ICT) is forgotten as soon as the user
+      // scans a different, unrelated stop (e.g. MacEwan Student Centre).
+      const predecessorCollected = idx > 0 && !!s.collected[idx];
+      const labelVisible = filled || bid === currentBid || bid === nextBid || predecessorCollected;
       return {
         cx: b.cx,
         cy: b.cy,
