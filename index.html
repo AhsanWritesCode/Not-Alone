@@ -22,14 +22,11 @@
          already fills the available height (intro, read), since those still use flex:1 below. -->
     <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
 
-    <!-- persistent header: campus map (Marauder's-Map-style wayfinding). Hidden on the read step,
-         where the map moves below the quote instead (see READ block) — blurred, with the reveal
-         button overlaid on it, so revealing the piece visually "clears" the map on the next screen. -->
-    <sc-if value="{{ !isRead }}" hint-placeholder-val="{{ true }}">
+    <!-- persistent header: campus map (Marauder's-Map-style wayfinding), intro only. Once the
+         hunt begins the map lives inline on the read screen instead (see READ block) and stays
+         there permanently — revealing a piece no longer navigates to a separate screen. -->
+    <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
       <div style="padding:26px 0 16px; animation:fade .7s ease both;">
-        <sc-if value="{{ showRevealAnnounce }}" hint-placeholder-val="{{ false }}">
-          <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:{{ announceFontSize }}; color:#2B2823; margin:0 0 14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; animation:drop .7s .15s both;">{{ mapCaption }}</p>
-        </sc-if>
         <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
           <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
             <defs>
@@ -45,11 +42,6 @@
             <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
               <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
             </sc-for>
-            <sc-if value="{{ mapShowPath }}" hint-placeholder-val="{{ false }}">
-              <sc-for list="{{ mapFootsteps }}" as="fp" hint-placeholder-count="5">
-                <path d="{{ fp.d }}" fill="#8A3A26" style="{{ fp.style }}"></path>
-              </sc-for>
-            </sc-if>
             <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
               <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
             </sc-for>
@@ -112,8 +104,14 @@
             <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
             -->
 
-            <!-- map, same look as the intro/reveal header, moved below the quote -->
+            <!-- map, same look as the intro header, moved below the quote. Stays mounted for the
+                 whole read step — before reveal it's just the plain "you are here" view; once
+                 revealed (collected[num] true) it also plays the footstep animation to the next
+                 stop and the "reveal button" below it swaps for the quote box, in place. -->
             <div style="margin-top:28px; animation:fade 1s .3s ease both;">
+              <sc-if value="{{ showRevealAnnounce }}" hint-placeholder-val="{{ false }}">
+                <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:{{ announceFontSize }}; color:#2B2823; margin:0 0 14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; animation:drop .7s .15s both;">{{ mapCaption }}</p>
+              </sc-if>
               <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
                 <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
                   <defs>
@@ -129,6 +127,11 @@
                   <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
                     <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
                   </sc-for>
+                  <sc-if value="{{ mapShowPath }}" hint-placeholder-val="{{ false }}">
+                    <sc-for list="{{ mapFootsteps }}" as="fp" hint-placeholder-count="5">
+                      <path d="{{ fp.d }}" fill="#8A3A26" style="{{ fp.style }}"></path>
+                    </sc-for>
+                  </sc-if>
                   <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
                     <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
                   </sc-for>
@@ -147,7 +150,49 @@
                   <span style="{{ b.labelStyle }}">{{ b.label }}</span>
                 </sc-for>
               </div>
-              <button style="width:100%; margin-top:22px; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; transition:background .2s;" style-hover="background:#8E3C27;" onClick="{{ revealPiece }}">Reveal next object's location</button>
+
+              <sc-if value="{{ !revealed }}" hint-placeholder-val="{{ true }}">
+                <button style="width:100%; margin-top:22px; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; transition:background .2s;" style-hover="background:#8E3C27;" onClick="{{ revealPiece }}">Reveal next object's location</button>
+              </sc-if>
+
+              <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:22px; animation:rise .5s .35s ease both;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">Add your own quote</div>
+                  <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">{{ quotePrompt }}</p>
+                  <sc-if value="{{ quoteBoxSubmitted }}" hint-placeholder-val="{{ false }}">
+                    <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
+                  </sc-if>
+                  <textarea value="{{ quoteBoxText }}" onInput="{{ onQuoteInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
+                  <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitLocationQuote }}">{{ quoteBoxButtonLabel }}</button>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px; margin-top:16px;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">The final gathering</div>
+                  <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">ICT 743 at 1:15 PM on July 16, 2026</p>
+                </div>
+                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
+                  <sc-if value="{{ postSubmitted }}" hint-placeholder-val="{{ false }}">
+                    <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6;">Thank you for supporting our work.</p>
+                  </sc-if>
+                  <sc-if value="{{ !postSubmitted }}" hint-placeholder-val="{{ true }}">
+                    <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">This was the last piece. If you're willing, help us once more by answering the same questions from the start of the experience. Have your views changed?</p>
+                    <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#F6EADF;" onClick="{{ openPost }}">Answer the same questions again</button>
+                  </sc-if>
+                </div>
+                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">One more thing</div>
+                  <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience?</p>
+                  <sc-if value="{{ feedbackSubmitted }}" hint-placeholder-val="{{ false }}">
+                    <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
+                  </sc-if>
+                  <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
+                  <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
+                </div>
+              </sc-if>
             </div>
           </div>
         </div>
@@ -172,48 +217,6 @@
         </div>
       </sc-if>
       -->
-
-      <!-- REVEAL -->
-      <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex; flex-direction:column; padding:14px 0 34px; animation:fade .6s ease both;">
-          <!-- GUESS RECAP temporarily removed with the guess step (2026-07 feedback). Un-comment to restore.
-          <div style="text-align:center;">
-            <div style="display:inline-flex; align-items:center; gap:8px; padding:7px 16px; background:#EFEADF; border:1px solid rgba(33,30,26,.1); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#6E6A61;">
-              <span style="width:5px; height:5px; border-radius:50%; background:#5F7A4F; flex-shrink:0;"></span> <span style="white-space:nowrap;">Guess sealed</span>
-            </div>
-            <p style="font-family:'Newsreader',serif; font-style:italic; font-size:19px; color:#2B2823; margin-top:18px;">You saw {{ guessVoiceLower }} in these words.</p>
-          </div>
-          -->
-
-          <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
-            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px;">
-              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">The final gathering</div>
-              <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">ICT 743 at 1:15 PM on July 16, 2026</p>
-            </div>
-            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
-              <sc-if value="{{ postSubmitted }}" hint-placeholder-val="{{ false }}">
-                <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6;">Thank you for supporting our work.</p>
-              </sc-if>
-              <sc-if value="{{ !postSubmitted }}" hint-placeholder-val="{{ true }}">
-                <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">This was the last piece. If you're willing, help us once more by answering the same questions from the start of the experience. Have your views changed?</p>
-                <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#F6EADF;" onClick="{{ openPost }}">Answer the same questions again</button>
-              </sc-if>
-            </div>
-            <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
-              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">One more thing</div>
-              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience?</p>
-              <sc-if value="{{ feedbackSubmitted }}" hint-placeholder-val="{{ false }}">
-                <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
-              </sc-if>
-              <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
-              <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
-              <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
-            </div>
-          </sc-if>
-
-          <button style="align-self:center; margin-top:30px; padding:12px 28px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ reread }}">Re-read the quote</button>
-        </div>
-      </sc-if>
 
     </div>
     </div>
@@ -280,6 +283,11 @@ class Component extends DCLogic {
   QR_SCAN_FORM_ID = "1FAIpQLSf8vPsvvW_kbVh8Ss9ZOLg9wur7J2P41svgQ3aqxnL7bLxqKg";
   QR_SCAN_OBJECT_ENTRY = "entry.607181530";
   QR_SCAN_DEVICE_ENTRY = "entry.1721026013";
+
+  QUOTE_FORM_ID = "1FAIpQLSfGtCxy1l7rYy716U7lQfQjxXZRr4FrGM8stxhle9-f6ZVGyQ";
+  QUOTE_TEXT_ENTRY = "entry.1216967517";
+  QUOTE_LOCATION_ENTRY = "entry.2098059377";
+  QUOTE_TOPIC_ENTRY = "entry.1485360817";
 
   VOICE = {
     c: { label: "A child",   mark: "i",   note: "under 12"  },
@@ -360,7 +368,17 @@ class Component extends DCLogic {
     super(props);
     const store = this.loadStore();
     const num = this.readNum();
-    const collected = store.collected || {};
+    let collected = store.collected || {};
+
+    // If the visitor loaded a different stop's page without ever clicking "reveal" on the
+    // previous one (e.g. they wandered off to a different object by chance), still log that
+    // earlier stop as visited now rather than silently losing it.
+    const lastNum = store.lastNum;
+    if (lastNum && lastNum !== num && !collected[lastNum]) {
+      collected = Object.assign({}, collected, { [lastNum]: true });
+    }
+    this.saveStore({ collected: collected, lastNum: num });
+
     const begun = Object.keys(collected).some(k => collected[k]);
     this.state = {
       step: begun ? "read" : "intro",
@@ -370,7 +388,8 @@ class Component extends DCLogic {
       surveyOpen: null,
       pre:  store.pre  || { answers: {}, submitted: false },
       post: store.post || { answers: {}, submitted: false },
-      feedback: store.feedback || { text: "", submitted: false }
+      feedback: store.feedback || { text: "", submitted: false },
+      locationQuotes: store.locationQuotes || {}
     };
   }
 
@@ -498,11 +517,13 @@ class Component extends DCLogic {
   // ---- interactions ----
   goStep(s) { this.setState({ step: s, guess: s === "read" ? null : this.state.guess }); }
 
-  // Uncover this stop's piece straight from the read step (guess step temporarily removed, 2026-07 feedback).
+  // Uncover this stop's piece in place on the read screen (guess step temporarily removed,
+  // 2026-07 feedback). No step change — "revealed" is just derived from collected[num], so
+  // the map/quote-box swap happens on the same page instead of navigating to a new screen.
   revealPiece() {
     const collected = Object.assign({}, this.state.collected, { [this.state.num]: true });
     this.saveStore({ collected: collected });
-    this.setState({ step: "reveal", collected: collected });
+    this.setState({ collected: collected });
   }
 
   /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable to restore the "who said this?" screen.
@@ -563,6 +584,38 @@ class Component extends DCLogic {
     this.setState({ feedback: next });
   }
 
+  setLocationQuoteText(value) {
+    const num = this.state.num;
+    const cur = this.state.locationQuotes[num] || { text: "", submitted: false };
+    const next = Object.assign({}, this.state.locationQuotes, {
+      [num]: Object.assign({}, cur, { text: value })
+    });
+    this.saveStore({ locationQuotes: next });
+    this.setState({ locationQuotes: next });
+  }
+  submitLocationQuote() {
+    const num = this.state.num;
+    const cur = this.state.locationQuotes[num] || { text: "", submitted: false };
+    const text = (cur.text || "").trim();
+    if (!text) return;
+    const memento = this.MEMENTOS[num] || {};
+    const body = new URLSearchParams();
+    body.set(this.QUOTE_TEXT_ENTRY, text);
+    body.set(this.QUOTE_LOCATION_ENTRY, memento.location || "");
+    body.set(this.QUOTE_TOPIC_ENTRY, memento.theme || "");
+    fetch("https://docs.google.com/forms/d/e/" + this.QUOTE_FORM_ID + "/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString()
+    }).catch(() => {});
+    const next = Object.assign({}, this.state.locationQuotes, {
+      [num]: { text: text, submitted: true }
+    });
+    this.saveStore({ locationQuotes: next });
+    this.setState({ locationQuotes: next });
+  }
+
   renderVals() {
     const s = this.state;
     const total = this.TOTAL;
@@ -580,8 +633,13 @@ class Component extends DCLogic {
     const nm = nextNum ? this.MEMENTOS[nextNum] : null;
     const nextRaw = (nm && nm.location) ? nm.location : "another stop on campus";
     const nextLoc = nextRaw.charAt(0).toUpperCase() + nextRaw.slice(1);
-    const currentRaw = data.location || "this spot";
-    const currentLoc = currentRaw.charAt(0).toUpperCase() + currentRaw.slice(1);
+    const lq = s.locationQuotes[num] || { text: "", submitted: false };
+
+    // each memento's theme reads as "On <topic>" (e.g. "On love and loss") — reuse that
+    // same topic in a single prompt template so the quote box asks something relevant and
+    // personal on every stop without needing to hand-write five different prompts.
+    const topicPhrase = (data.theme || "").replace(/^On\s+/i, "") || "this";
+    const quotePrompt = "What's true for you about " + topicPhrase + " as a student right now?";
 
     /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable together with the guess UI.
     const voiceList = Object.keys(this.VOICE).map(k => {
@@ -590,13 +648,18 @@ class Component extends DCLogic {
     });
     */
 
-    // campus map: buildings, "you are here" marker, and (on the reveal step, in order)
-    // the animated path + footsteps to the next stop. Legs are only defined for the
-    // intended forward order (stop N -> stop N+1) — an out-of-order scan just skips
-    // drawing a path rather than guessing one.
+    // whether THIS stop's own piece has been revealed — persisted, so it's not tied to
+    // which screen/step we're on (there's no separate "reveal" screen anymore: the map,
+    // quote box, and button all live on the read screen and react to this directly).
+    const revealed = !!s.collected[num];
+
+    // campus map: buildings, "you are here" marker, and (once revealed, in order) the
+    // animated path + footsteps to the next stop. Legs are only defined for the intended
+    // forward order (stop N -> stop N+1) — an out-of-order scan just skips drawing a path
+    // rather than guessing one.
     const currentBid = this.ROUTE[num - 1] || this.ROUTE[0];
     const legIndex = num - 1;
-    const activeLeg = (s.step === "reveal" && !isFinal && nextNum === num + 1 && legIndex >= 0 && legIndex < this.LEGS.length)
+    const activeLeg = (revealed && !isFinal && nextNum === num + 1 && legIndex >= 0 && legIndex < this.LEGS.length)
       ? this.LEGS[legIndex] : null;
     const nextBid = activeLeg ? this.ROUTE[num] : null;
     const mapBuildings = this.ROUTE.map((bid, idx) => {
@@ -666,7 +729,7 @@ class Component extends DCLogic {
     let mapCaption;
     if (s.step === "intro") mapCaption = "Your route across campus begins at MacEwan Student Centre.";
     else if (isFinal) mapCaption = "";
-    else if (s.step === "read") mapCaption = "";
+    else if (!revealed) mapCaption = "";
     else mapCaption = "The next object can be found at " + nextLoc + ".";
 
     // Keep the announcement on one line no matter how long the revealed location's name
@@ -677,8 +740,7 @@ class Component extends DCLogic {
     const announceChars = mapCaption.length || 1;
     const announceFontSize = "clamp(11px, " + (100 / (announceChars * 0.52)).toFixed(2) + "cqw, 30px)";
 
-    // shown below the map; blank on the reveal step (text now lives in the announcement
-    // heading instead) and on the final page (cut per feedback).
+    // shown below the intro map only; blank everywhere else.
     let belowMapText;
     if (s.step === "intro") belowMapText = "Your route across campus begins at MacEwan Student Centre.";
     else belowMapText = "";
@@ -708,18 +770,18 @@ class Component extends DCLogic {
       mapShowPath: !!activeLeg,
       mapFootsteps: activeLeg ? this.buildLegFootsteps(activeLeg) : [],
       isFinal: isFinal,
-      showRevealAnnounce: s.step === "reveal" && !isFinal,
+      revealed: revealed,
+      showRevealAnnounce: revealed && !isFinal,
       actRegionStyle: {
         display: "flex",
         flexDirection: "column",
-        flex: (s.step === "read" || (s.step === "reveal" && !isFinal)) ? "0 1 auto" : "1"
+        flex: s.step === "read" ? "0 1 auto" : "1"
       },
 
       // step flags
       isIntro: s.step === "intro",
       isRead: s.step === "read",
       isGuess: s.step === "guess",
-      isReveal: s.step === "reveal",
 
       // intro
       aboutParas: this.ABOUT,
@@ -739,7 +801,14 @@ class Component extends DCLogic {
       // guessVoiceLower: s.guess ? this.VOICE[s.guess].label.toLowerCase() : "",  // GUESS STEP removed
       postSubmitted: s.post.submitted,
       openPost: () => this.openSurvey("post"),
-      reread: () => this.goStep("read"),
+
+      // reveal — personal quote submission for this location
+      quotePrompt: quotePrompt,
+      quoteBoxText: lq.text,
+      quoteBoxSubmitted: lq.submitted,
+      quoteBoxButtonLabel: lq.submitted ? "Send again" : "Submit your quote",
+      onQuoteInput: (e) => this.setLocationQuoteText(e.target.value),
+      submitLocationQuote: () => this.submitLocationQuote(),
 
       // final-page feedback
       feedbackText: s.feedback.text,
