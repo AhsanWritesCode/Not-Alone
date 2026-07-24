@@ -42,17 +42,26 @@
             <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
               <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
             </sc-for>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
-            </sc-for>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
-            </sc-for>
+            <!-- drawn under the buildings so it never hides a skull's eyes when the current
+                 stop is also the one you're standing on -->
             <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
               <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
               <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
               <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
             </sc-if>
+            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
+            </sc-for>
+            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+              <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
+                <path d="{{ b.skullD }}" style="{{ b.skullStyle }}"></path>
+                <circle cx="{{ b.eye1X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+                <circle cx="{{ b.eye2X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+              </sc-if>
+              <sc-if value="{{ !b.filled }}" hint-placeholder-val="{{ true }}">
+                <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
+              </sc-if>
+            </sc-for>
           </svg>
           <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
           <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
@@ -77,7 +86,7 @@
             </sc-for>
           </div>
           <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these objects to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
           </div>
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
@@ -95,8 +104,7 @@
       <sc-if value="{{ isRead }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; display:flex; flex-direction:column; padding:20px 0 30px; animation:rise .7s ease both;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:22px;">{{ theme }}</div>
-            <div style="position:relative;">
+            <div style="position:relative; margin-top:26px;">
               <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
               <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
             </div>
@@ -132,17 +140,26 @@
                       <path d="{{ fp.d }}" fill="#8A3A26" style="{{ fp.style }}"></path>
                     </sc-for>
                   </sc-if>
-                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
-                  </sc-for>
-                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
-                  </sc-for>
+                  <!-- drawn under the buildings so it never hides a skull's eyes when the
+                       current stop is also the one you're standing on -->
                   <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
                     <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
                     <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
                     <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
                   </sc-if>
+                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
+                  </sc-for>
+                  <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+                    <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
+                      <path d="{{ b.skullD }}" style="{{ b.skullStyle }}"></path>
+                      <circle cx="{{ b.eye1X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+                      <circle cx="{{ b.eye2X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+                    </sc-if>
+                    <sc-if value="{{ !b.filled }}" hint-placeholder-val="{{ true }}">
+                      <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
+                    </sc-if>
+                  </sc-for>
                 </svg>
                 <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
                 <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
@@ -156,11 +173,10 @@
               </sc-if>
 
               <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
-                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:22px; animation:rise .5s .35s ease both;">
-                  <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">Add your own quote</div>
-                  <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">{{ quotePrompt }}</p>
+                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:14px 22px 22px; margin-top:22px; animation:rise .5s .35s ease both;">
+                  <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:500; font-size:17px; line-height:1.4; color:#A2472F; margin-bottom:20px;">{{ quotePrompt }}</p>
                   <sc-if value="{{ quoteBoxSubmitted }}" hint-placeholder-val="{{ false }}">
-                    <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
+                    <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and add it again below.</p>
                   </sc-if>
                   <textarea value="{{ quoteBoxText }}" onInput="{{ onQuoteInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
                   <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitLocationQuote }}">{{ quoteBoxButtonLabel }}</button>
@@ -299,27 +315,32 @@ class Component extends DCLogic {
     1: {
       theme: "On exam season",
       quote: "I often feel a sense of impostor syndrome about how far I've gotten in university. I've been racked with anxiety for every exam I've taken. For a select few, I even sought help from a higher power. Sitting in the exam room, with half the paper still blank, thirty minutes on the clock, nothing coming to mind, I prayed. Prayed to pass. If a higher power was listening, it answered every time.",
-      location: "MacEwan Student Centre"
+      location: "MacEwan Student Centre",
+      quotePrompt: "Do you ever worry about exams?"
     },
     2: {
       theme: "On financial uncertainty",
       quote: "Despite everything I've done, I still worry about the possibility of never finding work in the field I'm in. The job market right now is rough; I think that's why I save as aggressively as I do. Growing up my family didn't make a lot of money, and whatever disposable income we did have went into savings. While that's meant that my parents have been able to create a life that many can only dream of, it's also instilled a level of financial anxiety within me that I'm trying to navigate as I strive for personal independence.",
-      location: "Taylor Family Digital Library"
+      location: "Taylor Family Digital Library",
+      quotePrompt: "Do you ever worry about money?"
     },
     3: {
       theme: "On family expectations",
       quote: "For every accomplishment I've had in my life, I've felt like my parents didn't view them as enough. Growing up, it affected me deeply in that what I wanted the most was their approval and it felt like anything I did was never enough for it. Even now, they discourage me from pursuing the things I want to, arguing that other paths would lead to more money or higher social status sooner. If I was younger, I think I'd be more susceptible to their suggestions. Today, I enjoy the work I do far too much to change course.",
-      location: "Social Sciences"
+      location: "Social Sciences",
+      quotePrompt: "Do you feel pressure to live up to your family's expectations?"
     },
     4: {
       theme: "On love and loss",
       quote: "Sometimes I question what love means. I met a girl at the university and fell for her. She promised she'd stay by me one night, then called to tell me she wanted to break up the next day. I haven't spoken to her since. She was the only girl I'd ever told my parents about; she made me a better person in the short time I knew her. Of course, I made mistakes in the relationship. Every now and then, when it's late at night and I can't fall asleep, I think about things I could've done differently, but I know it's fruitless. I know all I can do is keep moving forward and try to do better next time, but that doesn't make the scar fade any faster.",
-      location: "Science Theatres"
+      location: "Science Theatres",
+      quotePrompt: "When do you feel most connected to other people?"
     },
     5: {
       theme: "On death and living meaningfully",
       quote: "My best friend from middle school died in his sleep. He was 16, and he was one of the nicest guys I've known. While most of the other students made fun of me for being odd, he always stood up for me and made me feel normal. He wanted to be a mechanic; he would've been a damn good one. I'm not a particularly religious person, but sometimes when things are difficult, or there's some challenge I don't think I can overcome, believing that he might be watching motivates me. I don't want to let him down.",
-      location: "ICT"
+      location: "ICT",
+      quotePrompt: "Why don't you think we talk about death in our society?"
     }
   };
 
@@ -341,14 +362,14 @@ class Component extends DCLogic {
   ];
 
   ABOUT = [
-    "Across these tables, there are objects. Each holds words from someone who has been where you are. A 12-year-old. An 18-year-old. A 65-year-old. A 97-year-old. People you'll never meet, describing something you might recognize.",
-    "I created these objects and placed them here because when I was seventeen, I thought I was the only one struggling.",
+    "Across these tables, there are skulls. Each holds words from someone who has been where you are. A 12-year-old. An 18-year-old. A 65-year-old. A 97-year-old. People you'll never meet, describing something you might recognize.",
+    "I created these skulls and placed them here because when I was seventeen, I thought I was the only one struggling.",
     "I had always been good at school, and I wasn't anymore. I only ever had one or two friends at a time, and then I had none. Some parts of my life that had always felt manageable started to feel like too much. I almost gave up.",
     "And then I got help. From people trying their best, every day, like I was. People who undoubtedly had their own problems but chose to focus on mine for hours at a time. I got better than I was. There are still difficult days, but I'm better than I was.",
     "What took years to understand was that the thing making it unbearable wasn't the struggle itself. It was the feeling that I was uniquely broken. That everyone else had it figured out.",
     "They didn't. They don't.",
     "Dr. Kristin Neff calls this recognition common humanity: the understanding that all people fail, make mistakes, and feel inadequate, and that suffering connects us more than it isolates us. This project is one small attempt to make that recognition tangible.",
-    "You are not alone. Scan the objects and find the proof.",
+    "You are not alone. Scan the skulls and find the proof.",
     "— Ahsan, fourth-year Computer Science, University of Calgary"
   ];
 
@@ -371,7 +392,7 @@ class Component extends DCLogic {
     let collected = store.collected || {};
 
     // If the visitor loaded a different stop's page without ever clicking "reveal" on the
-    // previous one (e.g. they wandered off to a different object by chance), still log that
+    // previous one (e.g. they wandered off to a different skull by chance), still log that
     // earlier stop as visited now rather than silently losing it.
     const lastNum = store.lastNum;
     if (lastNum && lastNum !== num && !collected[lastNum]) {
@@ -460,6 +481,31 @@ class Component extends DCLogic {
   }
   legPathD(leg) {
     return "M" + leg.p0[0] + "," + leg.p0[1] + " Q" + leg.p1[0] + "," + leg.p1[1] + " " + leg.p2[0] + "," + leg.p2[1];
+  }
+  // Small skull silhouette (rounded cranium + a jagged jaw hinting at teeth), drawn in its
+  // own local space centered on the origin, then baked into absolute map coordinates —
+  // marks a completed stop in place of the old plain dot.
+  skullPath(cx, cy) {
+    const segs = [
+      ["M", -5.5, -0.5],
+      ["C", -5.5, -4, -3, -6, 0, -6],
+      ["C", 3, -6, 5.5, -4, 5.5, -0.5],
+      ["C", 5.5, 1.5, 4.5, 2.5, 4, 3],
+      ["L", 4, 3.8],
+      ["L", 2, 3.8], ["L", 2, 5], ["L", 0.7, 5], ["L", 0.7, 3.8],
+      ["L", -0.7, 3.8], ["L", -0.7, 5], ["L", -2, 5], ["L", -2, 3.8],
+      ["L", -4, 3.8],
+      ["L", -4, 3],
+      ["C", -4.5, 2.5, -5.5, 1.5, -5.5, -0.5],
+      ["Z"]
+    ];
+    return segs.map(seg => {
+      if (seg[0] === "Z") return "Z";
+      const [cmd, ...nums] = seg;
+      const abs = [];
+      for (let i = 0; i < nums.length; i += 2) abs.push((cx + nums[i]).toFixed(2), (cy + nums[i + 1]).toFixed(2));
+      return cmd + abs.join(" ");
+    }).join(" ");
   }
   // Small footprint/paw outline, drawn pointing "up" (toe at [0,-6]) in its own
   // local space. Rotated to face the direction of travel and baked into absolute
@@ -620,7 +666,7 @@ class Component extends DCLogic {
     const s = this.state;
     const total = this.TOTAL;
     const num = s.num;
-    const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "" };
+    const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "", quotePrompt: "" };
     const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
     const isFinal = collectedCount >= total;
 
@@ -635,12 +681,6 @@ class Component extends DCLogic {
     const nextLoc = nextRaw.charAt(0).toUpperCase() + nextRaw.slice(1);
     const lq = s.locationQuotes[num] || { text: "", submitted: false };
 
-    // each memento's theme reads as "On <topic>" (e.g. "On love and loss") — reuse that
-    // same topic in a single prompt template so the quote box asks something relevant and
-    // personal on every stop without needing to hand-write five different prompts.
-    const topicPhrase = (data.theme || "").replace(/^On\s+/i, "") || "this";
-    const quotePrompt = "What's true for you about " + topicPhrase + " as a student right now?";
-
     /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable together with the guess UI.
     const voiceList = Object.keys(this.VOICE).map(k => {
       const v = this.VOICE[k];
@@ -654,9 +694,9 @@ class Component extends DCLogic {
     const revealed = !!s.collected[num];
 
     // if this is the only stop left, clicking the button completes the hunt rather than
-    // revealing a next object's location — so the button shouldn't claim it will.
+    // revealing a next skull's location — so the button shouldn't claim it will.
     const isLastPiece = !revealed && collectedCount === total - 1;
-    const revealButtonLabel = isLastPiece ? "Complete the hunt" : "Reveal next object's location";
+    const revealButtonLabel = isLastPiece ? "Complete the hunt" : "Reveal next skull's location";
 
     // campus map: buildings, "you are here" marker, and (once revealed, in order) the
     // animated path + footsteps to the next stop. Legs are only defined for the intended
@@ -680,6 +720,7 @@ class Component extends DCLogic {
         cx: b.cx,
         cy: b.cy,
         r: filled ? 7 : 5.5,
+        filled: filled,
         dotStyle: {
           fill: filled ? "#A2472F" : "#FBF2EA",
           stroke: "#A2472F",
@@ -687,6 +728,11 @@ class Component extends DCLogic {
           strokeWidth: 1.4,
           transition: "fill .6s ease, r .6s ease, stroke-opacity .6s ease"
         },
+        // a completed stop is marked with a small skull instead of a plain filled dot
+        skullD: filled ? this.skullPath(b.cx, b.cy) : "",
+        skullStyle: { fill: "#A2472F", animation: "fade .5s ease both" },
+        eye1X: b.cx - 2, eye2X: b.cx + 2, eyeY: b.cy - 1.3, eyeR: 1.1,
+        eyeStyle: { fill: "#FBF2EA", animation: "fade .5s ease both" },
         glowStyle: {
           opacity: filled ? 0.3 : 0,
           transition: "opacity .8s ease"
@@ -735,7 +781,7 @@ class Component extends DCLogic {
     if (s.step === "intro") mapCaption = "Your route across campus begins at MacEwan Student Centre.";
     else if (isFinal) mapCaption = "";
     else if (!revealed) mapCaption = "";
-    else mapCaption = "The next object can be found at " + nextLoc + ".";
+    else mapCaption = "The next skull can be found at " + nextLoc + ".";
 
     // Keep the announcement on one line no matter how long the revealed location's name
     // is (ranges from "ICT" to "Taylor Family Digital Library"): scale the font down by
@@ -794,7 +840,6 @@ class Component extends DCLogic {
       openPre: () => this.openSurvey("pre"),
 
       // read
-      theme: data.theme,
       quote: data.quote,
       revealButtonLabel: revealButtonLabel,
       revealPiece: () => this.revealPiece(),
@@ -809,10 +854,10 @@ class Component extends DCLogic {
       openPost: () => this.openSurvey("post"),
 
       // reveal — personal quote submission for this location
-      quotePrompt: quotePrompt,
+      quotePrompt: data.quotePrompt,
       quoteBoxText: lq.text,
       quoteBoxSubmitted: lq.submitted,
-      quoteBoxButtonLabel: lq.submitted ? "Send again" : "Submit your quote",
+      quoteBoxButtonLabel: lq.submitted ? "Add again" : "Add my quote",
       onQuoteInput: (e) => this.setLocationQuoteText(e.target.value),
       submitLocationQuote: () => this.submitLocationQuote(),
 
