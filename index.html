@@ -139,7 +139,7 @@
                   </sc-for>
                   <sc-if value="{{ mapShowPath }}" hint-placeholder-val="{{ false }}">
                     <sc-for list="{{ mapFootsteps }}" as="fp" hint-placeholder-count="5">
-                      <path d="{{ fp.d }}" fill="#8A3A26" style="{{ fp.style }}"></path>
+                      <path d="{{ fp.d }}" fill="{{ fp.fill }}" style="{{ fp.style }}"></path>
                     </sc-for>
                   </sc-if>
                   <!-- drawn under the buildings so it never hides a skull's eyes when the
@@ -554,7 +554,7 @@ class Component extends DCLogic {
   footPrintPoints() {
     return [[0, -6], [2.6, -4.2], [3.2, -0.5], [2.2, 3.5], [0, 5.5], [-2.2, 3.5], [-3.2, -0.5], [-2.6, -4.2]];
   }
-  buildLegFootsteps(leg) {
+  buildLegFootsteps(leg, color) {
     const count = 5;
     const stagger = this.FOOTSTEP_STAGGER;
     const duration = this.FOOTSTEP_DURATION;
@@ -580,6 +580,7 @@ class Component extends DCLogic {
       }).join(" ") + " Z";
       steps.push({
         d: d,
+        fill: color,
         style: {
           opacity: 0,
           transformBox: "fill-box",
@@ -871,7 +872,7 @@ class Component extends DCLogic {
       currentCx: currentB.cx,
       currentCy: currentB.cy,
       mapShowPath: !!activeLeg,
-      mapFootsteps: activeLeg ? this.buildLegFootsteps(activeLeg) : [],
+      mapFootsteps: activeLeg ? this.buildLegFootsteps(activeLeg, currentB.color) : [],
       isFinal: isFinal,
       revealed: revealed,
       showRevealAnnounce: revealed && !isFinal,
