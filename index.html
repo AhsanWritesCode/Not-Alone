@@ -45,12 +45,14 @@
             <!-- drawn under the buildings so it never hides a skull's eyes when the current
                  stop is also the one you're standing on -->
             <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
+              <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+                <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
+                <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlow); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
+              </sc-if>
               <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
             </sc-if>
             <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
+              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
             </sc-for>
             <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
               <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
@@ -143,12 +145,14 @@
                   <!-- drawn under the buildings so it never hides a skull's eyes when the
                        current stop is also the one you're standing on -->
                   <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
+                    <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+                      <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="22" fill="#C1552E" opacity="0.22" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerBreathe 3.6s ease-in-out infinite;"></circle>
+                      <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="12" fill="#C1552E" opacity="0.4" style="filter:url(#mapGlowRead); transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
+                    </sc-if>
                     <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
                   </sc-if>
                   <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" fill="#A2472F" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
+                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
                   </sc-for>
                   <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
                     <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
@@ -347,12 +351,14 @@ class Component extends DCLogic {
   // Campus map data: simplified, stylized positions (not to scale) following the real
   // relative layout of these buildings, used to draw the wayfinding map + footstep paths.
   ROUTE = ["MSC", "TFDL", "SS", "ST", "ICT"];
+  // color: each stop's unique identity (from the "Bold" categorical palette) — used for both
+  // its not-found state (outline ring + "?" mark) and found state (the skull fill).
   BUILDINGS = {
-    MSC:  { label: "MacEwan Student Centre",     cx: 96,  cy: 171, hh: 14 },
-    TFDL: { label: "Taylor Family Digital Library", cx: 176, cy: 195, hh: 13 },
-    SS:   { label: "Social Sciences",            cx: 300, cy: 145, hh: 13 },
-    ST:   { label: "Science Theatres",           cx: 300, cy: 50,  hh: 12 },
-    ICT:  { label: "ICT",                        cx: 161, cy: 51,  hh: 12 }
+    MSC:  { label: "MacEwan Student Centre",     cx: 96,  cy: 171, hh: 14, color: "#7F3C8D" },
+    TFDL: { label: "Taylor Family Digital Library", cx: 176, cy: 195, hh: 13, color: "#11A579" },
+    SS:   { label: "Social Sciences",            cx: 300, cy: 145, hh: 13, color: "#3969AC" },
+    ST:   { label: "Science Theatres",           cx: 300, cy: 50,  hh: 12, color: "#F2B701" },
+    ICT:  { label: "ICT",                        cx: 161, cy: 51,  hh: 12, color: "#E73F74" }
   };
   LEGS = [
     { p0: [96, 171],  p1: [140, 225], p2: [176, 195] },
@@ -481,6 +487,41 @@ class Component extends DCLogic {
   }
   legPathD(leg) {
     return "M" + leg.p0[0] + "," + leg.p0[1] + " Q" + leg.p1[0] + "," + leg.p1[1] + " " + leg.p2[0] + "," + leg.p2[1];
+  }
+  // A reversed quadratic leg — swaps the endpoints, keeps the control point — so footsteps
+  // can walk a predefined leg backwards when the nearest undiscovered stop is behind you.
+  reverseLeg(leg) { return { p0: leg.p2.slice(), p1: leg.p1.slice(), p2: leg.p0.slice() }; }
+  // Mean position of all buildings; synthesized arcs bow away from it so they curve outward,
+  // matching the outward-bowing predefined loop legs.
+  mapCentroid() {
+    const ks = Object.keys(this.BUILDINGS);
+    let sx = 0, sy = 0;
+    ks.forEach(k => { sx += this.BUILDINGS[k].cx; sy += this.BUILDINGS[k].cy; });
+    return { x: sx / ks.length, y: sy / ks.length };
+  }
+  // A gently curved leg between two arbitrary buildings, for stop pairs that aren't adjacent
+  // on the predefined loop (e.g. ICT -> MSC). Bows perpendicular to the straight line, away
+  // from the map centroid, by an amount that scales with distance (capped).
+  arcLeg(fromB, toB) {
+    const p0 = [fromB.cx, fromB.cy], p2 = [toB.cx, toB.cy];
+    const mx = (p0[0] + p2[0]) / 2, my = (p0[1] + p2[1]) / 2;
+    const dx = p2[0] - p0[0], dy = p2[1] - p0[1];
+    const len = Math.hypot(dx, dy) || 1;
+    let px = -dy / len, py = dx / len;
+    const c = this.mapCentroid();
+    if (px * (mx - c.x) + py * (my - c.y) < 0) { px = -px; py = -py; }
+    const bow = Math.min(len * 0.16, 30);
+    return { p0: p0, p1: [mx + px * bow, my + py * bow], p2: p2 };
+  }
+  // The footstep leg from one stop to another: reuse a hand-tuned predefined leg when the two
+  // are adjacent on the loop (forwards, or reversed if backwards), otherwise synthesize an arc.
+  // This makes every ordered pair of stops walkable, in either direction.
+  legBetween(fromBid, toBid) {
+    for (let i = 0; i < this.LEGS.length; i++) {
+      if (this.ROUTE[i] === fromBid && this.ROUTE[i + 1] === toBid) return this.LEGS[i];
+      if (this.ROUTE[i] === toBid && this.ROUTE[i + 1] === fromBid) return this.reverseLeg(this.LEGS[i]);
+    }
+    return this.arcLeg(this.BUILDINGS[fromBid], this.BUILDINGS[toBid]);
   }
   // Small skull silhouette (rounded cranium + a jagged jaw hinting at teeth), drawn in its
   // own local space centered on the origin, then baked into absolute map coordinates —
@@ -670,15 +711,6 @@ class Component extends DCLogic {
     const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
     const isFinal = collectedCount >= total;
 
-    // next un-collected stop, searching forward from the current one
-    let nextNum = null;
-    for (let i = 1; i <= total; i++) {
-      const n = ((num - 1 + i) % total) + 1;
-      if (!s.collected[n]) { nextNum = n; break; }
-    }
-    const nm = nextNum ? this.MEMENTOS[nextNum] : null;
-    const nextRaw = (nm && nm.location) ? nm.location : "another stop on campus";
-    const nextLoc = nextRaw.charAt(0).toUpperCase() + nextRaw.slice(1);
     const lq = s.locationQuotes[num] || { text: "", submitted: false };
 
     /* GUESS STEP temporarily removed (2026-07 feedback). Re-enable together with the guess UI.
@@ -698,15 +730,26 @@ class Component extends DCLogic {
     const isLastPiece = !revealed && collectedCount === total - 1;
     const revealButtonLabel = isLastPiece ? "Complete the hunt" : "Reveal next skull's location";
 
-    // campus map: buildings, "you are here" marker, and (once revealed, in order) the
-    // animated path + footsteps to the next stop. Legs are only defined for the intended
-    // forward order (stop N -> stop N+1) — an out-of-order scan just skips drawing a path
-    // rather than guessing one.
+    // campus map: buildings, the "you are here" marker, and — once the current skull is
+    // revealed — animated footsteps leading to the NEAREST still-undiscovered skull, in
+    // whatever direction that is (forwards, backwards, or across the loop). "Nearest" is by
+    // straight-line distance between building centres; legBetween() picks/synthesizes the path.
     const currentBid = this.ROUTE[num - 1] || this.ROUTE[0];
-    const legIndex = num - 1;
-    const activeLeg = (revealed && !isFinal && nextNum === num + 1 && legIndex >= 0 && legIndex < this.LEGS.length)
-      ? this.LEGS[legIndex] : null;
-    const nextBid = activeLeg ? this.ROUTE[num] : null;
+    const currentB = this.BUILDINGS[currentBid];
+    let destBid = null, destNum = null;
+    if (revealed && !isFinal) {
+      let best = Infinity;
+      this.ROUTE.forEach((bid, idx) => {
+        if (s.collected[idx + 1]) return;
+        const b = this.BUILDINGS[bid];
+        const d = Math.hypot(b.cx - currentB.cx, b.cy - currentB.cy);
+        if (d < best) { best = d; destBid = bid; destNum = idx + 1; }
+      });
+    }
+    const activeLeg = destBid ? this.legBetween(currentBid, destBid) : null;
+    const nextBid = destBid;
+    const destRaw = destNum ? ((this.MEMENTOS[destNum] || {}).location || "another stop on campus") : "another stop on campus";
+    const nextLoc = destRaw.charAt(0).toUpperCase() + destRaw.slice(1);
     const mapBuildings = this.ROUTE.map((bid, idx) => {
       const b = this.BUILDINGS[bid];
       const filled = !!s.collected[idx + 1];
@@ -716,24 +759,26 @@ class Component extends DCLogic {
       // scans a different, unrelated stop (e.g. MacEwan Student Centre).
       const predecessorCollected = idx > 0 && !!s.collected[idx];
       const labelVisible = filled || bid === currentBid || bid === nextBid || predecessorCollected;
+      const color = b.color;
       return {
         cx: b.cx,
         cy: b.cy,
         r: filled ? 7 : 5.5,
         filled: filled,
         dotStyle: {
-          fill: filled ? "#A2472F" : "#FBF2EA",
-          stroke: "#A2472F",
+          fill: filled ? color : "#FBF2EA",
+          stroke: color,
           strokeOpacity: filled ? 0 : 0.5,
           strokeWidth: 1.4,
           transition: "fill .6s ease, r .6s ease, stroke-opacity .6s ease"
         },
         // a completed stop is marked with a small skull instead of a plain filled dot
         skullD: filled ? this.skullPath(b.cx, b.cy) : "",
-        skullStyle: { fill: "#A2472F", animation: "fade .5s ease both" },
+        skullStyle: { fill: color, animation: "fade .5s ease both" },
         eye1X: b.cx - 2, eye2X: b.cx + 2, eyeY: b.cy - 1.3, eyeR: 1.1,
         eyeStyle: { fill: "#FBF2EA", animation: "fade .5s ease both" },
         glowStyle: {
+          fill: color,
           opacity: filled ? 0.3 : 0,
           transition: "opacity .8s ease"
         },
@@ -745,7 +790,7 @@ class Component extends DCLogic {
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: "clamp(8px, 1.87cqw, 11px)",
           fontWeight: 600,
-          color: "#A2472F",
+          color: color,
           opacity: filled ? 0 : 0.7,
           pointerEvents: "none",
           transition: "opacity .6s ease"
@@ -770,11 +815,18 @@ class Component extends DCLogic {
         label: b.label
       };
     });
-    // the active leg is represented by footsteps only, not the faint always-on road line
-    const mapRoads = this.LEGS
-      .filter((leg, i) => !(activeLeg && i === legIndex))
-      .map(leg => this.legPathD(leg));
-    const currentB = this.BUILDINGS[currentBid];
+    // faint dotted campus-path network: a dotted line between EVERY pair of stops (loop legs
+    // keep their hand-tuned curves; other pairs get a synthesized arc), so the whole map reads
+    // as one connected network. The single pair the footsteps currently walk is omitted — so
+    // its dotted line vanishes the moment you reveal and the footsteps take its place.
+    const mapRoads = [];
+    for (let i = 0; i < this.ROUTE.length; i++) {
+      for (let j = i + 1; j < this.ROUTE.length; j++) {
+        const a = this.ROUTE[i], b = this.ROUTE[j];
+        if (destBid && ((a === currentBid && b === destBid) || (a === destBid && b === currentBid))) continue;
+        mapRoads.push(this.legPathD(this.legBetween(a, b)));
+      }
+    }
 
     // shown as the announcement heading above the map (gated by showRevealAnnounce below)
     let mapCaption;
