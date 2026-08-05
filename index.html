@@ -261,6 +261,32 @@
       <sc-if value="{{ surveyIntro }}" hint-placeholder-val="{{ false }}">
         <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:18px; line-height:1.6; color:#2B2823; margin-bottom:10px;">{{ surveyIntro }}</p>
       </sc-if>
+
+      <!-- demographic questions: only asked once, alongside the pre-hunt survey, before the
+           participant sees any reflection. Lets us confirm we're reaching Faculty of Science
+           students specifically while also seeing who else the installation attracts. -->
+      <sc-if value="{{ isPreSurvey }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin:22px 0 14px;">About you</div>
+        <div style="display:flex; flex-direction:column; gap:22px; padding-bottom:22px; margin-bottom:6px; border-bottom:1px solid rgba(33,30,26,.12);">
+          <div>
+            <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:12px;">Are you a Faculty of Science student?</p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <sc-for list="{{ scienceOptions }}" as="opt" hint-placeholder-count="2">
+                <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:12px;">Which best describes you?</p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <sc-for list="{{ roleOptions }}" as="opt" hint-placeholder-count="5">
+                <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
       <div style="display:flex; flex-direction:column; gap:28px; margin:26px 0 8px;">
         <sc-for list="{{ surveyQuestions }}" as="q" hint-placeholder-count="4">
           <div>
@@ -337,6 +363,11 @@ class Component extends DCLogic {
     "entry.1295897154", "entry.1777768531", "entry.1258253229", "entry.1224835382"
   ];
 
+  // Pre-only — intentionally not part of SURVEY_ENTRIES/POST_SURVEY.
+  DEMO_SCIENCE_ENTRY = "entry.1975441396";
+  DEMO_ROLE_ENTRY = "entry.1927028882";
+  ROLE_OPTIONS = ["Undergraduate student", "Graduate student", "Faculty", "Staff", "Other"];
+
   QR_SCAN_FORM_ID = "1FAIpQLSf8vPsvvW_kbVh8Ss9ZOLg9wur7J2P41svgQ3aqxnL7bLxqKg";
   QR_SCAN_OBJECT_ENTRY = "entry.607181530";
   QR_SCAN_DEVICE_ENTRY = "entry.1721026013";
@@ -346,12 +377,10 @@ class Component extends DCLogic {
   QUOTE_LOCATION_ENTRY = "entry.2098059377";
   QUOTE_TOPIC_ENTRY = "entry.1485360817";
 
-  // TODO before deploy: create a Google Form (2 short-answer questions: contact info, message)
-  // for the "struggling, please follow up" flag and fill in its real IDs below — someone on the
-  // team needs to actually monitor this form's responses during the study.
-  FOLLOWUP_FORM_ID = "REPLACE_WITH_FOLLOWUP_FORM_ID";
-  FOLLOWUP_CONTACT_ENTRY = "entry.REPLACE_ME_CONTACT";
-  FOLLOWUP_MESSAGE_ENTRY = "entry.REPLACE_ME_MESSAGE";
+  // Reminder: someone on the team needs to actually monitor this form's responses during the study.
+  FOLLOWUP_FORM_ID = "1FAIpQLSdYk17G16nAruEQlUkzhM-CSFLhDj1ADa5Py7vwQoNPgWZeOg";
+  FOLLOWUP_CONTACT_ENTRY = "entry.151659305";
+  FOLLOWUP_MESSAGE_ENTRY = "entry.914921734";
 
   SUPPORT_RESOURCES = [
     { name: "Student Wellness Services", detail: "403-210-9355", href: "tel:+14032109355" },
@@ -468,7 +497,7 @@ class Component extends DCLogic {
       collected: collected,
       surveyOpen: null,
       supportOpen: false,
-      pre:  store.pre  || { answers: {}, submitted: false },
+      pre: Object.assign({ answers: {}, submitted: false, science: null, role: null }, store.pre || {}),
       post: store.post || { answers: {}, submitted: false },
       feedback: store.feedback || { text: "", submitted: false },
       followUp: store.followUp || { contact: "", message: "", submitted: false },
@@ -657,6 +686,16 @@ class Component extends DCLogic {
       display: "flex", alignItems: "center", justifyContent: "center", transition: "all .15s"
     };
   }
+  demoOptStyle(selected) {
+    return {
+      padding: "10px 16px", borderRadius: "100px",
+      fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500, fontSize: "13px", cursor: "pointer",
+      border: selected ? "1px solid #A2472F" : "1px solid rgba(33,30,26,0.18)",
+      background: selected ? "#A2472F" : "#FCFAF4",
+      color: selected ? "#F7EFE4" : "#211E1A",
+      transition: "all .15s"
+    };
+  }
 
   // ---- interactions ----
   goStep(s) { this.setState({ step: s, guess: s === "read" ? null : this.state.guess }); }
@@ -688,6 +727,13 @@ class Component extends DCLogic {
     this.saveStore({ [key]: next });
     this.setState({ [key]: next });
   }
+  // demographics are only ever collected on the pre-survey (asking again post-hunt would be
+  // redundant — a participant's program/role doesn't change over the course of the hunt).
+  setPreDemo(field, value) {
+    const next = Object.assign({}, this.state.pre, { [field]: value });
+    this.saveStore({ pre: next });
+    this.setState({ pre: next });
+  }
   submitSurvey(ctx) {
     const key = ctx === "post" ? "post" : "pre";
     const cur = this.state[key];
@@ -696,6 +742,10 @@ class Component extends DCLogic {
     this.SURVEY_ENTRIES.forEach((entry, qIdx) => {
       if (cur.answers[qIdx] !== undefined) body.set(entry, cur.answers[qIdx]);
     });
+    if (key === "pre") {
+      if (cur.science) body.set(this.DEMO_SCIENCE_ENTRY, cur.science);
+      if (cur.role) body.set(this.DEMO_ROLE_ENTRY, cur.role);
+    }
     fetch("https://docs.google.com/forms/d/e/" + formId + "/formResponse", {
       method: "POST",
       mode: "no-cors",
@@ -942,6 +992,17 @@ class Component extends DCLogic {
         onSelect: () => this.setAnswer(ctx, qIdx, value)
       }))
     }));
+    const isPreSurvey = ctx === "pre";
+    const scienceOptions = ["Yes", "No"].map(label => ({
+      label: label,
+      style: this.demoOptStyle(s.pre.science === label),
+      onSelect: () => this.setPreDemo("science", label)
+    }));
+    const roleOptions = this.ROLE_OPTIONS.map(label => ({
+      label: label,
+      style: this.demoOptStyle(s.pre.role === label),
+      onSelect: () => this.setPreDemo("role", label)
+    }));
 
     return {
       // campus map
@@ -1020,6 +1081,9 @@ class Component extends DCLogic {
 
       // survey overlay
       isSurveyOpen: s.surveyOpen !== null,
+      isPreSurvey: isPreSurvey,
+      scienceOptions: scienceOptions,
+      roleOptions: roleOptions,
       surveyTitle: "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
       surveyCitation: "Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
