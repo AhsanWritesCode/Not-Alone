@@ -183,13 +183,14 @@
 
               <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
                 <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:14px 22px 22px; margin-top:22px; animation:rise .5s .35s ease both;">
-                  <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:500; font-size:17px; line-height:1.4; color:#A2472F; margin-bottom:20px;">{{ quotePrompt }}</p>
+                  <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:500; font-size:17px; line-height:1.4; color:#A2472F; margin-bottom:14px;">{{ quotePrompt }}</p>
+                  <p style="font-size:11.5px; color:#9A9587; font-weight:300; line-height:1.5; margin-bottom:16px;">This may be shown anonymously as part of the project, now or in the future &mdash; please avoid including your name or other identifying details.</p>
                   <sc-if value="{{ quoteBoxSubmitted }}" hint-placeholder-val="{{ false }}">
                     <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and add it again below.</p>
                   </sc-if>
                   <textarea value="{{ quoteBoxText }}" onInput="{{ onQuoteInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
                   <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitLocationQuote }}">{{ quoteBoxButtonLabel }}</button>
-                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks; to do so, see Support in the corner.</p>
                 </div>
               </sc-if>
 
@@ -215,7 +216,7 @@
                   </sc-if>
                   <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
                   <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
-                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — see Support in the corner.</p>
                 </div>
               </sc-if>
             </div>
@@ -304,22 +305,38 @@
           </div>
         </sc-for>
       </div>
-      <button style="width:100%; margin-top:18px; padding:15px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; cursor:pointer;" style-hover="background:#332F28;" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
-      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier.</p>
+
+      <!-- age affirmation + explicit consent checkbox — asked once, on the pre-survey only,
+           gating submission (matches what's on file with the REB: participants must check
+           off that they understand the terms and affirm they're 18+ before proceeding). -->
+      <sc-if value="{{ isPreSurvey }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:flex-start; gap:12px; margin:20px 0 4px; cursor:pointer;" onClick="{{ toggleAgeConsent }}">
+          <div style="{{ ageConsentBoxStyle }}">
+            <sc-if value="{{ ageConsentChecked }}" hint-placeholder-val="{{ false }}">
+              <span style="color:#F7EFE4; font-size:12px; line-height:1; font-weight:700;">&#10003;</span>
+            </sc-if>
+          </div>
+          <p style="font-size:12.5px; color:#5C584E; line-height:1.55; margin:0;">I am 18 years of age or older, and I understand my anonymized responses will be used for this study as described above.</p>
+        </div>
+      </sc-if>
+
+      <button style="{{ surveyButtonStyle }}" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
+      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — see Support in the corner.</p>
     </div>
   </div>
 </sc-if>
 
-<!-- SUPPORT OVERLAY: reachable from the persistent corner button on every screen. Lists
-     crisis/support resources and an optional, clearly-labelled way to flag distress and
-     request follow-up (submits to a Google Form, same pattern as the other forms below). -->
+<!-- SUPPORT OVERLAY: reachable from the persistent corner button on every screen. Resources
+     only, in line with what's on file with the REB — this project does not monitor
+     submissions or collect contact info, so it directs people to external resources rather
+     than offering to handle disclosures in-house. -->
 <sc-if value="{{ isSupportOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed; inset:0; z-index:110; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSupport }}">
     <div style="position:relative; width:100%; max-width:520px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:40px 32px 36px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSupport }}">&times;</button>
       <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">Support resources</div>
       <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:17px; line-height:1.6; color:#2B2823; margin-bottom:22px;">If you're thinking about suicide, or you're in crisis right now, please reach out. These are free and confidential.</p>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:8px;">
         <sc-for list="{{ supportResourcesCard }}" as="r" hint-placeholder-count="3">
           <a href="{{ r.href }}" style="display:block; padding:14px 16px; background:#FCFAF4; border:1px solid rgba(33,30,26,.12); border-radius:14px;">
             <span style="display:block; font-weight:500; font-size:14px; color:#211E1A; margin-bottom:3px;">{{ r.name }}</span>
@@ -327,16 +344,10 @@
           </a>
         </sc-for>
       </div>
-      <div style="border-top:1px solid rgba(33,30,26,.12); padding-top:22px;">
-        <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:4px;">Struggling, and want someone from our team to follow up with you?</p>
-        <p style="font-size:11.5px; color:#9A9587; font-weight:300; line-height:1.5; margin-bottom:14px;">Optional. Leave an email or phone number if you'd like us to reach out, along with a message about what you're going through.</p>
-        <sc-if value="{{ followUpSubmitted }}" hint-placeholder-val="{{ false }}">
-          <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. Someone from our team will follow up.</p>
-        </sc-if>
-        <input value="{{ followUpContact }}" onInput="{{ onFollowUpContactInput }}" placeholder="Email or phone (optional)" style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; margin-bottom:10px;">
-        <textarea value="{{ followUpMessage }}" onInput="{{ onFollowUpMessageInput }}" placeholder="What's going on? (optional)" style="width:100%; min-height:70px; padding:12px 14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
-        <button style="width:100%; padding:14px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#8E3C27;" onClick="{{ submitFollowUp }}">{{ followUpButtonLabel }}</button>
-        <p style="text-align:center; font-size:11px; color:#9A9587; font-weight:300; margin-top:12px;">This isn't a monitored emergency line. If you're in immediate danger, please call 911 or use a resource above.</p>
+      <div style="border-top:1px solid rgba(33,30,26,.12); padding-top:20px; margin-top:18px; text-align:center;">
+        <p style="font-size:12.5px; color:#8A8578; font-weight:400; line-height:1.6; margin-bottom:8px;">Want something you submitted removed?</p>
+        <a href="{{ withdrawMailtoHref }}" style="font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13px; color:#A2472F; text-decoration:underline;">Withdraw my data</a>
+        <p style="font-size:11px; color:#9A9587; font-weight:300; margin-top:8px;">Within 2 weeks of submitting.</p>
       </div>
     </div>
   </div>
@@ -377,10 +388,9 @@ class Component extends DCLogic {
   QUOTE_LOCATION_ENTRY = "entry.2098059377";
   QUOTE_TOPIC_ENTRY = "entry.1485360817";
 
-  // Reminder: someone on the team needs to actually monitor this form's responses during the study.
-  FOLLOWUP_FORM_ID = "1FAIpQLSdYk17G16nAruEQlUkzhM-CSFLhDj1ADa5Py7vwQoNPgWZeOg";
-  FOLLOWUP_CONTACT_ENTRY = "entry.151659305";
-  FOLLOWUP_MESSAGE_ENTRY = "entry.914921734";
+  // TODO confirm: which team member's inbox should receive withdrawal requests? Defaulting to
+  // Ahsan since he's the one already publicly credited/signed in the intro text.
+  WITHDRAW_EMAIL = "ahsan.tariq@ucalgary.ca";
 
   SUPPORT_RESOURCES = [
     { name: "Student Wellness Services", detail: "403-210-9355", href: "tel:+14032109355" },
@@ -497,10 +507,9 @@ class Component extends DCLogic {
       collected: collected,
       surveyOpen: null,
       supportOpen: false,
-      pre: Object.assign({ answers: {}, submitted: false, science: null, role: null }, store.pre || {}),
+      pre: Object.assign({ answers: {}, submitted: false, science: null, role: null, ageConsent: false }, store.pre || {}),
       post: store.post || { answers: {}, submitted: false },
       feedback: store.feedback || { text: "", submitted: false },
-      followUp: store.followUp || { contact: "", message: "", submitted: false },
       locationQuotes: store.locationQuotes || {}
     };
   }
@@ -696,6 +705,15 @@ class Component extends DCLogic {
       transition: "all .15s"
     };
   }
+  ageConsentBoxStyle(checked) {
+    return {
+      flexShrink: 0, width: "20px", height: "20px", borderRadius: "6px", marginTop: "1px",
+      border: checked ? "1px solid #A2472F" : "1px solid rgba(33,30,26,0.3)",
+      background: checked ? "#A2472F" : "#FCFAF4",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      transition: "all .15s"
+    };
+  }
 
   // ---- interactions ----
   goStep(s) { this.setState({ step: s, guess: s === "read" ? null : this.state.guess }); }
@@ -734,9 +752,17 @@ class Component extends DCLogic {
     this.saveStore({ pre: next });
     this.setState({ pre: next });
   }
+  // asked once, on the pre-survey only — affirms 18+ and understanding of the consent terms,
+  // gating that submission (matches what's on file with the REB).
+  toggleAgeConsent() {
+    const next = Object.assign({}, this.state.pre, { ageConsent: !this.state.pre.ageConsent });
+    this.saveStore({ pre: next });
+    this.setState({ pre: next });
+  }
   submitSurvey(ctx) {
     const key = ctx === "post" ? "post" : "pre";
     const cur = this.state[key];
+    if (key === "pre" && !cur.ageConsent) return;
     const formId = key === "post" ? this.POST_SURVEY_FORM_ID : this.PRE_SURVEY_FORM_ID;
     const body = new URLSearchParams();
     this.SURVEY_ENTRIES.forEach((entry, qIdx) => {
@@ -778,30 +804,6 @@ class Component extends DCLogic {
     const next = Object.assign({}, this.state.feedback, { submitted: true });
     this.saveStore({ feedback: next });
     this.setState({ feedback: next });
-  }
-
-  setFollowUpContact(value) {
-    this.setState({ followUp: Object.assign({}, this.state.followUp, { contact: value }) });
-  }
-  setFollowUpMessage(value) {
-    this.setState({ followUp: Object.assign({}, this.state.followUp, { message: value }) });
-  }
-  submitFollowUp() {
-    const contact = (this.state.followUp.contact || "").trim();
-    const message = (this.state.followUp.message || "").trim();
-    if (!contact && !message) return;
-    const body = new URLSearchParams();
-    body.set(this.FOLLOWUP_CONTACT_ENTRY, contact);
-    body.set(this.FOLLOWUP_MESSAGE_ENTRY, message);
-    fetch("https://docs.google.com/forms/d/e/" + this.FOLLOWUP_FORM_ID + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
-    const next = Object.assign({}, this.state.followUp, { contact: contact, message: message, submitted: true });
-    this.saveStore({ followUp: next });
-    this.setState({ followUp: next });
   }
 
   setLocationQuoteText(value) {
@@ -1003,6 +1005,17 @@ class Component extends DCLogic {
       style: this.demoOptStyle(s.pre.role === label),
       onSelect: () => this.setPreDemo("role", label)
     }));
+    // gates submission of the pre-survey only — post-survey has no age/consent checkbox
+    // since it's already been affirmed once.
+    const surveyCanSubmit = !isPreSurvey || s.pre.ageConsent;
+    const surveyButtonStyle = {
+      width: "100%", marginTop: "18px", padding: "15px",
+      background: surveyCanSubmit ? "#211E1A" : "rgba(33,30,26,0.35)",
+      color: "#F7EFE4", border: "none", borderRadius: "100px",
+      fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500, fontSize: "14.5px",
+      cursor: surveyCanSubmit ? "pointer" : "not-allowed",
+      transition: "background .15s"
+    };
 
     return {
       // campus map
@@ -1064,26 +1077,24 @@ class Component extends DCLogic {
       onFeedbackInput: (e) => this.setFeedbackText(e.target.value),
       submitFeedback: () => this.submitFeedback(),
 
-      // support overlay: resources + optional "please follow up" flag, reachable from the
-      // persistent corner button on every screen (also summarized inline on the intro screen).
+      // support overlay: resources only, reachable from the persistent corner button on every
+      // screen (also summarized inline on the intro screen).
       supportResourcesInline: this.SUPPORT_RESOURCES,
       supportResourcesCard: this.SUPPORT_RESOURCES,
       isSupportOpen: s.supportOpen,
       openSupport: () => this.openSupport(),
       closeSupport: () => this.closeSupport(),
-      followUpContact: s.followUp.contact,
-      followUpMessage: s.followUp.message,
-      followUpSubmitted: s.followUp.submitted,
-      followUpButtonLabel: s.followUp.submitted ? "Send again" : "Send to our team",
-      onFollowUpContactInput: (e) => this.setFollowUpContact(e.target.value),
-      onFollowUpMessageInput: (e) => this.setFollowUpMessage(e.target.value),
-      submitFollowUp: () => this.submitFollowUp(),
+      withdrawMailtoHref: "mailto:" + this.WITHDRAW_EMAIL + "?subject=" + encodeURIComponent("Withdraw my data — Not Alone project"),
 
       // survey overlay
       isSurveyOpen: s.surveyOpen !== null,
       isPreSurvey: isPreSurvey,
       scienceOptions: scienceOptions,
       roleOptions: roleOptions,
+      ageConsentChecked: s.pre.ageConsent,
+      ageConsentBoxStyle: this.ageConsentBoxStyle(s.pre.ageConsent),
+      toggleAgeConsent: () => this.toggleAgeConsent(),
+      surveyButtonStyle: surveyButtonStyle,
       surveyTitle: "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
       surveyCitation: "Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
