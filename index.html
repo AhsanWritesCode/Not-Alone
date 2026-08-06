@@ -18,6 +18,28 @@
      survey overlay, hence the high z-index) so resources are never more than one tap away. -->
 <button aria-label="Support resources" style="position:fixed; bottom:18px; right:18px; z-index:100; padding:11px 18px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:12.5px; letter-spacing:.01em; cursor:pointer; box-shadow:0 10px 26px -10px rgba(33,30,26,.55); transition:background .15s;" style-hover="background:#332F28;" onClick="{{ openSupport }}">Support</button>
 
+<!-- TEST MODE (?test=1 in the URL): lets the research team click through every screen for
+     feedback without physically visiting each campus stop, and without recording anything in
+     the real Google Forms responses (postToForm() no-ops while this is on). Clearly marked so
+     nobody mistakes it for the real participant experience. -->
+<sc-if value="{{ isTestMode }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed; top:0; left:0; right:0; z-index:200; background:#211E1A; color:#F7EFE4; padding:8px 16px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;">Test mode &mdash; nothing you do here is recorded</div>
+
+  <button aria-label="Test menu" style="position:fixed; bottom:18px; left:18px; z-index:200; padding:11px 18px; background:#3B5B6B; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:12.5px; cursor:pointer; box-shadow:0 10px 26px -10px rgba(33,30,26,.55);" onClick="{{ toggleTestPanel }}">Test Menu</button>
+
+  <sc-if value="{{ testPanelOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; bottom:70px; left:18px; z-index:200; width:min(280px, calc(100vw - 36px)); max-height:65vh; overflow-y:auto; background:#FBF6EE; border:1px solid rgba(33,30,26,.15); border-radius:16px; box-shadow:0 20px 50px -20px rgba(28,26,23,.6); padding:16px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#3B5B6B; margin-bottom:10px;">Jump to</div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
+        <sc-for list="{{ testJumps }}" as="j" hint-placeholder-count="10">
+          <button style="text-align:left; padding:9px 12px; border-radius:10px; border:1px solid rgba(33,30,26,.12); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:12px; cursor:pointer;" onClick="{{ j.onSelect }}">{{ j.label }}</button>
+        </sc-for>
+      </div>
+      <button style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid rgba(162,71,47,.3); background:#fff; color:#A2472F; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:12px; cursor:pointer;" onClick="{{ testReset }}">Reset all progress</button>
+    </div>
+  </sc-if>
+</sc-if>
+
 <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center;">
   <div style="width:100%; max-width:680px; min-height:100vh; display:flex; flex-direction:column; padding:0 26px; container-type:inline-size;">
 
@@ -359,6 +381,9 @@
 }">
 class Component extends DCLogic {
   get TOTAL() { return this.props.pieces ?? 3; }
+  // ?test=1 lets the team click through every screen without physically visiting each
+  // campus location, and without recording anything in the real Google Forms responses.
+  get TEST_MODE() { return new URLSearchParams(location.search).get("test") === "1"; }
 
   STORAGE_KEY = "nsura_puzzle_v1";
   FOOTSTEP_STAGGER = 0.26;
@@ -507,6 +532,7 @@ class Component extends DCLogic {
       collected: collected,
       surveyOpen: null,
       supportOpen: false,
+      testPanelOpen: false,
       pre: Object.assign({ answers: {}, submitted: false, science: null, role: null, ageConsent: false }, store.pre || {}),
       post: store.post || { answers: {}, submitted: false },
       feedback: store.feedback || { text: "", submitted: false },
@@ -536,12 +562,7 @@ class Component extends DCLogic {
     const body = new URLSearchParams();
     body.set(this.QR_SCAN_OBJECT_ENTRY, String(num));
     body.set(this.QR_SCAN_DEVICE_ENTRY, this.getOrCreateDeviceId());
-    fetch("https://docs.google.com/forms/d/e/" + this.QR_SCAN_FORM_ID + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
+    this.postToForm(this.QR_SCAN_FORM_ID, body);
   }
 
   loadStore() {
@@ -557,6 +578,15 @@ class Component extends DCLogic {
     let n = parseInt(new URLSearchParams(location.search).get("num"), 10);
     if (!n || n < 1 || n > this.TOTAL) n = 1;
     return n;
+  }
+  postToForm(formId, body) {
+    if (this.TEST_MODE) { console.log("[TEST MODE] form submission skipped:", formId, body.toString()); return; }
+    fetch("https://docs.google.com/forms/d/e/" + formId + "/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString()
+    }).catch(() => {});
   }
 
   // ---- campus map geometry ----
@@ -738,6 +768,32 @@ class Component extends DCLogic {
   closeSurvey() { this.setState({ surveyOpen: null }); }
   openSupport() { this.setState({ supportOpen: true }); }
   closeSupport() { this.setState({ supportOpen: false }); }
+
+  // ---- test mode: lets the team jump straight to any screen for feedback, without
+  // physically visiting every campus location. Gated behind ?test=1 (see TEST_MODE getter);
+  // postToForm() already no-ops network submissions whenever TEST_MODE is on.
+  toggleTestPanel() { this.setState({ testPanelOpen: !this.state.testPanelOpen }); }
+  testGoIntro() { this.setState({ step: "intro", surveyOpen: null, supportOpen: false, testPanelOpen: false }); }
+  testGoStop(num, revealed) {
+    const collected = {};
+    for (let i = 1; i < num; i++) collected[i] = true;
+    if (revealed) collected[num] = true;
+    this.saveStore({ collected: collected, lastNum: num });
+    this.setState({ step: "read", num: num, collected: collected, surveyOpen: null, supportOpen: false, testPanelOpen: false });
+  }
+  testGoFinal() {
+    const collected = {};
+    for (let i = 1; i <= this.TOTAL; i++) collected[i] = true;
+    this.saveStore({ collected: collected, lastNum: this.TOTAL });
+    this.setState({ step: "read", num: this.TOTAL, collected: collected, surveyOpen: null, supportOpen: false, testPanelOpen: false });
+  }
+  testOpenPreSurvey() { this.setState({ surveyOpen: "pre", supportOpen: false, testPanelOpen: false }); }
+  testOpenPostSurvey() { this.setState({ surveyOpen: "post", supportOpen: false, testPanelOpen: false }); }
+  testOpenSupport() { this.setState({ supportOpen: true, surveyOpen: null, testPanelOpen: false }); }
+  testReset() {
+    try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
+    location.reload();
+  }
   setAnswer(ctx, qIdx, value) {
     const key = ctx === "post" ? "post" : "pre";
     const cur = this.state[key];
@@ -772,12 +828,7 @@ class Component extends DCLogic {
       if (cur.science) body.set(this.DEMO_SCIENCE_ENTRY, cur.science);
       if (cur.role) body.set(this.DEMO_ROLE_ENTRY, cur.role);
     }
-    fetch("https://docs.google.com/forms/d/e/" + formId + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
+    this.postToForm(formId, body);
     const next = Object.assign({}, cur, { submitted: true });
     this.saveStore({ [key]: next });
     this.setState({
@@ -795,12 +846,7 @@ class Component extends DCLogic {
     if (!text) return;
     const body = new URLSearchParams();
     body.set(this.FEEDBACK_ENTRY, text);
-    fetch("https://docs.google.com/forms/d/e/" + this.FEEDBACK_FORM_ID + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
+    this.postToForm(this.FEEDBACK_FORM_ID, body);
     const next = Object.assign({}, this.state.feedback, { submitted: true });
     this.saveStore({ feedback: next });
     this.setState({ feedback: next });
@@ -825,12 +871,7 @@ class Component extends DCLogic {
     body.set(this.QUOTE_TEXT_ENTRY, text);
     body.set(this.QUOTE_LOCATION_ENTRY, memento.location || "");
     body.set(this.QUOTE_TOPIC_ENTRY, memento.theme || "");
-    fetch("https://docs.google.com/forms/d/e/" + this.QUOTE_FORM_ID + "/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString()
-    }).catch(() => {});
+    this.postToForm(this.QUOTE_FORM_ID, body);
     const next = Object.assign({}, this.state.locationQuotes, {
       [num]: { text: text, submitted: true }
     });
@@ -1017,6 +1058,21 @@ class Component extends DCLogic {
       transition: "background .15s"
     };
 
+    // test mode: a flat list of every screen/state worth reviewing, so the team can jump
+    // straight there instead of physically visiting each campus stop in order.
+    const testJumps = [
+      { label: "Intro", onSelect: () => this.testGoIntro() },
+      { label: "Pre-survey (open)", onSelect: () => this.testOpenPreSurvey() }
+    ];
+    for (let i = 1; i <= this.TOTAL; i++) {
+      const loc = (this.MEMENTOS[i] || {}).location || ("Stop " + i);
+      testJumps.push({ label: "Stop " + i + " (" + loc + ") — locked", onSelect: () => this.testGoStop(i, false) });
+      testJumps.push({ label: "Stop " + i + " (" + loc + ") — revealed", onSelect: () => this.testGoStop(i, true) });
+    }
+    testJumps.push({ label: "Final screen (all collected)", onSelect: () => this.testGoFinal() });
+    testJumps.push({ label: "Post-survey (open)", onSelect: () => this.testOpenPostSurvey() });
+    testJumps.push({ label: "Support modal (open)", onSelect: () => this.testOpenSupport() });
+
     return {
       // campus map
       mapBuildings: mapBuildings,
@@ -1085,6 +1141,14 @@ class Component extends DCLogic {
       openSupport: () => this.openSupport(),
       closeSupport: () => this.closeSupport(),
       withdrawMailtoHref: "mailto:" + this.WITHDRAW_EMAIL + "?subject=" + encodeURIComponent("Withdraw my data — Not Alone project"),
+
+      // test mode (?test=1) — jump to any screen, reset progress; form submissions are
+      // silently skipped (see postToForm) so test clicks never land in real response sheets.
+      isTestMode: this.TEST_MODE,
+      testPanelOpen: s.testPanelOpen,
+      toggleTestPanel: () => this.toggleTestPanel(),
+      testJumps: testJumps,
+      testReset: () => this.testReset(),
 
       // survey overlay
       isSurveyOpen: s.surveyOpen !== null,
