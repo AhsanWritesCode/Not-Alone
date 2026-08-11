@@ -51,54 +51,44 @@
          already fills the available height (intro, read), since those still use flex:1 below. -->
     <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
 
-    <!-- persistent header: campus map (Marauder's-Map-style wayfinding), intro only. Once the
-         hunt begins the map lives inline on the read screen instead (see READ block) and stays
-         there permanently — revealing a piece no longer navigates to a separate screen. -->
-    <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
-      <div style="padding:26px 0 16px; animation:fade .7s ease both;">
-        <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
-          <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
-            <defs>
-              <filter id="mapGrain" x="-20%" y="-20%" width="140%" height="140%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="noise"></feTurbulence>
-                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"></feColorMatrix>
-              </filter>
-              <filter id="mapGlow" x="-100%" y="-100%" width="300%" height="300%">
-                <feGaussianBlur stdDeviation="4"></feGaussianBlur>
-              </filter>
-            </defs>
-            <rect x="0" y="0" width="400" height="265" filter="url(#mapGrain)"></rect>
-            <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
-              <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
-            </sc-for>
-            <!-- drawn under the buildings so it never hides a skull's eyes when the current
-                 stop is also the one you're standing on -->
-            <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-              <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-            </sc-if>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlow)" style="{{ b.glowStyle }}"></circle>
-            </sc-for>
-            <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-              <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
-                <path d="{{ b.skullD }}" style="{{ b.skullStyle }}"></path>
-                <circle cx="{{ b.eye1X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
-                <circle cx="{{ b.eye2X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
-              </sc-if>
-              <sc-if value="{{ !b.filled }}" hint-placeholder-val="{{ true }}">
-                <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
-              </sc-if>
-            </sc-for>
+    <!-- FIRST-SCAN HOOK (draft, per Mark's 2026-08-07 feedback): the very first thing a new
+         visitor sees should tie immediately and unmistakably to the specific skull they just
+         scanned, rather than leading with the map/heading and burying the connection in prose
+         further down. Draft v1 — run past Mark before treating this as settled.
+
+         Three-phase reveal, two separately-animated layers so the backdrop never bleeds
+         through while "You found a skull" is fading in/out on top of it:
+           1. Opaque backdrop appears instantly (no reveal of intro possible underneath).
+           2. Content (icon + text) fades in, holds, fades back out — backdrop stays solid
+              throughout, so this phase never shows the intro page.
+           3. Only once content is fully gone does the backdrop itself fade out, revealing
+              the intro (already mounted underneath) — this is the actual "into the intro"
+              crossfade. Purely CSS-driven, timed from componentDidMount. -->
+    <sc-if value="{{ showSplash }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ splashOverlayStyle }}">
+        <div style="{{ splashContentStyle }}">
+          <svg width="60" height="53" viewBox="-6 -7 12 13" style="display:block; margin:0 auto 16px;">
+            <path d="{{ hookSkullD }}" fill="#A2472F"></path>
+            <circle cx="-2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
+            <circle cx="2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
           </svg>
-          <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
-          <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
-            <span style="{{ b.qMarkStyle }}">?</span>
-            <span style="{{ b.labelStyle }}">{{ b.label }}</span>
-          </sc-for>
+          <p style="font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin:0; text-align:center;">You found a skull</p>
         </div>
-        <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:clamp(14px, 3.27cqw, 20px); color:#8A8578; margin-top:12px;">{{ belowMapText }}</p>
       </div>
     </sc-if>
+
+    <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
+      <div style="text-align:center; padding:22px 0 4px; animation:fade .6s ease both;">
+        <svg width="34" height="30" viewBox="-6 -7 12 13" style="display:block; margin:0 auto 10px;">
+          <path d="{{ hookSkullD }}" fill="#A2472F"></path>
+          <circle cx="-2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
+          <circle cx="2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
+        </svg>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#A2472F; margin:0 0 8px;">You found a skull</p>
+        <h1 style="font-family:'Newsreader',serif; font-weight:400; font-size:clamp(24px, 7cqw, 32px); line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin:0;">{{ hookLocation }}</h1>
+      </div>
+    </sc-if>
+
 
     <!-- act region -->
     <div style="{{ actRegionStyle }}">
@@ -106,15 +96,7 @@
       <!-- INTRO -->
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
-          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:18px;">Not Alone</h2>
-          <div style="background:#FBF2EA; border-left:3px solid #A2472F; border-radius:10px; padding:18px 20px; margin-bottom:26px;">
-            <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:14.5px; line-height:1.65; color:#2B2823; margin:0 0 14px;">This experience invites reflection on difficult university experiences like grief, financial stress, family pressure, and things many people keep quiet about. If you are thinking about suicide or are in crisis right now, please reach out to one of the resources below.</p>
-            <div style="display:flex; flex-direction:column; gap:7px;">
-              <sc-for list="{{ supportResourcesInline }}" as="r" hint-placeholder-count="3">
-                <a href="{{ r.href }}" style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A5F47; line-height:1.5;"><span style="font-weight:600;">{{ r.name }}</span> &mdash; {{ r.detail }}</a>
-              </sc-for>
-            </div>
-          </div>
+          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:26px;">Not Alone</h2>
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">
             <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
               <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
@@ -123,6 +105,52 @@
           <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
             <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
           </div>
+
+          <!-- map, moved here from the very top of the page: by this point the reader already
+               has context (why this exists), so this now answers "how does it work" right
+               before they commit, rather than being the very first, context-free thing seen. -->
+          <div style="margin-bottom:28px;">
+            <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
+              <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
+                <defs>
+                  <filter id="mapGrainIntro" x="-20%" y="-20%" width="140%" height="140%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="noise"></feTurbulence>
+                    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"></feColorMatrix>
+                  </filter>
+                  <filter id="mapGlowIntro" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="4"></feGaussianBlur>
+                  </filter>
+                </defs>
+                <rect x="0" y="0" width="400" height="265" filter="url(#mapGrainIntro)"></rect>
+                <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
+                  <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
+                </sc-for>
+                <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
+                  <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
+                </sc-if>
+                <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+                  <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlowIntro)" style="{{ b.glowStyle }}"></circle>
+                </sc-for>
+                <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+                  <sc-if value="{{ b.filled }}" hint-placeholder-val="{{ false }}">
+                    <path d="{{ b.skullD }}" style="{{ b.skullStyle }}"></path>
+                    <circle cx="{{ b.eye1X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+                    <circle cx="{{ b.eye2X }}" cy="{{ b.eyeY }}" r="{{ b.eyeR }}" style="{{ b.eyeStyle }}"></circle>
+                  </sc-if>
+                  <sc-if value="{{ !b.filled }}" hint-placeholder-val="{{ true }}">
+                    <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="{{ b.r }}" style="{{ b.dotStyle }}"></circle>
+                  </sc-if>
+                </sc-for>
+              </svg>
+              <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 100% at 50% 0%, transparent 55%, rgba(120,80,40,.1) 100%);"></div>
+              <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
+                <span style="{{ b.qMarkStyle }}">?</span>
+                <span style="{{ b.labelStyle }}">{{ b.label }}</span>
+              </sc-for>
+            </div>
+            <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:12px 0 0;">Five skulls are hidden around campus.</p>
+          </div>
+
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
               <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6; text-align:center;">Thank you for supporting our work.</p>
@@ -272,7 +300,8 @@
     </div>
     </div>
 
-    <div style="text-align:center; padding:16px 0 26px;">
+    <div style="text-align:center; padding:20px 0 26px;">
+      <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:12.5px; line-height:1.55; color:#8A8578; max-width:420px; margin:0 auto 16px;">This experience touches on difficult university experiences like grief and stress. If you're in crisis, free confidential support is one tap away &mdash; see <span style="font-weight:600; color:#A2472F;">Support</span> in the corner.</p>
       <p style="font-size:11px; color:#A8A398; font-weight:300; margin:0 0 6px;">C3 Lab, University of Calgary</p>
       <button style="background:none; border:none; padding:0; font-family:'Space Grotesk',sans-serif; font-size:11px; color:#A2472F; text-decoration:underline; cursor:pointer;" onClick="{{ openAboutTeam }}">About the team</button>
     </div>
@@ -392,7 +421,7 @@
           <p style="margin:0; font-family:'Newsreader',serif; font-size:15.5px; color:#2B2823; font-weight:500;">{{ m.name }} <span style="font-family:'Space Grotesk',sans-serif; font-weight:300; font-size:12.5px; color:#8A8578;">&mdash; {{ m.role }}</span></p>
         </sc-for>
       </div>
-      <p style="font-size:12px; color:#8A8578; font-weight:300; line-height:1.6; margin-top:22px;">This project is part of the C3 Lab at the University of Calgary.</p>
+      <p style="font-size:12px; color:#8A8578; font-weight:300; line-height:1.6; margin-top:22px;">This project is part of the <a href="https://helenaihe.com/research/" target="_blank" rel="noopener" style="color:#A2472F; text-decoration:underline;">C3 Lab</a> at the University of Calgary.</p>
     </div>
   </div>
 </sc-if>
@@ -511,8 +540,8 @@ class Component extends DCLogic {
   ];
 
   ABOUT = [
-    "Across these tables, there are skulls. Each holds words from someone who has been where you are. A 12-year-old. An 18-year-old. A 65-year-old. A 97-year-old. People you'll never meet, describing something you might recognize.",
-    "I created these skulls and placed them here because when I was seventeen, I thought I was the only one struggling.",
+    "Across campus, there are skulls. Each holds words written by me or a member of our research team, reflecting on our own time as students here. People who've walked this campus, describing something you might recognize.",
+    "I created these skulls because when I was seventeen, I thought I was the only one struggling.",
     "I had always been good at school, and I wasn't anymore. I only ever had one or two friends at a time, and then I had none. Some parts of my life that had always felt manageable started to feel like too much. I almost gave up.",
     "And then I got help. From people trying their best, every day, like I was. People who undoubtedly had their own problems but chose to focus on mine for hours at a time. I got better than I was. There are still difficult days, but I'm better than I was.",
     "What took years to understand was that the thing making it unbearable wasn't the struggle itself. It was the feeling that I was uniquely broken. That everyone else had it figured out.",
@@ -562,6 +591,9 @@ class Component extends DCLogic {
       surveyOpen: null,
       supportOpen: false,
       aboutTeamOpen: false,
+      showSplash: true,
+      splashContentExiting: false,
+      splashOverlayExiting: false,
       testPanelOpen: false,
       pre: Object.assign({ answers: {}, submitted: false, science: null, role: null, ageConsent: false }, store.pre || {}),
       post: store.post || { answers: {}, submitted: false },
@@ -573,6 +605,14 @@ class Component extends DCLogic {
   componentDidMount() {
     const rawNum = parseInt(new URLSearchParams(location.search).get("num"), 10);
     if (rawNum >= 1 && rawNum <= this.TOTAL) this.logQrScan(rawNum);
+
+    // first-scan splash, two layers so the backdrop never bleeds mid-fade: content (icon +
+    // text) fades in at 0s, holds, fades out starting at 1200ms (.35s) -- backdrop stays fully
+    // opaque the entire time. Only once content has fully disappeared (1550ms) does the
+    // backdrop itself start fading (.45s), revealing the intro underneath; unmounts at 2000ms.
+    setTimeout(() => this.setState({ splashContentExiting: true }), 1200);
+    setTimeout(() => this.setState({ splashOverlayExiting: true }), 1550);
+    setTimeout(() => this.setState({ showSplash: false }), 2000);
   }
 
   getOrCreateDeviceId() {
@@ -916,6 +956,17 @@ class Component extends DCLogic {
     const total = this.TOTAL;
     const num = s.num;
     const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "", quotePrompt: "" };
+    // opaque the whole time it's meaningfully visible; only fades once the content above it
+    // has already fully disappeared, so intro content never bleeds through mid-fade.
+    const splashOverlayStyle = {
+      position: "fixed", inset: "0", zIndex: 300,
+      background: "radial-gradient(135% 95% at 50% -8%, #FBF6EE 0%, #F3EBDB 55%, #EBE0CD 100%)",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      animation: s.splashOverlayExiting ? "splashOut .45s ease-in forwards" : "none"
+    };
+    const splashContentStyle = {
+      animation: s.splashContentExiting ? "splashOut .35s ease-in forwards" : "fade .35s ease-out both"
+    };
     const collectedCount = Object.keys(s.collected).filter(k => s.collected[k]).length;
     const isFinal = collectedCount >= total;
 
@@ -1051,10 +1102,6 @@ class Component extends DCLogic {
     const announceChars = mapCaption.length || 1;
     const announceFontSize = "clamp(11px, " + (100 / (announceChars * 0.52)).toFixed(2) + "cqw, 30px)";
 
-    // shown below the intro map only; blank everywhere else.
-    let belowMapText;
-    if (s.step === "intro") belowMapText = "Your route across campus begins at MacEwan Student Centre.";
-    else belowMapText = "";
 
     // survey
     const ctx = s.surveyOpen || "pre";
@@ -1111,7 +1158,6 @@ class Component extends DCLogic {
       mapRoads: mapRoads,
       mapCaption: mapCaption,
       announceFontSize: announceFontSize,
-      belowMapText: belowMapText,
       mapShowCurrent: true,
       currentCx: currentB.cx,
       currentCy: currentB.cy,
@@ -1133,6 +1179,11 @@ class Component extends DCLogic {
 
       // intro
       aboutParas: this.ABOUT,
+      hookSkullD: this.skullPath(0, 0),
+      hookLocation: data.location,
+      showSplash: s.showSplash && s.step === "intro",
+      splashOverlayStyle: splashOverlayStyle,
+      splashContentStyle: splashContentStyle,
       preSubmitted: s.pre.submitted,
       openPre: () => this.openSurvey("pre"),
 
@@ -1166,8 +1217,8 @@ class Component extends DCLogic {
       submitFeedback: () => this.submitFeedback(),
 
       // support overlay: resources only, reachable from the persistent corner button on every
-      // screen (also summarized inline on the intro screen).
-      supportResourcesInline: this.SUPPORT_RESOURCES,
+      // screen (the intro's content-warning box just points here rather than duplicating
+      // the list inline, per Mark's 2026-08-08 feedback that it was eating ~50% of the page).
       supportResourcesCard: this.SUPPORT_RESOURCES,
       isSupportOpen: s.supportOpen,
       openSupport: () => this.openSupport(),

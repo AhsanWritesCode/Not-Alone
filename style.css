@@ -8,4 +8,5 @@ a:hover { color: #8E3C27; }
 @keyframes stepFade { 0% { opacity: 0; transform: scale(.55); } 70% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes markerPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: .6; } }
 @keyframes markerBreathe { 0%, 100% { transform: scale(1); opacity: .22; } 50% { transform: scale(1.75); opacity: .6; } }
+@keyframes splashOut { from { opacity: 1; } to { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { *:not([style*="stepFade"]) { animation: none !important; transition: none !important; } }
