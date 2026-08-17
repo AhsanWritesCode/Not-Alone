@@ -84,8 +84,8 @@
           <circle cx="-2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
           <circle cx="2" cy="-1.3" r="1.1" fill="#FBF6EE"></circle>
         </svg>
-        <p style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#A2472F; margin:0 0 8px;">You found a skull</p>
-        <h1 style="font-family:'Newsreader',serif; font-weight:400; font-size:clamp(24px, 7cqw, 32px); line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin:0;">{{ hookLocation }}</h1>
+        <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; line-height:1.5; color:#A2472F; margin:0;">{{ hookLine1 }}</p>
+        <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; line-height:1.5; color:#A2472F; margin:0;">{{ hookLine2 }}</p>
       </div>
     </sc-if>
 
@@ -96,7 +96,8 @@
       <!-- INTRO -->
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
-          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin-bottom:26px;">Not Alone</h2>
+          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin:0 0 6px;">Not Alone</h2>
+          <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A8578; margin:0 0 26px;">A scavenger hunt &middot; University of Calgary</p>
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">
             <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
               <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
@@ -148,7 +149,7 @@
                 <span style="{{ b.labelStyle }}">{{ b.label }}</span>
               </sc-for>
             </div>
-            <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:12px 0 0;">Five skulls are hidden around campus.</p>
+            <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:12px 0 0;">Follow the map and scan all five skulls that are hidden around campus.</p>
           </div>
 
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
@@ -302,8 +303,7 @@
 
     <div style="text-align:center; padding:20px 0 26px;">
       <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:12.5px; line-height:1.55; color:#8A8578; max-width:420px; margin:0 auto 16px;">This experience touches on difficult university experiences like grief and stress. If you're in crisis, free confidential support can be accessed through <span style="font-weight:600; color:#A2472F;">Support</span> in the corner.</p>
-      <p style="font-size:11px; color:#A8A398; font-weight:300; margin:0 0 6px;">C3 Lab, University of Calgary</p>
-      <button style="background:none; border:none; padding:0; font-family:'Space Grotesk',sans-serif; font-size:11px; color:#A2472F; text-decoration:underline; cursor:pointer;" onClick="{{ openAboutTeam }}">About the team</button>
+      <button style="background:none; border:none; padding:0; font-family:'Space Grotesk',sans-serif; font-size:11px; color:#A2472F; text-decoration:underline; cursor:pointer;" onClick="{{ openAboutTeam }}">About the research team</button>
     </div>
   </div>
 </div>
@@ -415,7 +415,7 @@
   <div style="position:fixed; inset:0; z-index:110; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeAboutTeam }}">
     <div style="position:relative; width:100%; max-width:480px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:40px 32px 36px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeAboutTeam }}">&times;</button>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:18px;">About the team</div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:18px;">About the research team</div>
       <div style="display:flex; flex-direction:column; gap:12px;">
         <sc-for list="{{ teamMembers }}" as="m" hint-placeholder-count="4">
           <p style="margin:0; font-family:'Newsreader',serif; font-size:15.5px; color:#2B2823; font-weight:500;">{{ m.name }} <span style="font-family:'Space Grotesk',sans-serif; font-weight:300; font-size:12.5px; color:#8A8578;">&mdash; {{ m.role }}</span></p>
@@ -532,6 +532,8 @@ class Component extends DCLogic {
     { p0: [300, 50],  p1: [245, 10],  p2: [161, 51]  }
   ];
 
+  ORDINALS = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth"];
+
   TEAM_MEMBERS = [
     { name: "Ahsan Tariq", role: "Student Researcher" },
     { name: "Dr. Helen Ai He", role: "Principal Investigator" },
@@ -540,8 +542,7 @@ class Component extends DCLogic {
   ];
 
   ABOUT = [
-    "Across campus, there are skulls. Each holds words written by me or a member of our research team, reflecting on our own time as students here. People who've walked this campus, describing something you might recognize.",
-    "I created these skulls because when I was seventeen, I thought I was the only one struggling.",
+    "When I was seventeen, I thought I was the only one struggling.",
     "I had always been good at school, and I wasn't anymore. I only ever had one or two friends at a time, and then I had none. Some parts of my life that had always felt manageable started to feel like too much. I almost gave up.",
     "And then I got help. From people trying their best, every day, like I was. People who undoubtedly had their own problems but chose to focus on mine for hours at a time. I got better than I was. There are still difficult days, but I'm better than I was.",
     "What took years to understand was that the thing making it unbearable wasn't the struggle itself. It was the feeling that I was uniquely broken. That everyone else had it figured out.",
@@ -984,6 +985,23 @@ class Component extends DCLogic {
     // quote box, and button all live on the read screen and react to this directly).
     const revealed = !!s.collected[num];
 
+    // hook header ("you found a skull"): folded into one small red mono-font line — matching
+    // the existing "you found a skull" label style — instead of a separate large building-name
+    // heading, so "Not Alone" below reads as the page's main heading (2026-08 feedback).
+    const hookIndex = Math.min(revealed ? collectedCount : collectedCount + 1, total);
+    const hookCount = "(" + hookIndex + " / " + total + ")";
+    let hookLine1, hookLine2;
+    if (hookIndex >= total) {
+      hookLine1 = "Congrats! You found all the skulls!!";
+      hookLine2 = hookCount;
+    } else if (hookIndex === 1) {
+      hookLine1 = "Hooray! You found a skull at";
+      hookLine2 = data.location + " " + hookCount;
+    } else {
+      hookLine1 = "Hooray! You found the " + (this.ORDINALS[hookIndex - 1] || (hookIndex + "th")) + " skull at";
+      hookLine2 = data.location + " " + hookCount;
+    }
+
     // if this is the only stop left, clicking the button completes the hunt rather than
     // revealing a next skull's location — so the button shouldn't claim it will.
     const isLastPiece = !revealed && collectedCount === total - 1;
@@ -1011,7 +1029,10 @@ class Component extends DCLogic {
     const nextLoc = destRaw.charAt(0).toUpperCase() + destRaw.slice(1);
     const mapBuildings = this.ROUTE.map((bid, idx) => {
       const b = this.BUILDINGS[bid];
-      const filled = !!s.collected[idx + 1];
+      // the current stop's own skull counts as found as soon as you land here (you scanned it
+      // to arrive) — "collected[num]" only flips once you hit reveal, which is really about
+      // unlocking the *next* stop's location, not about whether this one was found.
+      const filled = !!s.collected[idx + 1] || bid === currentBid;
       // A stop's name is "known" for good once its predecessor in the route has been
       // collected, regardless of which stop's page is currently loaded — otherwise an
       // earlier reveal (e.g. Science Theatres -> ICT) is forgotten as soon as the user
@@ -1180,7 +1201,8 @@ class Component extends DCLogic {
       // intro
       aboutParas: this.ABOUT,
       hookSkullD: this.skullPath(0, 0),
-      hookLocation: data.location,
+      hookLine1: hookLine1,
+      hookLine2: hookLine2,
       showSplash: s.showSplash && s.step === "intro",
       splashOverlayStyle: splashOverlayStyle,
       splashContentStyle: splashContentStyle,
