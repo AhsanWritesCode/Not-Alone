@@ -14,10 +14,6 @@
 <link rel="stylesheet" href="./style.css">
 </helmet>
 
-<!-- persistent support access: present on every screen (intro, read, and even over the
-     survey overlay, hence the high z-index) so resources are never more than one tap away. -->
-<button aria-label="Support resources" style="position:fixed; bottom:18px; right:18px; z-index:100; padding:11px 18px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:12.5px; letter-spacing:.01em; cursor:pointer; box-shadow:0 10px 26px -10px rgba(33,30,26,.55); transition:background .15s;" style-hover="background:#332F28;" onClick="{{ openSupport }}">Support</button>
-
 <!-- TEST MODE (?test=1 in the URL): lets the research team click through every screen for
      feedback without physically visiting each campus stop, and without recording anything in
      the real Google Forms responses (postToForm() no-ops while this is on). Clearly marked so
@@ -97,20 +93,21 @@
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
           <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin:0 0 6px;">Not Alone</h2>
-          <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A8578; margin:0 0 26px;">A scavenger hunt &middot; University of Calgary</p>
+          <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A8578; margin:0 0 26px;">A scavenger hunt for common humanity &middot; University of Calgary</p>
           <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">
             <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
               <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
             </sc-for>
           </div>
-          <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
+          <!-- <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
             <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
-          </div>
+          </div> -->
 
           <!-- map, moved here from the very top of the page: by this point the reader already
                has context (why this exists), so this now answers "how does it work" right
                before they commit, rather than being the very first, context-free thing seen. -->
           <div style="margin-bottom:28px;">
+            <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:0 0 12px;">Follow the map and scan all five skulls that are hidden around campus.</p>
             <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
               <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
                 <defs>
@@ -126,9 +123,6 @@
                 <sc-for list="{{ mapRoads }}" as="road" hint-placeholder-count="4">
                   <path d="{{ road }}" fill="none" stroke="#8A5F47" stroke-opacity="0.3" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="1 6"></path>
                 </sc-for>
-                <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-                  <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-                </sc-if>
                 <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
                   <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlowIntro)" style="{{ b.glowStyle }}"></circle>
                 </sc-for>
@@ -148,8 +142,11 @@
                 <span style="{{ b.qMarkStyle }}">?</span>
                 <span style="{{ b.labelStyle }}">{{ b.label }}</span>
               </sc-for>
+              <div style="position:absolute; right:10px; bottom:10px; width:clamp(50px,14cqw,64px); aspect-ratio:1; border-radius:50%; background:radial-gradient(120% 120% at 50% 28%, #FDF9F1 0%, #F3EBDB 60%, #E4D2A8 100%); border:1.5px dashed rgba(162,71,47,.55); box-shadow:0 6px 16px -8px rgba(33,30,26,.5); display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-7deg); pointer-events:none;">
+                <span style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(15px,4.2cqw,19px); color:#A2472F; line-height:1; animation:countdownTick 2.2s ease-in-out infinite;">{{ huntDaysLeft }}</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:clamp(5.5px,1.35cqw,6.5px); letter-spacing:.08em; color:#8A5F47; margin-top:2px; text-align:center; line-height:1.15;">{{ huntDaysLeftLabel }}</span>
+              </div>
             </div>
-            <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:12px 0 0;">Follow the map and scan all five skulls that are hidden around campus.</p>
           </div>
 
           <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
@@ -168,7 +165,7 @@
       <sc-if value="{{ isRead }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; display:flex; flex-direction:column; padding:20px 0 30px; animation:rise .7s ease both;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; color:#A2472F; margin:0 0 18px;">Contains reflections on difficult experiences &middot; support resources in the corner</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; color:#A2472F; margin:0 0 18px;">Contains reflections on difficult experiences &middot; see the footer for crisis resources</p>
             <div style="position:relative; margin-top:44px;">
               <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
               <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
@@ -205,11 +202,6 @@
                       <path d="{{ fp.d }}" fill="{{ fp.fill }}" style="{{ fp.style }}"></path>
                     </sc-for>
                   </sc-if>
-                  <!-- drawn under the buildings so it never hides a skull's eyes when the
-                       current stop is also the one you're standing on -->
-                  <sc-if value="{{ mapShowCurrent }}" hint-placeholder-val="{{ false }}">
-                    <circle cx="{{ currentCx }}" cy="{{ currentCy }}" r="5" fill="#A2472F" style="transform-box:fill-box; transform-origin:center; animation:markerPulse 1.6s ease-in-out infinite;"></circle>
-                  </sc-if>
                   <sc-for list="{{ mapBuildings }}" as="b" hint-placeholder-count="5">
                     <circle cx="{{ b.cx }}" cy="{{ b.cy }}" r="14" filter="url(#mapGlowRead)" style="{{ b.glowStyle }}"></circle>
                   </sc-for>
@@ -229,6 +221,10 @@
                   <span style="{{ b.qMarkStyle }}">?</span>
                   <span style="{{ b.labelStyle }}">{{ b.label }}</span>
                 </sc-for>
+                <div style="position:absolute; right:10px; bottom:10px; width:clamp(50px,14cqw,64px); aspect-ratio:1; border-radius:50%; background:radial-gradient(120% 120% at 50% 28%, #FDF9F1 0%, #F3EBDB 60%, #E4D2A8 100%); border:1.5px dashed rgba(162,71,47,.55); box-shadow:0 6px 16px -8px rgba(33,30,26,.5); display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-7deg); pointer-events:none;">
+                  <span style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(15px,4.2cqw,19px); color:#A2472F; line-height:1; animation:countdownTick 2.2s ease-in-out infinite;">{{ huntDaysLeft }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-weight:600; font-size:clamp(5.5px,1.35cqw,6.5px); letter-spacing:.08em; color:#8A5F47; margin-top:2px; text-align:center; line-height:1.15;">{{ huntDaysLeftLabel }}</span>
+                </div>
               </div>
 
               <sc-if value="{{ !revealed }}" hint-placeholder-val="{{ true }}">
@@ -244,7 +240,7 @@
                   </sc-if>
                   <textarea value="{{ quoteBoxText }}" onInput="{{ onQuoteInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
                   <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitLocationQuote }}">{{ quoteBoxButtonLabel }}</button>
-                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks; to do so, see Support in the corner.</p>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks; to do so, use "Withdraw my data" in the footer below.</p>
                 </div>
               </sc-if>
 
@@ -270,7 +266,7 @@
                   </sc-if>
                   <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
                   <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
-                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — see Support in the corner.</p>
+                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — use "Withdraw my data" in the footer below.</p>
                 </div>
               </sc-if>
             </div>
@@ -302,8 +298,15 @@
     </div>
 
     <div style="text-align:center; padding:20px 0 26px;">
-      <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:12.5px; line-height:1.55; color:#8A8578; max-width:420px; margin:0 auto 16px;">This experience touches on difficult university experiences like grief and stress. If you're in crisis, free confidential support can be accessed through <span style="font-weight:600; color:#A2472F;">Support</span> in the corner.</p>
+      <svg width="18" height="16" viewBox="0 0 18 16" style="display:block; margin:0 auto 8px;">
+        <path d="M9 1 L17 15 L1 15 Z" fill="none" stroke="#A2472F" stroke-width="1.4" stroke-linejoin="round"></path>
+        <line x1="9" y1="6" x2="9" y2="10.3" stroke="#A2472F" stroke-width="1.4" stroke-linecap="round"></line>
+        <circle cx="9" cy="12.6" r="0.9" fill="#A2472F"></circle>
+      </svg>
+      <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:12.5px; line-height:1.55; color:#8A8578; max-width:440px; margin:0 auto 16px;">The Not Alone project touches on difficult university experiences that many students feel and share &mdash; moving to a new city, transitioning from high school, fears about grades and career paths, and more &mdash; with the goal of fostering &ldquo;common humanity,&rdquo; the sense that everyone struggles, encounters challenges, and fails. While the risk to you is very low, engaging with this project may bring up difficult emotions. If you're in crisis, we suggest not continuing &mdash; instead reach out to Student Wellness Services (403-210-9355) or the Distress Centre Calgary (403-266-4357). If this is an emergency, call 911.</p>
       <button style="background:none; border:none; padding:0; font-family:'Space Grotesk',sans-serif; font-size:11px; color:#A2472F; text-decoration:underline; cursor:pointer;" onClick="{{ openAboutTeam }}">About the research team</button>
+      <span style="font-size:11px; color:#C9C2B2; margin:0 8px;">&middot;</span>
+      <a href="{{ withdrawMailtoHref }}" style="font-family:'Space Grotesk',sans-serif; font-size:11px; color:#A2472F; text-decoration:underline;">Withdraw my data</a>
     </div>
   </div>
 </div>
@@ -378,34 +381,7 @@
       </sc-if>
 
       <button style="{{ surveyButtonStyle }}" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
-      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — see Support in the corner.</p>
-    </div>
-  </div>
-</sc-if>
-
-<!-- SUPPORT OVERLAY: reachable from the persistent corner button on every screen. Resources
-     only, in line with what's on file with the REB — this project does not monitor
-     submissions or collect contact info, so it directs people to external resources rather
-     than offering to handle disclosures in-house. -->
-<sc-if value="{{ isSupportOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed; inset:0; z-index:110; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSupport }}">
-    <div style="position:relative; width:100%; max-width:520px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:40px 32px 36px; animation:rise .4s ease both;" onClick="{{ stop }}">
-      <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSupport }}">&times;</button>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">Support resources</div>
-      <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:17px; line-height:1.6; color:#2B2823; margin-bottom:22px;">If you're thinking about suicide, or you're in crisis right now, please reach out. These are free and confidential.</p>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:8px;">
-        <sc-for list="{{ supportResourcesCard }}" as="r" hint-placeholder-count="3">
-          <a href="{{ r.href }}" style="display:block; padding:14px 16px; background:#FCFAF4; border:1px solid rgba(33,30,26,.12); border-radius:14px;">
-            <span style="display:block; font-weight:500; font-size:14px; color:#211E1A; margin-bottom:3px;">{{ r.name }}</span>
-            <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#A2472F;">{{ r.detail }}</span>
-          </a>
-        </sc-for>
-      </div>
-      <div style="border-top:1px solid rgba(33,30,26,.12); padding-top:20px; margin-top:18px; text-align:center;">
-        <p style="font-size:12.5px; color:#8A8578; font-weight:400; line-height:1.6; margin-bottom:8px;">Want something you submitted removed?</p>
-        <a href="{{ withdrawMailtoHref }}" style="font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13px; color:#A2472F; text-decoration:underline;">Withdraw my data</a>
-        <p style="font-size:11px; color:#9A9587; font-weight:300; margin-top:8px;">Within 2 weeks of submitting.</p>
-      </div>
+      <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — email us at ahsan.tariq@ucalgary.ca.</p>
     </div>
   </div>
 </sc-if>
@@ -435,6 +411,9 @@ class Component extends DCLogic {
   // ?test=1 lets the team click through every screen without physically visiting each
   // campus location, and without recording anything in the real Google Forms responses.
   get TEST_MODE() { return new URLSearchParams(location.search).get("test") === "1"; }
+  // TODO: placeholder end date for the "days left to scan" countdown badge on the map —
+  // swap for the real pilot deadline once it's finalized.
+  get HUNT_END_DATE() { return new Date("2026-08-30T23:59:59"); }
 
   STORAGE_KEY = "nsura_puzzle_v1";
   FOOTSTEP_STAGGER = 0.26;
@@ -467,12 +446,6 @@ class Component extends DCLogic {
   // TODO confirm: which team member's inbox should receive withdrawal requests? Defaulting to
   // Ahsan since he's the one already publicly credited/signed in the intro text.
   WITHDRAW_EMAIL = "ahsan.tariq@ucalgary.ca";
-
-  SUPPORT_RESOURCES = [
-    { name: "Student Wellness Services", detail: "403-210-9355", href: "tel:+14032109355" },
-    { name: "Distress Centre Calgary — 24-hour crisis line", detail: "403-266-4357", href: "tel:+14032664357" },
-    { name: "988 Suicide Crisis Helpline", detail: "Call or text 988", href: "tel:988" }
-  ];
 
   VOICE = {
     c: { label: "A child",   mark: "i",   note: "under 12"  },
@@ -590,7 +563,6 @@ class Component extends DCLogic {
       num: num,
       collected: collected,
       surveyOpen: null,
-      supportOpen: false,
       aboutTeamOpen: false,
       showSplash: true,
       splashContentExiting: false,
@@ -837,8 +809,6 @@ class Component extends DCLogic {
   */
   openSurvey(ctx) { this.setState({ surveyOpen: ctx }); }
   closeSurvey() { this.setState({ surveyOpen: null }); }
-  openSupport() { this.setState({ supportOpen: true }); }
-  closeSupport() { this.setState({ supportOpen: false }); }
   openAboutTeam() { this.setState({ aboutTeamOpen: true }); }
   closeAboutTeam() { this.setState({ aboutTeamOpen: false }); }
 
@@ -846,23 +816,22 @@ class Component extends DCLogic {
   // physically visiting every campus location. Gated behind ?test=1 (see TEST_MODE getter);
   // postToForm() already no-ops network submissions whenever TEST_MODE is on.
   toggleTestPanel() { this.setState({ testPanelOpen: !this.state.testPanelOpen }); }
-  testGoIntro() { this.setState({ step: "intro", surveyOpen: null, supportOpen: false, testPanelOpen: false }); }
+  testGoIntro() { this.setState({ step: "intro", surveyOpen: null, testPanelOpen: false }); }
   testGoStop(num, revealed) {
     const collected = {};
     for (let i = 1; i < num; i++) collected[i] = true;
     if (revealed) collected[num] = true;
     this.saveStore({ collected: collected, lastNum: num });
-    this.setState({ step: "read", num: num, collected: collected, surveyOpen: null, supportOpen: false, testPanelOpen: false });
+    this.setState({ step: "read", num: num, collected: collected, surveyOpen: null, testPanelOpen: false });
   }
   testGoFinal() {
     const collected = {};
     for (let i = 1; i <= this.TOTAL; i++) collected[i] = true;
     this.saveStore({ collected: collected, lastNum: this.TOTAL });
-    this.setState({ step: "read", num: this.TOTAL, collected: collected, surveyOpen: null, supportOpen: false, testPanelOpen: false });
+    this.setState({ step: "read", num: this.TOTAL, collected: collected, surveyOpen: null, testPanelOpen: false });
   }
-  testOpenPreSurvey() { this.setState({ surveyOpen: "pre", supportOpen: false, testPanelOpen: false }); }
-  testOpenPostSurvey() { this.setState({ surveyOpen: "post", supportOpen: false, testPanelOpen: false }); }
-  testOpenSupport() { this.setState({ supportOpen: true, surveyOpen: null, testPanelOpen: false }); }
+  testOpenPreSurvey() { this.setState({ surveyOpen: "pre", testPanelOpen: false }); }
+  testOpenPostSurvey() { this.setState({ surveyOpen: "post", testPanelOpen: false }); }
   testReset() {
     try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
     location.reload();
@@ -957,6 +926,10 @@ class Component extends DCLogic {
     const total = this.TOTAL;
     const num = s.num;
     const data = this.MEMENTOS[num] || { quote: "", location: "", theme: "", quotePrompt: "" };
+    // days left on the map's countdown badge — playful urgency nudging people to finish the
+    // hunt before the pilot window closes; floor (not ceil/round) so it visibly ticks over at
+    // each midnight rather than sitting on the same number until the last few hours.
+    const huntDaysLeft = Math.max(0, Math.floor((this.HUNT_END_DATE - Date.now()) / 86400000));
     // opaque the whole time it's meaningfully visible; only fades once the content above it
     // has already fully disappeared, so intro content never bleeds through mid-fade.
     const splashOverlayStyle = {
@@ -1171,17 +1144,15 @@ class Component extends DCLogic {
     }
     testJumps.push({ label: "Final screen (all collected)", onSelect: () => this.testGoFinal() });
     testJumps.push({ label: "Post-survey (open)", onSelect: () => this.testOpenPostSurvey() });
-    testJumps.push({ label: "Support modal (open)", onSelect: () => this.testOpenSupport() });
 
     return {
       // campus map
       mapBuildings: mapBuildings,
       mapRoads: mapRoads,
       mapCaption: mapCaption,
+      huntDaysLeft: huntDaysLeft,
+      huntDaysLeftLabel: huntDaysLeft === 1 ? "DAY LEFT" : "DAYS LEFT",
       announceFontSize: announceFontSize,
-      mapShowCurrent: true,
-      currentCx: currentB.cx,
-      currentCy: currentB.cy,
       mapShowPath: !!activeLeg,
       mapFootsteps: activeLeg ? this.buildLegFootsteps(activeLeg, currentB.color) : [],
       isFinal: isFinal,
@@ -1238,13 +1209,9 @@ class Component extends DCLogic {
       onFeedbackInput: (e) => this.setFeedbackText(e.target.value),
       submitFeedback: () => this.submitFeedback(),
 
-      // support overlay: resources only, reachable from the persistent corner button on every
-      // screen (the intro's content-warning box just points here rather than duplicating
-      // the list inline, per Mark's 2026-08-08 feedback that it was eating ~50% of the page).
-      supportResourcesCard: this.SUPPORT_RESOURCES,
-      isSupportOpen: s.supportOpen,
-      openSupport: () => this.openSupport(),
-      closeSupport: () => this.closeSupport(),
+      // withdrawal: a plain footer link (no more support-overlay modal — crisis resources are
+      // now inline in the content-warning paragraph itself, and this is the only other thing
+      // that modal used to house).
       withdrawMailtoHref: "mailto:" + this.WITHDRAW_EMAIL + "?subject=" + encodeURIComponent("Withdraw my data — Not Alone project"),
 
       // about-the-team overlay: reachable from the footer link on every screen.
