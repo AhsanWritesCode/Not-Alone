@@ -317,26 +317,19 @@
     <div style="position:relative; width:100%; max-width:780px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSurvey }}">&times;</button>
       <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">{{ surveyTitle }}</div>
-      <p style="font-size:12px; color:#8A8578; font-weight:400; margin-bottom:4px;">{{ surveySubtitle }}</p>
+      <p style="font-size:12px; color:#2B2823; font-weight:500; margin-bottom:4px;">{{ surveySubtitle }}</p>
       <p style="font-size:11px; color:#A8A398; font-weight:300; font-style:italic; margin-bottom:14px;">{{ surveyCitation }}</p>
       <sc-if value="{{ surveyIntro }}" hint-placeholder-val="{{ false }}">
         <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:18px; line-height:1.6; color:#2B2823; margin-bottom:10px;">{{ surveyIntro }}</p>
       </sc-if>
 
       <!-- demographic questions: only asked once, alongside the pre-hunt survey, before the
-           participant sees any reflection. Lets us confirm we're reaching Faculty of Science
-           students specifically while also seeing who else the installation attracts. -->
+           participant sees any reflection. The faculty follow-up only shows for student roles
+           (2026-08 feedback: asking "are you Science" as its own yes/no ahead of "which role"
+           was redundant — role already tells us student vs. staff/faculty/other). -->
       <sc-if value="{{ isPreSurvey }}" hint-placeholder-val="{{ false }}">
-        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin:22px 0 14px;">About you</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin:34px 0 2px;">About you</div>
         <div style="display:flex; flex-direction:column; gap:22px; padding-bottom:22px; margin-bottom:6px; border-bottom:1px solid rgba(33,30,26,.12);">
-          <div>
-            <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:12px;">Are you a Faculty of Science student?</p>
-            <div style="display:flex; flex-wrap:wrap; gap:10px;">
-              <sc-for list="{{ scienceOptions }}" as="opt" hint-placeholder-count="2">
-                <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.label }}</button>
-              </sc-for>
-            </div>
-          </div>
           <div>
             <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:12px;">Which best describes you?</p>
             <div style="display:flex; flex-wrap:wrap; gap:10px;">
@@ -345,6 +338,17 @@
               </sc-for>
             </div>
           </div>
+          <sc-if value="{{ showFacultyQuestion }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <p style="font-size:14.5px; color:#211E1A; line-height:1.5; margin-bottom:12px;">What faculty are you in?</p>
+              <select value="{{ facultyValue }}" onChange="{{ onFacultyChange }}" style="width:100%; padding:12px 14px; border-radius:14px; border:1px solid rgba(33,30,26,.18); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; cursor:pointer;">
+                <option value="" disabled>Select a faculty&hellip;</option>
+                <sc-for list="{{ facultyOptions }}" as="opt" hint-placeholder-count="5">
+                  <option value="{{ opt.value }}">{{ opt.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -430,9 +434,28 @@ class Component extends DCLogic {
   ];
 
   // Pre-only — intentionally not part of SURVEY_ENTRIES/POST_SURVEY.
-  DEMO_SCIENCE_ENTRY = "entry.1975441396";
+  // TODO: DEMO_FACULTY_ENTRY is a placeholder — add the "What faculty are you in?" field to
+  // the real pre-survey Google Form and swap in its actual entry ID.
+  DEMO_FACULTY_ENTRY = "entry.1975441396";
   DEMO_ROLE_ENTRY = "entry.1927028882";
   ROLE_OPTIONS = ["Undergraduate student", "Graduate student", "Faculty", "Staff", "Other"];
+  // only students are asked the faculty follow-up — staff/faculty/other don't have one.
+  STUDENT_ROLES = ["Undergraduate student", "Graduate student"];
+  FACULTY_OPTIONS = [
+    "Cumming School of Medicine",
+    "Faculty of Arts",
+    "Faculty of Kinesiology",
+    "Faculty of Law",
+    "Faculty of Nursing",
+    "Faculty of Science",
+    "Faculty of Social Work",
+    "Faculty of Veterinary Medicine",
+    "Haskayne School of Business",
+    "School of Architecture, Planning and Landscape",
+    "Schulich School of Engineering",
+    "Werklund School of Education",
+    "Other"
+  ];
 
   QR_SCAN_FORM_ID = "1FAIpQLSf8vPsvvW_kbVh8Ss9ZOLg9wur7J2P41svgQ3aqxnL7bLxqKg";
   QR_SCAN_OBJECT_ENTRY = "entry.607181530";
@@ -568,7 +591,7 @@ class Component extends DCLogic {
       splashContentExiting: false,
       splashOverlayExiting: false,
       testPanelOpen: false,
-      pre: Object.assign({ answers: {}, submitted: false, science: null, role: null, ageConsent: false }, store.pre || {}),
+      pre: Object.assign({ answers: {}, submitted: false, faculty: null, role: null, ageConsent: false }, store.pre || {}),
       post: store.post || { answers: {}, submitted: false },
       feedback: store.feedback || { text: "", submitted: false },
       locationQuotes: store.locationQuotes || {}
@@ -847,6 +870,10 @@ class Component extends DCLogic {
   // redundant — a participant's program/role doesn't change over the course of the hunt).
   setPreDemo(field, value) {
     const next = Object.assign({}, this.state.pre, { [field]: value });
+    // switching to a non-student role makes a previously-picked faculty stale (and hides the
+    // question again), so clear it rather than silently submitting an answer to a question
+    // that's no longer showing.
+    if (field === "role" && !this.STUDENT_ROLES.includes(value)) next.faculty = null;
     this.saveStore({ pre: next });
     this.setState({ pre: next });
   }
@@ -867,8 +894,8 @@ class Component extends DCLogic {
       if (cur.answers[qIdx] !== undefined) body.set(entry, cur.answers[qIdx]);
     });
     if (key === "pre") {
-      if (cur.science) body.set(this.DEMO_SCIENCE_ENTRY, cur.science);
       if (cur.role) body.set(this.DEMO_ROLE_ENTRY, cur.role);
+      if (cur.faculty) body.set(this.DEMO_FACULTY_ENTRY, cur.faculty);
     }
     this.postToForm(formId, body);
     const next = Object.assign({}, cur, { submitted: true });
@@ -1109,16 +1136,17 @@ class Component extends DCLogic {
       }))
     }));
     const isPreSurvey = ctx === "pre";
-    const scienceOptions = ["Yes", "No"].map(label => ({
-      label: label,
-      style: this.demoOptStyle(s.pre.science === label),
-      onSelect: () => this.setPreDemo("science", label)
-    }));
     const roleOptions = this.ROLE_OPTIONS.map(label => ({
       label: label,
       style: this.demoOptStyle(s.pre.role === label),
       onSelect: () => this.setPreDemo("role", label)
     }));
+    // faculty is only asked as a follow-up once the participant has identified as a student —
+    // avoids the earlier redundant "are you Science" yes/no ahead of the same "which role"
+    // question (2026-08 feedback).
+    const showFacultyQuestion = this.STUDENT_ROLES.includes(s.pre.role);
+    const facultyOptions = this.FACULTY_OPTIONS.map(label => ({ value: label, label: label }));
+    const onFacultyChange = (e) => this.setPreDemo("faculty", e.target.value);
     // gates submission of the pre-survey only — post-survey has no age/consent checkbox
     // since it's already been affirmed once.
     const surveyCanSubmit = !isPreSurvey || s.pre.ageConsent;
@@ -1231,15 +1259,18 @@ class Component extends DCLogic {
       // survey overlay
       isSurveyOpen: s.surveyOpen !== null,
       isPreSurvey: isPreSurvey,
-      scienceOptions: scienceOptions,
       roleOptions: roleOptions,
+      showFacultyQuestion: showFacultyQuestion,
+      facultyOptions: facultyOptions,
+      facultyValue: s.pre.faculty || "",
+      onFacultyChange: onFacultyChange,
       ageConsentChecked: s.pre.ageConsent,
       ageConsentBoxStyle: this.ageConsentBoxStyle(s.pre.ageConsent),
       toggleAgeConsent: () => this.toggleAgeConsent(),
       surveyButtonStyle: surveyButtonStyle,
       surveyTitle: "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
-      surveyCitation: "Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
+      surveyCitation: "The scale below is from: Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
       surveyIntro: "",
       surveyButtonLabel: ctx === "pre" ? "Begin the scavenger hunt" : "Submit",
       surveyQuestions: surveyQuestions,
