@@ -53,7 +53,7 @@
          further down. Draft v1 — run past Mark before treating this as settled.
 
          Three-phase reveal, two separately-animated layers so the backdrop never bleeds
-         through while "You found a skull" is fading in/out on top of it:
+        through while "You found a skull" is fading in/out on top of it:
            1. Opaque backdrop appears instantly (no reveal of intro possible underneath).
            2. Content (icon + text) fades in, holds, fades back out — backdrop stays solid
               throughout, so this phase never shows the intro page.
@@ -100,7 +100,7 @@
             </sc-for>
           </div>
           <!-- <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0719) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0179) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
           </div> -->
 
           <!-- map, moved here from the very top of the page: by this point the reader already
@@ -165,7 +165,14 @@
       <sc-if value="{{ isRead }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; display:flex; flex-direction:column; padding:20px 0 30px; animation:rise .7s ease both;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; color:#A2472F; margin:0 0 18px;">Contains reflections on difficult experiences &middot; see the footer for crisis resources</p>
+            <!-- swapped from a per-stop content warning to a legitimacy reminder (2026-08
+                 feedback): the footer already carries the full content warning once, so
+                 repeating it here on every stop just adds friction without new information —
+                 whereas a reminder that this is a real, ethics-approved UCalgary study is
+                 useful every time. TODO: fill in the real REB number once approval comes
+                 through (see the commented-out disclosure block further up, currently
+                 REB26-0179 pending). -->
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; color:#8A8578; line-height:1.6; margin:0 0 18px;">Not Alone Project: Fostering Common Humanity Among University of Calgary Students<br>(Ethics Approval: REB26-0179)</p>
             <div style="position:relative; margin-top:44px;">
               <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
               <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
@@ -360,6 +367,13 @@
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35;">{{ likertLow }}</span>
               <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A5F47; max-width:70px; line-height:1.35; text-align:right;">{{ likertHigh }}</span>
             </div>
+            <sc-if value="{{ q.showPrior }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; justify-content:space-between;">
+                <sc-for list="{{ q.priorMarks }}" as="pm" hint-placeholder-count="5">
+                  <div style="width:34px; text-align:center; font-size:11px; color:#A2472F; line-height:1.6;">{{ pm.mark }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
             <div style="position:relative; display:flex; justify-content:space-between; align-items:center;">
               <div style="position:absolute; left:17px; right:17px; top:50%; height:1px; background:rgba(33,30,26,.18); z-index:0;"></div>
               <sc-for list="{{ q.opts }}" as="opt" hint-placeholder-count="5">
@@ -1005,7 +1019,7 @@ class Component extends DCLogic {
     // if this is the only stop left, clicking the button completes the hunt rather than
     // revealing a next skull's location — so the button shouldn't claim it will.
     const isLastPiece = !revealed && collectedCount === total - 1;
-    const revealButtonLabel = isLastPiece ? "Complete the hunt" : "Reveal next skull's location";
+    const revealButtonLabel = isLastPiece ? "Complete the hunt" : "Where am I going next?";
 
     // campus map: buildings, the "you are here" marker, and — once the current skull is
     // revealed — animated footsteps leading to the NEAREST still-undiscovered skull, in
@@ -1127,14 +1141,23 @@ class Component extends DCLogic {
     // survey
     const ctx = s.surveyOpen || "pre";
     const sv = ctx === "post" ? s.post : s.pre;
-    const surveyQuestions = this.QUESTIONS.map((text, qIdx) => ({
-      text: text,
-      opts: [1, 2, 3, 4, 5].map(value => ({
-        value: value,
-        style: this.surveyOptStyle(sv.answers[qIdx] === value),
-        onSelect: () => this.setAnswer(ctx, qIdx, value)
-      }))
-    }));
+    // on the post-survey, superimpose each question's pre-survey answer as a small marker
+    // above the matching option — lets someone see where they started and decide whether
+    // they'd land higher, lower, or the same now (2026-08 feedback).
+    const priorAnswers = ctx === "post" ? s.pre.answers : null;
+    const surveyQuestions = this.QUESTIONS.map((text, qIdx) => {
+      const priorValue = priorAnswers ? priorAnswers[qIdx] : undefined;
+      return {
+        text: text,
+        showPrior: priorValue !== undefined,
+        priorMarks: [1, 2, 3, 4, 5].map(value => ({ mark: value === priorValue ? "▲" : "" })),
+        opts: [1, 2, 3, 4, 5].map(value => ({
+          value: value,
+          style: this.surveyOptStyle(sv.answers[qIdx] === value),
+          onSelect: () => this.setAnswer(ctx, qIdx, value)
+        }))
+      };
+    });
     const isPreSurvey = ctx === "pre";
     const roleOptions = this.ROLE_OPTIONS.map(label => ({
       label: label,
@@ -1271,7 +1294,7 @@ class Component extends DCLogic {
       surveyTitle: "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
       surveyCitation: "The scale below is from: Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
-      surveyIntro: "",
+      surveyIntro: ctx === "post" ? "The ▲ above each question marks how you answered when you started — see if you'd land somewhere different now." : "",
       surveyButtonLabel: ctx === "pre" ? "Begin the scavenger hunt" : "Submit",
       surveyQuestions: surveyQuestions,
       likertLow: this.LIKERT[0],
