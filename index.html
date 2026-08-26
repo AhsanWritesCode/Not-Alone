@@ -14,6 +14,302 @@
 <link rel="stylesheet" href="./style.css">
 </helmet>
 
+<!-- Ambient autumn leaves: purely decorative, fixed behind all content (z-index:-1) so they only
+     ever show through the open margins around the page's centered column. Each leaf's inline
+     `top` doubles as its resting position when prefers-reduced-motion disables the animation
+     (handled by the global rule in style.css), so it still reads as "settled leaves" rather than
+     a cluster stuck at the top edge. -->
+<div style="position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;" aria-hidden="true">
+  <div style="position:absolute; top:2%; left:4%; animation:leafFall 16s linear infinite; animation-delay:-1s;">
+    <div style="animation:leafSwayA 5s ease-in-out infinite;">
+      <svg width="19" height="19" viewBox="0 0 24 24" style="opacity:.4; animation:leafTumble 6.4s ease-in-out infinite; animation-delay:-.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:2%; left:4%; animation:leafFall 16s linear infinite; animation-delay:-9s;">
+    <div style="animation:leafSwayA 5s ease-in-out infinite; animation-delay:-2.5s;">
+      <svg width="19" height="19" viewBox="0 0 24 24" style="opacity:.4; animation:leafTumble 6.4s ease-in-out infinite; animation-delay:-3.7s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:9%; left:94%; animation:leafFall 20s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-9s;">
+    <div style="animation:leafSwayB 6s ease-in-out infinite;">
+      <svg width="15" height="15" viewBox="0 0 24 24" style="opacity:.32; animation:leafTumble 8.2s ease-in-out infinite; animation-delay:-2s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:9%; left:94%; animation:leafFall 20s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-19s;">
+    <div style="animation:leafSwayB 6s ease-in-out infinite; animation-delay:-3s;">
+      <svg width="15" height="15" viewBox="0 0 24 24" style="opacity:.32; animation:leafTumble 8.2s ease-in-out infinite; animation-delay:-6.1s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:16%; left:9%; animation:leafFall 14s linear infinite; animation-delay:-4s;">
+    <div style="animation:leafSwayC 4.5s ease-in-out infinite;">
+      <svg width="22" height="22" viewBox="0 0 24 24" style="opacity:.46; animation:leafTumble 5.6s ease-in-out infinite; animation-delay:-1.2s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:16%; left:9%; animation:leafFall 14s linear infinite; animation-delay:-11s;">
+    <div style="animation:leafSwayC 4.5s ease-in-out infinite; animation-delay:-2.25s;">
+      <svg width="22" height="22" viewBox="0 0 24 24" style="opacity:.46; animation:leafTumble 5.6s ease-in-out infinite; animation-delay:-4s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:23%; left:88%; animation:leafFall 22s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-15s;">
+    <div style="animation:leafSwayA 7s ease-in-out infinite;">
+      <svg width="13" height="13" viewBox="0 0 24 24" style="opacity:.28; animation:leafTumble 7.2s ease-in-out infinite; animation-delay:-3s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:23%; left:88%; animation:leafFall 22s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-26s;">
+    <div style="animation:leafSwayA 7s ease-in-out infinite; animation-delay:-3.5s;">
+      <svg width="13" height="13" viewBox="0 0 24 24" style="opacity:.28; animation:leafTumble 7.2s ease-in-out infinite; animation-delay:-6.6s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:30%; left:2%; animation:leafFall 18s linear infinite; animation-delay:-6s;">
+    <div style="animation:leafSwayB 5.5s ease-in-out infinite;">
+      <svg width="17" height="17" viewBox="0 0 24 24" style="opacity:.36; animation:leafTumble 9.2s ease-in-out infinite; animation-delay:-.8s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:30%; left:2%; animation:leafFall 18s linear infinite; animation-delay:-15s;">
+    <div style="animation:leafSwayB 5.5s ease-in-out infinite; animation-delay:-2.75s;">
+      <svg width="17" height="17" viewBox="0 0 24 24" style="opacity:.36; animation:leafTumble 9.2s ease-in-out infinite; animation-delay:-5.4s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:37%; left:97%; animation:leafFall 15s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-11s;">
+    <div style="animation:leafSwayC 6.5s ease-in-out infinite;">
+      <svg width="20" height="20" viewBox="0 0 24 24" style="opacity:.42; animation:leafTumble 6s ease-in-out infinite; animation-delay:-2.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:37%; left:97%; animation:leafFall 15s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-18.5s;">
+    <div style="animation:leafSwayC 6.5s ease-in-out infinite; animation-delay:-3.25s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" style="opacity:.42; animation:leafTumble 6s ease-in-out infinite; animation-delay:-5.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:44%; left:14%; animation:leafFall 21s linear infinite; animation-delay:-2s;">
+    <div style="animation:leafSwayA 5s ease-in-out infinite;">
+      <svg width="14" height="14" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 7.8s ease-in-out infinite; animation-delay:-1.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:44%; left:14%; animation:leafFall 21s linear infinite; animation-delay:-12.5s;">
+    <div style="animation:leafSwayA 5s ease-in-out infinite; animation-delay:-2.5s;">
+      <svg width="14" height="14" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 7.8s ease-in-out infinite; animation-delay:-5.4s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:51%; left:83%; animation:leafFall 17s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-13s;">
+    <div style="animation:leafSwayB 7.5s ease-in-out infinite;">
+      <svg width="23" height="23" viewBox="0 0 24 24" style="opacity:.48; animation:leafTumble 5.2s ease-in-out infinite; animation-delay:-3.4s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:51%; left:83%; animation:leafFall 17s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-21.5s;">
+    <div style="animation:leafSwayB 7.5s ease-in-out infinite; animation-delay:-3.75s;">
+      <svg width="23" height="23" viewBox="0 0 24 24" style="opacity:.48; animation:leafTumble 5.2s ease-in-out infinite; animation-delay:-6s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:58%; left:6%; animation:leafFall 19s linear infinite; animation-delay:-17s;">
+    <div style="animation:leafSwayC 6s ease-in-out infinite;">
+      <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.34; animation:leafTumble 8.6s ease-in-out infinite; animation-delay:-.3s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:58%; left:6%; animation:leafFall 19s linear infinite; animation-delay:-26.5s;">
+    <div style="animation:leafSwayC 6s ease-in-out infinite; animation-delay:-3s;">
+      <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.34; animation:leafTumble 8.6s ease-in-out infinite; animation-delay:-4.6s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:65%; left:91%; animation:leafFall 14.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-8s;">
+    <div style="animation:leafSwayA 5.2s ease-in-out infinite;">
+      <svg width="18" height="18" viewBox="0 0 24 24" style="opacity:.4; animation:leafTumble 6.8s ease-in-out infinite; animation-delay:-2.8s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:65%; left:91%; animation:leafFall 14.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-15.25s;">
+    <div style="animation:leafSwayA 5.2s ease-in-out infinite; animation-delay:-2.6s;">
+      <svg width="18" height="18" viewBox="0 0 24 24" style="opacity:.4; animation:leafTumble 6.8s ease-in-out infinite; animation-delay:-6.2s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:72%; left:19%; animation:leafFall 23s linear infinite; animation-delay:-3s;">
+    <div style="animation:leafSwayB 6.8s ease-in-out infinite;">
+      <svg width="15" height="15" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 7.4s ease-in-out infinite; animation-delay:-1.8s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:72%; left:19%; animation:leafFall 23s linear infinite; animation-delay:-14.5s;">
+    <div style="animation:leafSwayB 6.8s ease-in-out infinite; animation-delay:-3.4s;">
+      <svg width="15" height="15" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 7.4s ease-in-out infinite; animation-delay:-5.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:79%; left:78%; animation:leafFall 16.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-19s;">
+    <div style="animation:leafSwayC 5.8s ease-in-out infinite;">
+      <svg width="21" height="21" viewBox="0 0 24 24" style="opacity:.44; animation:leafTumble 5.8s ease-in-out infinite; animation-delay:-4s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:79%; left:78%; animation:leafFall 16.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-27.25s;">
+    <div style="animation:leafSwayC 5.8s ease-in-out infinite; animation-delay:-2.9s;">
+      <svg width="21" height="21" viewBox="0 0 24 24" style="opacity:.44; animation:leafTumble 5.8s ease-in-out infinite; animation-delay:-6.9s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:86%; left:11%; animation:leafFall 20.5s linear infinite; animation-delay:-7s;">
+    <div style="animation:leafSwayA 7.2s ease-in-out infinite;">
+      <svg width="13" height="13" viewBox="0 0 24 24" style="opacity:.28; animation:leafTumble 8s ease-in-out infinite; animation-delay:-1s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:86%; left:11%; animation:leafFall 20.5s linear infinite; animation-delay:-17.25s;">
+    <div style="animation:leafSwayA 7.2s ease-in-out infinite; animation-delay:-3.6s;">
+      <svg width="13" height="13" viewBox="0 0 24 24" style="opacity:.28; animation:leafTumble 8s ease-in-out infinite; animation-delay:-5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:93%; left:96%; animation:leafFall 15.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-21s;">
+    <div style="animation:leafSwayB 4.8s ease-in-out infinite;">
+      <svg width="19" height="19" viewBox="0 0 24 24" style="opacity:.38; animation:leafTumble 6.6s ease-in-out infinite; animation-delay:-2.2s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:93%; left:96%; animation:leafFall 15.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-28.75s;">
+    <div style="animation:leafSwayB 4.8s ease-in-out infinite; animation-delay:-2.4s;">
+      <svg width="19" height="19" viewBox="0 0 24 24" style="opacity:.38; animation:leafTumble 6.6s ease-in-out infinite; animation-delay:-5.5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:5%; left:71%; animation:leafFall 24s linear infinite; animation-delay:-5s;">
+    <div style="animation:leafSwayC 6.2s ease-in-out infinite;">
+      <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.32; animation:leafTumble 8.8s ease-in-out infinite; animation-delay:-.6s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:5%; left:71%; animation:leafFall 24s linear infinite; animation-delay:-17s;">
+    <div style="animation:leafSwayC 6.2s ease-in-out infinite; animation-delay:-3.1s;">
+      <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.32; animation:leafTumble 8.8s ease-in-out infinite; animation-delay:-5s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:20%; left:27%; animation:leafFall 18.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-23s;">
+    <div style="animation:leafSwayA 5.6s ease-in-out infinite;">
+      <svg width="14" height="14" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 6.2s ease-in-out infinite; animation-delay:-3.6s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#8A5F47"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#5E4229" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#5E4229" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+  <div style="position:absolute; top:20%; left:27%; animation:leafFall 18.5s cubic-bezier(.37,.01,.63,1) infinite; animation-delay:-32.25s;">
+    <div style="animation:leafSwayA 5.6s ease-in-out infinite; animation-delay:-2.8s;">
+      <svg width="14" height="14" viewBox="0 0 24 24" style="opacity:.3; animation:leafTumble 6.2s ease-in-out infinite; animation-delay:-6.7s;">
+        <path d="M12 2C7 4.5 4 8 5.5 11.5C7 13.7 9.5 14.8 12 15C14.5 14.8 17 13.7 18.5 11.5C20 8 17 4.5 12 2Z" fill="#A2472F"></path>
+        <line x1="12" y1="4" x2="12" y2="14" stroke="#7A331F" stroke-width=".6" opacity=".55"></line>
+        <path d="M12 15C12.5 17 13.5 19 13 22" stroke="#7A331F" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+
 <!-- TEST MODE (?test=1 in the URL): lets the research team click through every screen for
      feedback without physically visiting each campus stop, and without recording anything in
      the real Google Forms responses (postToForm() no-ops while this is on). Clearly marked so
@@ -108,7 +404,7 @@
                before they commit, rather than being the very first, context-free thing seen. -->
           <div style="margin-bottom:28px;">
             <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-size:15px; color:#6E6A61; margin:0 0 12px;">Follow the map and scan all five skulls that are hidden around campus.</p>
-            <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
+            <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:6px 22px 8px 24px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4), inset 0 0 0 1px rgba(101,72,35,.28); background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply;">
               <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
                 <defs>
                   <filter id="mapGrainIntro" x="-20%" y="-20%" width="140%" height="140%">
@@ -149,13 +445,13 @@
             </div>
           </div>
 
-          <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:26px 22px 24px; margin-bottom:28px;">
+          <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:16px 4px 18px 6px; padding:26px 22px 24px; margin-bottom:28px; transform:rotate(-.3deg);">
             <sc-if value="{{ preSubmitted }}" hint-placeholder-val="{{ false }}">
               <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6; text-align:center;">Thank you for supporting our work.</p>
             </sc-if>
             <sc-if value="{{ !preSubmitted }}" hint-placeholder-val="{{ true }}">
-              <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; text-align:center; margin-top:0; margin-bottom:18px;">Before you begin....</p>
-              <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#FBF2EA;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
+              <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; text-align:center; margin-top:0; margin-bottom:18px;">Before you begin....</p>
+              <button style="width:100%; padding:14px; background:#2E2013; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#4A331C;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
             </sc-if>
           </div>
         </div>
@@ -189,7 +485,7 @@
               <sc-if value="{{ showRevealAnnounce }}" hint-placeholder-val="{{ false }}">
                 <p style="text-align:center; font-family:'Newsreader',serif; font-style:italic; font-weight:400; font-size:{{ announceFontSize }}; color:#2B2823; margin:0 0 14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; animation:drop .7s .15s both;">{{ mapCaption }}</p>
               </sc-if>
-              <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:14px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4); border:1px solid rgba(162,71,47,.22); background:radial-gradient(120% 90% at 50% -10%, #FBF6EE 0%, #F3EBDB 55%, #E7D6AE 100%);">
+              <div style="position:relative; width:calc(100% + 32px); margin:0 -16px; aspect-ratio:400 / 265; border-radius:6px 22px 8px 24px; overflow:hidden; box-shadow:0 18px 40px -24px rgba(33,30,26,.4), inset 0 0 0 1px rgba(101,72,35,.28); background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply;">
                 <svg viewBox="0 0 400 265" width="100%" height="100%" style="display:block;">
                   <defs>
                     <filter id="mapGrainRead" x="-20%" y="-20%" width="140%" height="140%">
@@ -239,7 +535,7 @@
               </sc-if>
 
               <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
-                <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(135% 120% at 15% -12%, #F8F0DC 0%, #EEE0B9 42%, #E2CE9C 72%, #D2B87E 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.24), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:4px 16px 6px 18px; padding:20px 24px 24px; margin-top:22px; transform:rotate(-.4deg); animation:rise .5s .35s ease both;">
+                <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:4px 16px 6px 18px; padding:20px 24px 24px; margin-top:22px; transform:rotate(-.4deg); animation:rise .5s .35s ease both;">
                   <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:500; font-size:17px; line-height:1.4; color:#A2472F; margin-bottom:14px;">{{ quotePrompt }}</p>
                   <sc-if value="{{ quoteBoxSubmitted }}" hint-placeholder-val="{{ false }}">
                     <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and add it again below.</p>
@@ -259,28 +555,36 @@
               </sc-if>
 
               <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
-                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:18px; padding:24px; margin-top:16px;">
+                <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:6px 18px 4px 14px; padding:24px; margin-top:16px; transform:rotate(.3deg);">
                   <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">The final gathering</div>
-                  <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#2B2823;">ICT 743 at 1:15 PM on July 16, 2026</p>
+                  <p style="font-family:'Newsreader',serif; font-weight:300; font-size:19px; line-height:1.55; color:#3B2410;">ICT 743 at 1:15 PM on July 16, 2026</p>
                 </div>
-                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
+                <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:16px 4px 18px 6px; padding:22px; margin-top:16px; transform:rotate(-.3deg);">
                   <sc-if value="{{ postSubmitted }}" hint-placeholder-val="{{ false }}">
                     <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6;">Thank you for supporting our work.</p>
                   </sc-if>
                   <sc-if value="{{ !postSubmitted }}" hint-placeholder-val="{{ true }}">
-                    <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:16px;">This was the last piece. If you're willing, help us once more by answering the same questions from the start of the experience. Have your views changed?</p>
-                    <button style="width:100%; padding:14px; background:#fff; border:1px solid #A2472F; color:#A2472F; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#F6EADF;" onClick="{{ openPost }}">Answer the same questions again</button>
+                    <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; margin-bottom:16px;">You've found every piece &mdash; here's a chance to reflect: revisit the same questions from the very beginning and see how your perspective has changed.</p>
+                    <button style="width:100%; padding:14px; background:#2E2013; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#4A331C;" onClick="{{ openPost }}">See how my perspective has changed</button>
                   </sc-if>
                 </div>
-                <div style="background:#FBF2EA; border:1px solid rgba(162,71,47,.22); border-radius:16px; padding:22px; margin-top:16px;">
+                <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:5px 15px 7px 17px; padding:22px; margin-top:16px; transform:rotate(.35deg);">
                   <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:12px;">One more thing</div>
-                  <p style="font-size:13.5px; color:#8A5F47; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience?</p>
+                  <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; margin-bottom:14px;">Any thoughts you'd like to share about this experience?</p>
                   <sc-if value="{{ feedbackSubmitted }}" hint-placeholder-val="{{ false }}">
                     <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and send again below.</p>
                   </sc-if>
-                  <textarea value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:90px; padding:14px; border-radius:14px; border:1px solid rgba(33,30,26,.16); background:#FCFAF4; color:#211E1A; font-family:'Space Grotesk',sans-serif; font-size:13.5px; line-height:1.55; resize:vertical; margin-bottom:14px;"></textarea>
-                  <button style="width:100%; padding:14px; background:#211E1A; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#332F28;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
-                  <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — use "Withdraw my data" in the footer below.</p>
+                  <div style="position:relative; margin-bottom:12px;">
+                    <textarea class="journal-textarea" value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:112px; padding:8px 46px 12px 6px; border:none; border-radius:2px; background-color:transparent; background-image:repeating-linear-gradient(to bottom, transparent 0px, transparent 29px, rgba(90,60,20,.24) 30px); background-position:0 6px; color:#3B2410; font-family:'Caveat',cursive; font-weight:600; font-size:21px; line-height:30px; resize:none; display:block;"></textarea>
+                    <svg width="30" height="30" viewBox="0 0 34 34" style="position:absolute; right:6px; bottom:2px; transform:rotate(18deg); pointer-events:none; filter:drop-shadow(0 2px 3px rgba(60,40,10,.35));">
+                      <path d="M27 3C20 3 10 9 6 21c-1 3-1 6 1 8 2 2 5 2 8 1 12-4 18-14 18-21 0-3-2-6-6-6Z" fill="#5B3A1E"></path>
+                      <path d="M27 3C20 6 12 13 8 22" stroke="#3B2410" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"></path>
+                      <path d="M8 22c-2 3-3 6-3 8" stroke="#3B2410" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+                      <circle cx="5" cy="30" r="1.4" fill="#3B2410" opacity="0.6"></circle>
+                    </svg>
+                  </div>
+                  <button style="width:100%; padding:14px; background:#2E2013; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#4A331C;" onClick="{{ submitFeedback }}">{{ feedbackButtonLabel }}</button>
+                  <p style="text-align:center; font-size:11.5px; color:#8A6F4C; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — use "Withdraw my data" in the footer below.</p>
                 </div>
               </sc-if>
             </div>
@@ -328,7 +632,7 @@
 <!-- SURVEY OVERLAY -->
 <sc-if value="{{ isSurveyOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed; inset:0; z-index:80; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSurvey }}">
-    <div style="position:relative; width:100%; max-width:780px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
+    <div style="position:relative; width:100%; max-width:780px; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; border-radius:8px 22px 6px 18px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7), inset 0 0 60px rgba(150,108,55,.12), inset 0 0 0 1px rgba(101,72,35,.28); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSurvey }}">&times;</button>
       <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">{{ surveyTitle }}</div>
       <p style="font-size:12px; color:#2B2823; font-weight:500; margin-bottom:4px;">{{ surveySubtitle }}</p>
@@ -414,7 +718,7 @@
 <!-- ABOUT THE TEAM: reachable from the footer link on every screen. -->
 <sc-if value="{{ isAboutTeamOpen }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed; inset:0; z-index:110; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeAboutTeam }}">
-    <div style="position:relative; width:100%; max-width:480px; background:#FBF6EE; border-radius:20px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7); padding:40px 32px 36px; animation:rise .4s ease both;" onClick="{{ stop }}">
+    <div style="position:relative; width:100%; max-width:480px; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; border-radius:20px 6px 22px 8px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7), inset 0 0 60px rgba(150,108,55,.12), inset 0 0 0 1px rgba(101,72,35,.28); padding:40px 32px 36px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeAboutTeam }}">&times;</button>
       <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:18px;">About the research team</div>
       <div style="display:flex; flex-direction:column; gap:12px;">
