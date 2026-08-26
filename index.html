@@ -469,9 +469,9 @@
                  through (see the commented-out disclosure block further up, currently
                  REB26-0179 pending). -->
             <p style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em; color:#8A8578; line-height:1.6; margin:0 0 18px;">Not Alone Project: Fostering Common Humanity Among University of Calgary Students<br>(Ethics Approval: REB26-0179)</p>
-            <div style="position:relative; margin-top:44px;">
-              <span style="position:absolute; top:-30px; left:-6px; font-family:'Newsreader',serif; font-size:82px; line-height:1; color:rgba(162,71,47,.16);">&ldquo;</span>
-              <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#2B2823; letter-spacing:-.005em; text-wrap:pretty;">{{ quote }}</p>
+            <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:6px 18px 4px 14px; padding:34px 26px 26px; margin-top:18px; transform:rotate(-.25deg);">
+              <span style="position:absolute; top:8px; left:14px; font-family:'Newsreader',serif; font-size:70px; line-height:1; color:rgba(162,71,47,.18);">&ldquo;</span>
+              <p style="position:relative; font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:23px; line-height:1.62; color:#3B2410; letter-spacing:-.005em; text-wrap:pretty; margin-top:18px;">{{ quote }}</p>
             </div>
             <!-- GUESS STEP temporarily removed (2026-07 feedback). To restore it, delete the map/reveal-button block below and un-comment this original button, which routed to the "who said this?" screen:
             <button style="width:100%; padding:17px; background:#A2472F; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s, background .2s;" style-hover="background:#8E3C27;" style-active="transform:scale(0.98);" onClick="{{ goGuess }}">Consider who said this <span style="font-family:'Newsreader',serif; font-size:18px;">&rarr;</span></button>
@@ -536,6 +536,7 @@
 
               <sc-if value="{{ showLocationQuoteBox }}" hint-placeholder-val="{{ false }}">
                 <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:4px 16px 6px 18px; padding:20px 24px 24px; margin-top:22px; transform:rotate(-.4deg); animation:rise .5s .35s ease both;">
+                  <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#8A6F4C; margin-bottom:8px;">Optional reflection</div>
                   <p style="font-family:'Newsreader',serif; font-style:italic; font-weight:500; font-size:17px; line-height:1.4; color:#A2472F; margin-bottom:14px;">{{ quotePrompt }}</p>
                   <sc-if value="{{ quoteBoxSubmitted }}" hint-placeholder-val="{{ false }}">
                     <p style="font-size:12.5px; color:#5F7A4F; font-weight:500; margin-bottom:12px;">Thank you. You can still edit and add it again below.</p>
@@ -557,7 +558,7 @@
               <sc-if value="{{ isFinal }}" hint-placeholder-val="{{ false }}">
                 <sc-if value="{{ !finalRevealed }}" hint-placeholder-val="{{ true }}">
                   <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:16px 4px 18px 6px; padding:24px 22px; margin-top:16px; transform:rotate(-.3deg);">
-                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:8px;">One last reflection</div>
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:8px;">One last reflection <span style="color:#8E5A3A;">(required)</span></div>
                     <p style="font-family:'Newsreader',serif; font-weight:300; font-style:italic; font-size:15px; line-height:1.6; color:#5C4324; margin-bottom:20px;">The same questions from the very start &mdash; the &#9650; above each one marks how you answered then, so you can see if you'd land somewhere different now.</p>
 
                     <div style="display:flex; flex-direction:column; gap:26px; margin-bottom:24px;">
@@ -585,8 +586,8 @@
                       </sc-for>
                     </div>
 
-                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:8px;">How was this for you?</div>
-                    <p style="font-size:12px; color:#8A6F4C; font-weight:300; line-height:1.5; margin-bottom:14px;">Optional &mdash; any thoughts you'd like to share about the experience.</p>
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#8A6F4C; margin-bottom:8px;">How was this for you? <span style="color:#A8A499;">(optional)</span></div>
+                    <p style="font-size:12px; color:#8A6F4C; font-weight:300; line-height:1.5; margin-bottom:14px;">Any thoughts you'd like to share about the experience &mdash; skip it if you'd rather not.</p>
                     <div style="position:relative; margin-bottom:26px;">
                       <textarea class="journal-textarea" value="{{ feedbackText }}" onInput="{{ onFeedbackInput }}" placeholder="Type here..." style="width:100%; min-height:100px; padding:8px 46px 12px 6px; border:none; border-radius:2px; background-color:transparent; background-image:repeating-linear-gradient(to bottom, transparent 0px, transparent 29px, rgba(90,60,20,.24) 30px); background-position:0 6px; color:#3B2410; font-family:'Caveat',cursive; font-weight:600; font-size:21px; line-height:30px; resize:none; display:block;"></textarea>
                       <svg width="28" height="28" viewBox="0 0 34 34" style="position:absolute; right:6px; bottom:2px; transform:rotate(18deg); pointer-events:none; filter:drop-shadow(0 2px 3px rgba(60,40,10,.35));">
@@ -599,8 +600,10 @@
 
                     <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; margin-bottom:22px;">Thank you for joining the &ldquo;Not Alone&rdquo; project. This study is approved by the University of Calgary Research Ethics Board (REB26-0179) &mdash; your reflections help us understand whether this kind of project can genuinely help students feel less alone.</p>
 
-                    <button style="width:100%; padding:14px; background:#2E2013; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#4A331C;" onClick="{{ submitFinalReflection }}">Show me the prize!</button>
-                    <button style="display:block; width:100%; background:none; border:none; padding:0; margin-top:14px; font-family:'Space Grotesk',sans-serif; font-size:12px; color:#8A6F4C; text-decoration:underline; cursor:pointer; text-align:center;" onClick="{{ revealFinal }}">See what's next</button>
+                    <button style="{{ finalButtonStyle }}" onClick="{{ submitFinalReflection }}">Show me the prize!</button>
+                    <sc-if value="{{ !postAnswersComplete }}" hint-placeholder-val="{{ false }}">
+                      <p style="text-align:center; font-size:11.5px; color:#A2472F; font-weight:500; margin-top:10px;">Answer every question above to continue.</p>
+                    </sc-if>
                     <p style="text-align:center; font-size:11.5px; color:#8A6F4C; font-weight:300; margin-top:16px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — use "Withdraw my data" in the footer below.</p>
                   </div>
                 </sc-if>
@@ -659,7 +662,7 @@
   <div style="position:fixed; inset:0; z-index:80; background:rgba(28,26,23,.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); display:flex; justify-content:center; align-items:flex-start; overflow-y:auto; padding:40px 20px; animation:fade .3s ease both;" onClick="{{ closeSurvey }}">
     <div style="position:relative; width:100%; max-width:780px; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; border-radius:8px 22px 6px 18px; box-shadow:0 40px 90px -30px rgba(28,26,23,.7), inset 0 0 60px rgba(150,108,55,.12), inset 0 0 0 1px rgba(101,72,35,.28); padding:48px 40px 44px; animation:rise .4s ease both;" onClick="{{ stop }}">
       <button aria-label="Close" style="position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(33,30,26,.15); background:#F3EBDB; color:#6E6A61; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;" onClick="{{ closeSurvey }}">&times;</button>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">{{ surveyTitle }}</div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#A2472F; margin-bottom:10px;">{{ surveyTitle }} <span style="color:#8E5A3A;">(required)</span></div>
       <p style="font-size:12px; color:#2B2823; font-weight:500; margin-bottom:4px;">{{ surveySubtitle }}</p>
       <p style="font-size:11px; color:#A8A398; font-weight:300; font-style:italic; margin-bottom:14px;">{{ surveyCitation }}</p>
       <sc-if value="{{ surveyIntro }}" hint-placeholder-val="{{ false }}">
@@ -735,6 +738,9 @@
       </sc-if>
 
       <button style="{{ surveyButtonStyle }}" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
+      <sc-if value="{{ surveyIncompleteNote }}" hint-placeholder-val="{{ false }}">
+        <p style="text-align:center; font-size:11.5px; color:#A2472F; font-weight:500; margin-top:10px;">{{ surveyIncompleteNote }}</p>
+      </sc-if>
       <p style="text-align:center; font-size:11.5px; color:#9A9587; font-weight:300; margin-top:12px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — email us at ahsan.tariq@ucalgary.ca.</p>
     </div>
   </div>
@@ -1238,6 +1244,11 @@ class Component extends DCLogic {
   submitSurvey(ctx) {
     const key = ctx === "post" ? "post" : "pre";
     const cur = this.state[key];
+    // the common humanity scale is mandatory — every question must be answered before either
+    // survey can be submitted (2026-08 feedback: only the scales are required; written
+    // reflections/feedback elsewhere in the experience stay optional).
+    const allAnswered = this.QUESTIONS.every((_, qIdx) => cur.answers[qIdx] !== undefined);
+    if (!allAnswered) return;
     if (key === "pre" && !cur.ageConsent) return;
     const formId = key === "post" ? this.POST_SURVEY_FORM_ID : this.PRE_SURVEY_FORM_ID;
     const body = new URLSearchParams();
@@ -1261,19 +1272,18 @@ class Component extends DCLogic {
   setFeedbackText(value) {
     this.setState({ feedback: Object.assign({}, this.state.feedback, { text: value }) });
   }
-  // final-page reflection: reveals the closing "final gathering" details either because the
-  // visitor submitted the combined reflection (survey + optional feedback) or because they
-  // chose to skip it via "See what's next" — either way they shouldn't be blocked from seeing
-  // real event logistics (2026-08 feedback: don't gate real info behind an incentive).
-  revealFinal() {
-    this.saveStore({ finalRevealed: true });
-    this.setState({ finalRevealed: true });
-  }
+  // final-page reflection: the closing common humanity scale is mandatory — reveals the
+  // "final gathering" details only once every question is answered and submitted. The
+  // feedback box above it stays optional and never blocks this (2026-08 feedback: the scale
+  // is the one thing that's required here; everything else is a bonus).
   submitFinalReflection() {
+    const allAnswered = this.QUESTIONS.every((_, qIdx) => this.state.post.answers[qIdx] !== undefined);
+    if (!allAnswered) return;
     this.submitSurvey("post");
     const text = (this.state.feedback.text || "").trim();
     if (text) this.submitFeedback();
-    this.revealFinal();
+    this.saveStore({ finalRevealed: true });
+    this.setState({ finalRevealed: true });
   }
   submitFeedback() {
     const text = (this.state.feedback.text || "").trim();
@@ -1527,6 +1537,17 @@ class Component extends DCLogic {
         }))
       };
     });
+    // gates the final page's "Show me the prize!" button the same way — the closing scale is
+    // mandatory, the feedback box above it is not.
+    const postAnswersComplete = this.QUESTIONS.every((_, qIdx) => s.post.answers[qIdx] !== undefined);
+    const finalButtonStyle = {
+      width: "100%", padding: "14px",
+      background: postAnswersComplete ? "#2E2013" : "rgba(59,36,16,0.3)",
+      color: "#F7EFE4", border: "none", borderRadius: "100px",
+      fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500, fontSize: "13.5px",
+      cursor: postAnswersComplete ? "pointer" : "not-allowed",
+      transition: "background .15s"
+    };
     const isPreSurvey = ctx === "pre";
     const roleOptions = this.ROLE_OPTIONS.map(label => ({
       label: label,
@@ -1539,9 +1560,12 @@ class Component extends DCLogic {
     const showFacultyQuestion = this.STUDENT_ROLES.includes(s.pre.role);
     const facultyOptions = this.FACULTY_OPTIONS.map(label => ({ value: label, label: label }));
     const onFacultyChange = (e) => this.setPreDemo("faculty", e.target.value);
-    // gates submission of the pre-survey only — post-survey has no age/consent checkbox
-    // since it's already been affirmed once.
-    const surveyCanSubmit = !isPreSurvey || s.pre.ageConsent;
+    // the common humanity scale itself is mandatory (both pre and post) — every question must
+    // be answered before the survey can be submitted. Age/consent is an additional pre-only
+    // gate. Written reflections (the per-location quote, the closing feedback box) stay
+    // optional throughout — only the scales are required (2026-08 feedback).
+    const surveyAnswersComplete = this.QUESTIONS.every((_, qIdx) => sv.answers[qIdx] !== undefined);
+    const surveyCanSubmit = surveyAnswersComplete && (!isPreSurvey || s.pre.ageConsent);
     const surveyButtonStyle = {
       width: "100%", marginTop: "18px", padding: "15px",
       background: surveyCanSubmit ? "#211E1A" : "rgba(33,30,26,0.35)",
@@ -1550,6 +1574,9 @@ class Component extends DCLogic {
       cursor: surveyCanSubmit ? "pointer" : "not-allowed",
       transition: "background .15s"
     };
+    const surveyIncompleteNote = !surveyAnswersComplete
+      ? "Answer every question above to continue."
+      : (isPreSurvey && !s.pre.ageConsent ? "Check the box above to continue." : "");
 
     // test mode: a flat list of every screen/state worth reviewing, so the team can jump
     // straight there instead of physically visiting each campus stop in order.
@@ -1616,9 +1643,10 @@ class Component extends DCLogic {
       // guessVoiceLower: s.guess ? this.VOICE[s.guess].label.toLowerCase() : "",  // GUESS STEP removed
       postSubmitted: s.post.submitted,
       finalRevealed: s.finalRevealed,
-      revealFinal: () => this.revealFinal(),
       submitFinalReflection: () => this.submitFinalReflection(),
       postSurveyQuestions: postSurveyQuestions,
+      postAnswersComplete: postAnswersComplete,
+      finalButtonStyle: finalButtonStyle,
 
       // reveal — personal quote submission for this location
       quotePrompt: data.quotePrompt,
@@ -1666,6 +1694,7 @@ class Component extends DCLogic {
       ageConsentBoxStyle: this.ageConsentBoxStyle(s.pre.ageConsent),
       toggleAgeConsent: () => this.toggleAgeConsent(),
       surveyButtonStyle: surveyButtonStyle,
+      surveyIncompleteNote: surveyIncompleteNote,
       surveyTitle: "Common Humanity Self-Report Scale: How do you relate to yourself? (~2 min)",
       surveySubtitle: "Research Study: Fostering Common Humanity Among University of Calgary Students",
       surveyCitation: "The scale below is from: Neff, K. D. (2003). The development and validation of a scale to measure self-compassion. Self and Identity, 2(2), 223\u2013250.",
