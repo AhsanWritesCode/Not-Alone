@@ -388,12 +388,13 @@
       <!-- INTRO -->
       <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1; padding:8px 0 30px; animation:rise .7s ease both;">
-          <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#211E1A; margin:0 0 6px;">Not Alone</h2>
-          <p style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#8A8578; margin:0 0 26px;">A scavenger hunt for common humanity &middot; University of Calgary</p>
-          <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:30px;">
-            <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
-              <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#2B2823; text-wrap:pretty;">{{ para }}</p>
-            </sc-for>
+          <div style="position:relative; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.1  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), radial-gradient(180% 260% at 20% -10%, #FCF7EA 0%, #F7EED4 40%, #F1E4BE 70%, #E8D6A4 100%); background-size:140px 140px, cover; background-blend-mode:multiply; box-shadow:0 16px 34px -20px rgba(60,40,10,.5), inset 0 0 46px rgba(150,108,55,.14), inset 0 0 0 1px rgba(101,72,35,.28); border-radius:6px 18px 4px 14px; padding:26px 24px; margin-bottom:30px; transform:rotate(-.25deg);">
+            <h2 style="font-family:'Newsreader',serif; font-weight:400; font-size:29px; line-height:1.15; letter-spacing:-.01em; color:#3B2410; margin:0 0 18px;">Not Alone</h2>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <sc-for list="{{ aboutParas }}" as="para" hint-placeholder-count="9">
+                <p style="margin:0; font-family:'Newsreader',serif; font-weight:300; font-size:17px; line-height:1.68; color:#3B2410; text-wrap:pretty;">{{ para }}</p>
+              </sc-for>
+            </div>
           </div>
           <!-- <div style="border-left:2px solid rgba(33,30,26,.16); padding-left:16px; margin-bottom:26px;">
             <p style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:#8A8578; font-weight:400; line-height:1.7;">This is a pilot study for fostering a sense of "common humanity" among students at the University of Calgary. This work is under submission (not yet approved) by the University of Calgary Research Ethics Board (REB26-0179) &mdash; we are deploying these skulls to see how people respond to them. The data from this pilot study will only be used to improve our study design; this pilot data will not be reported on.</p>
@@ -450,8 +451,64 @@
               <p style="font-size:13.5px; color:#5F7A4F; font-weight:500; line-height:1.6; text-align:center;">Thank you for supporting our work.</p>
             </sc-if>
             <sc-if value="{{ !preSubmitted }}" hint-placeholder-val="{{ true }}">
-              <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; text-align:center; margin-top:0; margin-bottom:18px;">Before you begin....</p>
-              <button style="width:100%; padding:14px; background:#2E2013; color:#F7EFE4; border:none; border-radius:100px; font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:13.5px; cursor:pointer; transition:background .15s;" style-hover="background:#4A331C;" onClick="{{ openPre }}">How alone or supported do you feel right now?</button>
+              <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; margin-top:0; margin-bottom:20px;">Before you begin, how alone or supported do you feel right now?</p>
+
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:2px;">About you <span style="color:#8E5A3A;">(required)</span></div>
+              <div style="display:flex; flex-direction:column; gap:22px; padding-bottom:22px; margin:12px 0 20px; border-bottom:1px solid rgba(59,36,16,.14);">
+                <div>
+                  <p style="font-size:14.5px; color:#3B2410; line-height:1.5; margin-bottom:12px;">Which best describes you?</p>
+                  <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <sc-for list="{{ roleOptions }}" as="opt" hint-placeholder-count="5">
+                      <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <sc-if value="{{ showFacultyQuestion }}" hint-placeholder-val="{{ false }}">
+                  <div>
+                    <p style="font-size:14.5px; color:#3B2410; line-height:1.5; margin-bottom:12px;">What faculty are you in?</p>
+                    <select value="{{ facultyValue }}" onChange="{{ onFacultyChange }}" style="width:100%; padding:12px 14px; border-radius:14px; border:1px solid rgba(59,36,16,.22); background:#FCFAF4; color:#3B2410; font-family:'Space Grotesk',sans-serif; font-size:13.5px; cursor:pointer;">
+                      <option value="" disabled>Select a faculty&hellip;</option>
+                      <sc-for list="{{ facultyOptions }}" as="opt" hint-placeholder-count="5">
+                        <option value="{{ opt.value }}">{{ opt.label }}</option>
+                      </sc-for>
+                    </select>
+                  </div>
+                </sc-if>
+              </div>
+
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#A2472F; margin-bottom:14px;">Common Humanity Scale <span style="color:#8E5A3A;">(required)</span></div>
+              <div style="display:flex; flex-direction:column; gap:26px; margin-bottom:22px;">
+                <sc-for list="{{ surveyQuestions }}" as="q" hint-placeholder-count="4">
+                  <div>
+                    <p style="font-size:14px; color:#3B2410; line-height:1.5; margin-bottom:12px;">{{ q.text }}</p>
+                    <div style="display:flex; justify-content:space-between; padding:0 1px; margin-bottom:6px;">
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A6F4C; max-width:70px; line-height:1.35;">{{ likertLow }}</span>
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:#8A6F4C; max-width:70px; line-height:1.35; text-align:right;">{{ likertHigh }}</span>
+                    </div>
+                    <div style="position:relative; display:flex; justify-content:space-between; align-items:center;">
+                      <div style="position:absolute; left:17px; right:17px; top:50%; height:1px; background:rgba(59,36,16,.18); z-index:0;"></div>
+                      <sc-for list="{{ q.opts }}" as="opt" hint-placeholder-count="5">
+                        <button style="{{ opt.style }}" onClick="{{ opt.onSelect }}">{{ opt.value }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex; align-items:flex-start; gap:12px; margin:6px 0 4px; cursor:pointer;" onClick="{{ toggleAgeConsent }}">
+                <div style="{{ ageConsentBoxStyle }}">
+                  <sc-if value="{{ ageConsentChecked }}" hint-placeholder-val="{{ false }}">
+                    <span style="color:#F7EFE4; font-size:12px; line-height:1; font-weight:700;">&#10003;</span>
+                  </sc-if>
+                </div>
+                <p style="font-size:12.5px; color:#5C4324; line-height:1.55; margin:0;">I am 18 years of age or older, and I understand my anonymized responses will be used for this study as described above.</p>
+              </div>
+
+              <button style="{{ surveyButtonStyle }}" onClick="{{ submitSurvey }}">{{ surveyButtonLabel }}</button>
+              <sc-if value="{{ surveyIncompleteNote }}" hint-placeholder-val="{{ false }}">
+                <p style="text-align:center; font-size:11.5px; color:#A2472F; font-weight:500; margin-top:10px;">{{ surveyIncompleteNote }}</p>
+              </sc-if>
+              <p style="text-align:center; font-size:11.5px; color:#8A6F4C; font-weight:300; margin-top:14px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — email us at ahsan.tariq@ucalgary.ca.</p>
             </sc-if>
           </div>
         </div>
@@ -600,9 +657,9 @@
 
                     <p style="font-size:13.5px; color:#5C4324; font-weight:400; line-height:1.6; margin-bottom:22px;">Thank you for joining the &ldquo;Not Alone&rdquo; project. This study is approved by the University of Calgary Research Ethics Board (REB26-0179) &mdash; your reflections help us understand whether this kind of project can genuinely help students feel less alone.</p>
 
-                    <button style="{{ finalButtonStyle }}" onClick="{{ submitFinalReflection }}">Show me the prize!</button>
+                    <button style="{{ finalButtonStyle }}" onClick="{{ submitFinalReflection }}">Show me what's next</button>
                     <sc-if value="{{ !postAnswersComplete }}" hint-placeholder-val="{{ false }}">
-                      <p style="text-align:center; font-size:11.5px; color:#A2472F; font-weight:500; margin-top:10px;">Answer every question above to continue.</p>
+                      <p style="text-align:center; font-size:11.5px; color:#A2472F; font-weight:500; margin-top:10px;">Please fill out the Common Humanity scale above to continue.</p>
                     </sc-if>
                     <p style="text-align:center; font-size:11.5px; color:#8A6F4C; font-weight:300; margin-top:16px;">By submitting, you consent to this anonymous data being used for this pilot study, as described earlier. You can ask to have it withdrawn within 2 weeks — use "Withdraw my data" in the footer below.</p>
                   </div>
@@ -1575,7 +1632,7 @@ class Component extends DCLogic {
       transition: "background .15s"
     };
     const surveyIncompleteNote = !surveyAnswersComplete
-      ? "Answer every question above to continue."
+      ? "Please fill out the Common Humanity scale above to continue."
       : (isPreSurvey && !s.pre.ageConsent ? "Check the box above to continue." : "");
 
     // test mode: a flat list of every screen/state worth reviewing, so the team can jump
@@ -1628,7 +1685,6 @@ class Component extends DCLogic {
       splashOverlayStyle: splashOverlayStyle,
       splashContentStyle: splashContentStyle,
       preSubmitted: s.pre.submitted,
-      openPre: () => this.openSurvey("pre"),
 
       // read
       quote: data.quote,
