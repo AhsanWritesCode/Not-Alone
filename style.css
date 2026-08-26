@@ -10,3 +10,7 @@ a:hover { color: #8E3C27; }
 @keyframes countdownTick { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.14); } }
 @keyframes splashOut { from { opacity: 1; } to { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { *:not([style*="stepFade"]) { animation: none !important; transition: none !important; } }
+
+/* Journal-style quote box: parchment card with a ruled, handwritten reflection field. */
+.journal-textarea::placeholder { color: rgba(59,36,16,.5); font-style: italic; opacity: 1; }
+.journal-textarea:focus { outline: 1px dashed rgba(101,72,35,.45); outline-offset: 5px; }
